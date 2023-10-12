@@ -7,13 +7,17 @@
 
 import SwiftUI
 
-struct HomePage: View {
+package struct HomePage: View {
     // MARK: - Body
-    var body: some View {
+    package var body: some View {
         NavigationStack {
             Text("Hello world")
                 .toolbar()
         }
+    }
+
+    // MARK: - Initialize
+    package init() {
     }
 }
 

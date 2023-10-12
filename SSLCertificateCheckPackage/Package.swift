@@ -6,13 +6,29 @@ import PackageDescription
 // MARK: - String extension
 extension String {
     static let packageName = "SSLCertificateCheckPackage"
+    static let application = "Application"
 }
 
 // MARK: - Target.Dependency extension
-extension Target.Dependency {
-    static var sslCertificateCheckPackage: Self {
-        .target(name: .packageName)
+extension PackageDescription.Target.Dependency {
+    // MARK: - Name
+    enum Name: String {
+        case application = "Application"
+        case homeFeature = "HomeFeature"
+        case infoFeature = "InfoFeature"
+        case licenseFeature = "LicenseFeature"
     }
+
+    // MARK: - Extension
+    static func named(_ name: Name) -> Self {
+        return .target(name: name.rawValue)
+    }
+
+    // MARK: - Aliases
+    static let application: Self = .named(.application)
+    static let homeFeature: Self = .named(.homeFeature)
+    static let infoFeature: Self = .named(.infoFeature)
+    static let licenseFeature: Self = .named(.licenseFeature)
 
     static var composableArchitecture: Self {
         .product(
@@ -44,7 +60,7 @@ extension Target.Dependency {
 }
 
 // MARK: - Target.PluginUsage extension
-extension Target.PluginUsage {
+extension PackageDescription.Target.PluginUsage {
     static var licensesPlugin: Self {
         .plugin(
             name: "LicensesPlugin",
@@ -68,7 +84,7 @@ let package = Package(
     products: [
         .library(
             name: .packageName,
-            targets: [.packageName]
+            targets: [.application]
         ),
     ],
     dependencies: [
@@ -79,23 +95,58 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.2.0")),
     ],
     targets: [
+        // Application
         .target(
-            name: .packageName,
+            name: .application,
+            dependencies: [
+                .homeFeature,
+                .firebaseAnalyticsSwift,
+                .firebaseCrashlytics,
+            ],
+            plugins: [
+                .swiftLintPlugin,
+            ]
+        ),
+        // Features
+        .target(
+            name: "HomeFeature",
+            dependencies: [
+                .composableArchitecture,
+            ],
+            path: "Sources/Features/HomeFeature",
+            plugins: [
+                .swiftLintPlugin,
+            ]
+        ),
+        .target(
+            name: "InfoFeature",
             dependencies: [
                 .composableArchitecture,
                 .firebaseAnalyticsSwift,
-                .firebaseCrashlytics,
-                .openSSLSwift,
+                .licenseFeature,
             ],
+            path: "Sources/Features/InfoFeature",
+            plugins: [
+                .swiftLintPlugin,
+            ]
+        ),
+        .target(
+            name: "LicenseFeature",
+            dependencies: [
+                .composableArchitecture,
+                .firebaseAnalyticsSwift,
+            ],
+            path: "Sources/Features/LicenseFeature",
             plugins: [
                 .licensesPlugin,
                 .swiftLintPlugin,
             ]
         ),
+        // Tests
         .testTarget(
-            name: .packageName + "Tests",
+            name: "HomeFeatureTests",
             dependencies: [
-                .sslCertificateCheckPackage,
+                .homeFeature,
             ]
         ),
     ]

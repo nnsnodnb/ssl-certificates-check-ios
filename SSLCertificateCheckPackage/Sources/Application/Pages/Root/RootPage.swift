@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/12.
 //
 
+import HomeFeature
 import SwiftUI
 import XCTestDynamicOverlay
 
