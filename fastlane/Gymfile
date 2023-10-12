@@ -1,0 +1,6 @@
+workspace("SSLCertificateCheck.xcworkspace")
+clean(true)
+cloned_source_packages_path(".swiftpm")
+disable_package_automatic_updates(true)
+output_name("SSLCertificateCheck.ipa")
+output_directory("Products")
