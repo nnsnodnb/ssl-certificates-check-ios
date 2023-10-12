@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import SFSafeSymbols
 import SwiftUI
 
 package struct HomePage: View {
@@ -32,7 +33,7 @@ private extension View {
                             print("OK")
                         },
                         label: {
-                            Image(systemName: "gear")
+                            Image(systemSymbol: .gear)
                         }
                     )
                 }

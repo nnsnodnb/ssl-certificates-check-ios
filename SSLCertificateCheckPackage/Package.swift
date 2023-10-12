@@ -57,6 +57,13 @@ extension PackageDescription.Target.Dependency {
             package: "OpenSSL-Swift"
         )
     }
+
+    static var sfSafeSymbols: Self {
+        .product(
+            name: "SFSafeSymbols",
+            package: "SFSafeSymbols"
+        )
+    }
 }
 
 // MARK: - Target.PluginUsage extension
@@ -91,6 +98,7 @@ let package = Package(
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.16.0")),
         .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.1.6")),
         .package(url: "https://github.com/gematik/OpenSSL-Swift.git", .upToNextMajor(from: "4.1.0")),
+        .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "4.1.1")),
         .package(url: "https://github.com/realm/SwiftLint.git", .upToNextMajor(from: "0.53.0")),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.2.0")),
     ],
@@ -112,6 +120,7 @@ let package = Package(
             name: "HomeFeature",
             dependencies: [
                 .composableArchitecture,
+                .sfSafeSymbols,
             ],
             path: "Sources/Features/HomeFeature",
             plugins: [
