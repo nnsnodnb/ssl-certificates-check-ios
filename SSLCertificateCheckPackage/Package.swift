@@ -21,6 +21,20 @@ extension Target.Dependency {
         )
     }
 
+    static var firebaseAnalyticsSwift: Self {
+        .product(
+            name: "FirebaseAnalyticsSwift",
+            package: "firebase-ios-sdk"
+        )
+    }
+
+    static var firebaseCrashlytics: Self {
+        .product(
+            name: "FirebaseCrashlytics",
+            package: "firebase-ios-sdk"
+        )
+    }
+
     static var openSSLSwift: Self {
         .product(
             name: "OpenSSL-Swift",
@@ -58,6 +72,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.16.0")),
         .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.1.6")),
         .package(url: "https://github.com/gematik/OpenSSL-Swift.git", .upToNextMajor(from: "4.1.0")),
         .package(url: "https://github.com/realm/SwiftLint.git", .upToNextMajor(from: "0.53.0")),
@@ -68,6 +83,8 @@ let package = Package(
             name: .packageName,
             dependencies: [
                 .composableArchitecture,
+                .firebaseAnalyticsSwift,
+                .firebaseCrashlytics,
                 .openSSLSwift,
             ],
             plugins: [

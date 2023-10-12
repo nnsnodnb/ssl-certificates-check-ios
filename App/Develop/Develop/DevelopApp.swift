@@ -10,6 +10,10 @@ import SwiftUI
 
 @main
 struct DevelopApp: App {
+    // MARK: - Properties
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
+    // MARK: - Body
     var body: some Scene {
         WindowGroup {
             RootPage()
