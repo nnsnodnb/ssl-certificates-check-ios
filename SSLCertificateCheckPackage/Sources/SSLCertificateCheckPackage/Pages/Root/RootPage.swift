@@ -6,17 +6,16 @@
 //
 
 import SwiftUI
+import XCTestDynamicOverlay
 
 public struct RootPage: View {
     // MARK: - Body
     public var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if _XCTIsTesting {
+            Text("Run Testing")
+        } else {
+            HomePage()
         }
-        .padding()
     }
 
     // MARK: - Initialize
