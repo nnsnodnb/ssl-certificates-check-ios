@@ -21,6 +21,10 @@ package struct InfoReducer: Reducer {
         case dismiss
     }
 
+    // MARK: - Initialize
+    package init() {
+    }
+
     // MARK: - Body
     package var body: some Reducer<State, Action> {
         Reduce { state, action in

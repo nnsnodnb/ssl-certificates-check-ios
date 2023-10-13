@@ -39,5 +39,8 @@ package struct HomeReducer: Reducer {
                 return .none
             }
         }
+        .ifLet(\.info, action: /Action.info) {
+            InfoReducer()
+        }
     }
 }
