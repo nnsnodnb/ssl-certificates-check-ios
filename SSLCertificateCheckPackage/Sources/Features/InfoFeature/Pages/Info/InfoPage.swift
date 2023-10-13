@@ -88,6 +88,17 @@ private extension InfoPage {
                 },
                 title: "Review App"
             )
+            buttonRow(
+                action: {
+                    print("License")
+                },
+                image: {
+                    Image(systemSymbol: .listBulletRectangleFill)
+                        .resizable()
+                        .foregroundColor(.green)
+                },
+                title: "Licenses"
+            )
             HStack(alignment: .center, spacing: 8) {
                 HStack(alignment: .center, spacing: 12) {
                     Image(systemSymbol: .tagFill)
