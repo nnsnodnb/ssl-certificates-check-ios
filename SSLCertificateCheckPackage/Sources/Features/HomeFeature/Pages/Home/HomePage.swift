@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import InfoFeature
 import SFSafeSymbols
 import SwiftUI
 
@@ -18,8 +19,19 @@ package struct HomePage: View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
             NavigationStack {
                 Text("Hello world")
-                    .toolbar()
+                    .toolbar(viewStore)
             }
+            .sheet(
+                isPresented: viewStore.binding(
+                    get: { $0.info != nil },
+                    send: { $0 ? .openInfo : .dismissInfo }
+                ),
+                content: {
+                    IfLetStore(store.scope(state: \.info, action: HomeReducer.Action.info)) { store in
+                        InfoPage(store: store)
+                    }
+                }
+            )
         })
     }
 
@@ -32,17 +44,17 @@ package struct HomePage: View {
 }
 
 private extension View {
-    func toolbar() -> some View {
+    func toolbar(_ viewStore: ViewStoreOf<HomeReducer>) -> some View {
         toolbar {
             ToolbarItem(
                 placement: .topBarLeading,
                 content: {
                     Button(
                         action: {
-                            print("OK")
+                            viewStore.send(.openInfo)
                         },
                         label: {
-                            Image(systemSymbol: .gear)
+                            Image(systemSymbol: .iCircle)
                         }
                     )
                 }

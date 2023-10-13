@@ -5,20 +5,39 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import ComposableArchitecture
 import SFSafeSymbols
 import SwiftUI
 
 package struct InfoPage: View {
+    // MARK: - Properties
+    package let store: StoreOf<InfoReducer>
+
     // MARK: - Body
     package var body: some View {
-        NavigationStack {
-            form()
-                .navigationTitle("App Information")
-        }
+        WithViewStore(store, observe: { $0 }, content: { viewStore in
+            NavigationStack {
+                form()
+                    .navigationTitle("App Information")
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button(
+                                action: {
+                                    viewStore.send(.dismiss)
+                                },
+                                label: {
+                                    Image(systemSymbol: .xmark)
+                                }
+                            )
+                        }
+                    }
+            }
+        })
     }
 
     // MARK: - Initialize
-    package init() {
+    package init(store: StoreOf<InfoReducer>) {
+        self.store = store
     }
 }
 
@@ -120,5 +139,11 @@ private extension InfoPage {
 }
 
 #Preview {
-    InfoPage()
+    InfoPage(
+        store: Store(
+            initialState: InfoReducer.State()
+        ) {
+            InfoReducer()
+        }
+    )
 }
