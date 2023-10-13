@@ -120,6 +120,7 @@ let package = Package(
             name: "HomeFeature",
             dependencies: [
                 .composableArchitecture,
+                .infoFeature,
                 .sfSafeSymbols,
             ],
             path: "Sources/Features/HomeFeature",
