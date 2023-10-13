@@ -54,7 +54,7 @@ private extension View {
                             viewStore.send(.openInfo)
                         },
                         label: {
-                            Image(systemSymbol: .iCircle)
+                            Image(systemSymbol: .infoCircle)
                         }
                     )
                 }
