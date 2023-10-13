@@ -145,6 +145,15 @@
       }
     },
     {
+      "identity" : "safariui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vsanthanam/SafariUI.git",
+      "state" : {
+        "revision" : "15d664c79e4a1ff7e715c73392847749285ab3ad",
+        "version" : "3.0.1"
+      }
+    },
+    {
       "identity" : "sfsafesymbols",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SFSafeSymbols/SFSafeSymbols.git",
