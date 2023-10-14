@@ -124,6 +124,7 @@ package struct SearchReducer: Reducer {
             case .info:
                 return .none
             case .alert:
+                state.alert = nil
                 return .none
             }
         }

@@ -128,8 +128,10 @@ package struct InfoReducer: Reducer {
                 state.interactiveDismissDisabled = !destinations.isEmpty
                 return .none
             case let .alert(.presented(.openURL(url))):
+                state.alert = nil
                 return .send(.openForeignBrowser(url))
             case .alert:
+                state.alert = nil
                 return .none
             case .licenseList:
                 return .none
