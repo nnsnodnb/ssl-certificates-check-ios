@@ -14,24 +14,23 @@ package struct SearchPage: View {
     // MARK: - Properties
     private let store: StoreOf<SearchReducer>
 
+    @FocusState private var isFocused: Bool
+
     // MARK: - Body
     package var body: some View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
             NavigationStack {
-                Text("Hello world")
-                    .toolbar(viewStore)
+                form(viewStore)
+                    .navigationTitle("Check TLS/SSL Certificates")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar(
+                        viewStore,
+                        keyboardClose: {
+                            isFocused = false
+                        }
+                    )
             }
-            .sheet(
-                isPresented: viewStore.binding(
-                    get: { $0.info != nil },
-                    send: { $0 ? .openInfo : .dismissInfo }
-                ),
-                content: {
-                    IfLetStore(store.scope(state: \.info, action: SearchReducer.Action.info)) { store in
-                        InfoPage(store: store)
-                    }
-                }
-            )
+            .sheet(store: store, viewStore)
         })
     }
 
@@ -43,23 +42,89 @@ package struct SearchPage: View {
     }
 }
 
-private extension View {
-    func toolbar(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
-        toolbar {
-            ToolbarItem(
-                placement: .topBarLeading,
-                content: {
-                    Button(
-                        action: {
-                            viewStore.send(.openInfo)
-                        },
-                        label: {
-                            Image(systemSymbol: .infoCircle)
-                        }
+// MARK: - Private method
+private extension SearchPage {
+    func form(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+        Form {
+            HStack(alignment: .center, spacing: 0) {
+                Text("https://")
+                    .padding(.horizontal, 8)
+                Divider()
+                TextField(
+                    "example.com",
+                    text: viewStore.binding(
+                        get: \.text,
+                        send: SearchReducer.Action.textChanged
                     )
-                }
-            )
+                )
+                .keyboardType(.URL)
+                .textCase(.lowercase)
+                .focused($isFocused)
+                .padding(.horizontal, 8)
+            }
         }
+        .overlay {
+            if viewStore.isLoading {
+                Color.gray.opacity(0.8)
+                    .overlay {
+                        ProgressView()
+                            .tint(.white)
+                            .scaleEffect(x: 2, y: 2, anchor: .center)
+                    }
+                    .ignoresSafeArea(edges: .bottom)
+            }
+        }
+    }
+}
+
+private extension View {
+    func toolbar(_ viewStore: ViewStoreOf<SearchReducer>, keyboardClose: @escaping () -> Void) -> some View {
+        toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(
+                    action: {
+                        viewStore.send(.openInfo)
+                    },
+                    label: {
+                        Image(systemSymbol: .infoCircle)
+                    }
+                )
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(
+                    action: {
+                        // TODO: Search
+                    },
+                    label: {
+                        Image(systemSymbol: .magnifyingglassCircle)
+                            .bold()
+                            .disabled(viewStore.searchButtonDisabled)
+                    }
+                )
+            }
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button(action: keyboardClose) {
+                    Text("Close")
+                        .bold()
+                }
+                .padding(.trailing, 8)
+            }
+        }
+    }
+
+    func sheet(store: StoreOf<SearchReducer>, _ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+        sheet(
+            isPresented: viewStore.binding(
+                get: { $0.info != nil },
+                send: { $0 ? .openInfo : .dismissInfo }
+            ),
+            content: {
+                IfLetStore(store.scope(state: \.info, action: SearchReducer.Action.info)) { store in
+                    InfoPage(store: store)
+                }
+            }
+        )
     }
 }
 
