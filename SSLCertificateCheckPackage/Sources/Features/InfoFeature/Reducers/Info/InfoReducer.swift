@@ -15,10 +15,27 @@ package struct InfoReducer: Reducer {
         // MARK: - Properties
         var licenseList: LicenseListReducer.State?
         var destinations: [Destination]
+        var url: URL?
 
         // MARK: - Destination
         package enum Destination {
             case licenseList
+        }
+
+        // MARK: - Link
+        package enum Link {
+            case gitHub
+            case xTwitter
+
+            // MARK: - Properties
+            package var url: URL {
+                switch self {
+                case .gitHub:
+                    return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
+                case .xTwitter:
+                    return URL(string: "https://x.com/nnsnodnb")!
+                }
+            }
         }
 
         // MARK: - Initialize
@@ -32,6 +49,8 @@ package struct InfoReducer: Reducer {
     package enum Action {
         case dismiss
         case pushLicenseList
+        case safari(State.Link?)
+        case url(URL?)
         case navigationPathChanged([State.Destination])
         case licenseList(LicenseListReducer.Action)
     }
@@ -49,6 +68,14 @@ package struct InfoReducer: Reducer {
             case .pushLicenseList:
                 state.licenseList = .init()
                 state.destinations.append(.licenseList)
+                return .none
+            case let .safari(.some(link)):
+                state.url = link.url
+                return .none
+            case .safari(.none), .url(.none):
+                state.url = nil
+                return .none
+            case .url(.some):
                 return .none
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations

@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import LicenseFeature
+import SafariUI
 import SFSafeSymbols
 import SwiftUI
 import UIComponents
@@ -28,6 +29,7 @@ package struct InfoPage: View {
                         .navigationTitle("App Information")
                         .navigationDestination(store: store)
                         .toolbar(viewStore)
+                        .safari(viewStore)
                 }
             )
         })
@@ -52,7 +54,7 @@ private extension InfoPage {
         Section {
             buttonRow(
                 action: {
-                    print("GitHub")
+                    viewStore.send(.safari(.gitHub))
                 },
                 image: {
                     Image(.icGithub)
@@ -62,7 +64,7 @@ private extension InfoPage {
             )
             buttonRow(
                 action: {
-                    print("Twitter")
+                    viewStore.send(.safari(.xTwitter))
                 },
                 image: {
                     Image(.icXTwitetr)
@@ -172,6 +174,18 @@ private extension View {
                 )
             }
         }
+    }
+
+    func safari(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+        safari(
+            url: viewStore.binding(
+                get: \.url,
+                send: InfoReducer.Action.url
+            ),
+            safariView: { url in
+                SafariView(url: url)
+            }
+        )
     }
 }
 
