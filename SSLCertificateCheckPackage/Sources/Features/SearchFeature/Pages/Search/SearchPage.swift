@@ -54,22 +54,29 @@ package struct SearchPage: View {
 private extension SearchPage {
     func form(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
         Form {
-            HStack(alignment: .center, spacing: 0) {
-                Text("https://")
-                    .padding(.horizontal, 8)
-                Divider()
-                TextField(
-                    "example.com",
-                    text: viewStore.binding(
-                        get: \.text,
-                        send: SearchReducer.Action.textChanged
-                    )
-                )
-                .keyboardType(.URL)
-                .textCase(.lowercase)
-                .focused($isFocused)
-                .padding(.horizontal, 8)
-            }
+            Section(
+                content: {
+                    HStack(alignment: .center, spacing: 0) {
+                        Text("https://")
+                            .padding(.horizontal, 8)
+                        Divider()
+                        TextField(
+                            "example.com",
+                            text: viewStore.binding(
+                                get: \.text,
+                                send: SearchReducer.Action.textChanged
+                            )
+                        )
+                        .keyboardType(.URL)
+                        .textCase(.lowercase)
+                        .focused($isFocused)
+                        .padding(.horizontal, 8)
+                    }
+                },
+                header: {
+                    Text("Enter the host you want to check")
+                }
+            )
         }
         .overlay {
             if viewStore.isLoading {
