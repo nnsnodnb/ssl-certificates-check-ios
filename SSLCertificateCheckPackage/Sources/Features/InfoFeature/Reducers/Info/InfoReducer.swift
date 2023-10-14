@@ -50,7 +50,7 @@ package struct InfoReducer: Reducer {
     }
 
     // MARK: - Action
-    package enum Action {
+    package enum Action: Equatable {
         case dismiss
         case openAppReview
         case pushLicenseList

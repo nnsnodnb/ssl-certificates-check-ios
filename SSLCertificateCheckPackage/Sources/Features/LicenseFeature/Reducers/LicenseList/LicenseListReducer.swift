@@ -20,7 +20,7 @@ package struct LicenseListReducer: Reducer {
     }
 
     // MARK: - Action
-    package enum Action {
+    package enum Action: Equatable {
         case fetchLicenses
         case fetchLicensesResponse(TaskResult<[License]>)
     }

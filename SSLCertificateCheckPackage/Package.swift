@@ -120,9 +120,6 @@ let package = Package(
                 .firebaseAnalyticsSwift,
                 .firebaseCrashlytics,
                 .searchFeature,
-            ],
-            plugins: [
-                .swiftLintPlugin,
             ]
         ),
         // Features
@@ -135,10 +132,7 @@ let package = Package(
                 .safariUI,
                 .uiComponents,
             ],
-            path: "Sources/Features/InfoFeature",
-            plugins: [
-                .swiftLintPlugin,
-            ]
+            path: "Sources/Features/InfoFeature"
         ),
         .target(
             name: "LicenseFeature",
@@ -149,7 +143,6 @@ let package = Package(
             path: "Sources/Features/LicenseFeature",
             plugins: [
                 .licensesPlugin,
-                .swiftLintPlugin,
             ]
         ),
         .target(
@@ -160,10 +153,7 @@ let package = Package(
                 .openSSLSwift,
                 .sfSafeSymbols,
             ],
-            path: "Sources/Features/SearchFeature",
-            plugins: [
-                .swiftLintPlugin,
-            ]
+            path: "Sources/Features/SearchFeature"
         ),
         // Misc
         .target(
@@ -177,19 +167,30 @@ let package = Package(
             name: "SearchFeatureTests",
             dependencies: [
                 .searchFeature,
+            ],
+            resources: [
+                .process("Resources/"),
             ]
         ),
     ]
 )
 
+let debugOtherSwiftFlags = [
+    "-Xfrontend", "-warn-long-expression-type-checking=500",
+    "-Xfrontend", "-warn-long-function-bodies=500",
+    "-strict-concurrency=complete",
+    "-enable-actor-data-race-checks",
+]
+
 for package in package.targets {
-    let debugOtherSwiftFlags = [
-        "-Xfrontend", "-warn-long-expression-type-checking=500",
-        "-Xfrontend", "-warn-long-function-bodies=500",
-        "-strict-concurrency=complete",
-        "-enable-actor-data-race-checks",
-    ]
+    // swiftSettings
     package.swiftSettings = [
         .unsafeFlags(debugOtherSwiftFlags, .when(configuration: .debug)),
     ]
+    // plugins
+    if let plugins = package.plugins {
+        package.plugins = plugins + [.swiftLintPlugin]
+    } else {
+        package.plugins = [.swiftLintPlugin]
+    }
 }

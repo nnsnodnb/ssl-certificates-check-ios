@@ -33,11 +33,10 @@ package struct SearchReducer: Reducer {
     }
 
     // MARK: - Action
-    package enum Action {
+    package enum Action: Equatable {
         case textChanged(String)
         case openInfo
         case dismissInfo
-        case checkURL
         case search
         case searchResponse(TaskResult<X509>)
         case navigationPathChanged([State.Destination])
@@ -61,15 +60,6 @@ package struct SearchReducer: Reducer {
             switch action {
             case let .textChanged(text):
                 state.text = text
-                return .send(.checkURL)
-            case .openInfo:
-                let version = bundle.shortVersionString()
-                state.info = .init(version: "v\(version)")
-                return .none
-            case .dismissInfo, .info(.dismiss):
-                state.info = nil
-                return .none
-            case .checkURL:
                 guard !state.text.isEmpty,
                       let url = URL(string: "https://\(state.text)"),
                       let host = url.host(),
@@ -82,8 +72,16 @@ package struct SearchReducer: Reducer {
                 state.searchButtonDisabled = false
                 state.searchableURL = url
                 return .none
+            case .openInfo:
+                let version = bundle.shortVersionString()
+                state.info = .init(version: "v\(version)")
+                return .none
+            case .dismissInfo, .info(.dismiss):
+                state.info = nil
+                return .none
             case .search:
-                guard let url = state.searchableURL else {
+                guard !state.searchButtonDisabled,
+                      let url = state.searchableURL else {
                     return .none
                 }
                 state.isLoading = true
