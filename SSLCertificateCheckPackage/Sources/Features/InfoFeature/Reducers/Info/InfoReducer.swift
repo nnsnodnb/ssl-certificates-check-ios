@@ -13,6 +13,7 @@ package struct InfoReducer: Reducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
+        let version: String
         var licenseList: LicenseListReducer.State?
         var destinations: [Destination]
         var interactiveDismissDisabled = true
@@ -40,7 +41,8 @@ package struct InfoReducer: Reducer {
         }
 
         // MARK: - Initialize
-        package init(licenseList: LicenseListReducer.State? = nil, destinations: [Destination] = []) {
+        package init(version: String, licenseList: LicenseListReducer.State? = nil, destinations: [Destination] = []) {
+            self.version = version
             self.licenseList = licenseList
             self.destinations = destinations
         }

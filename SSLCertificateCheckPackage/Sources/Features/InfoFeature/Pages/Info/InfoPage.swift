@@ -110,7 +110,7 @@ private extension InfoPage {
                         .foregroundStyle(.primary)
                 }
                 Spacer()
-                Text("v1.0.0") // TODO: Version
+                Text(viewStore.version)
                     .foregroundStyle(.secondary)
             }
             HStack(alignment: .center, spacing: 12) {
@@ -193,7 +193,7 @@ private extension View {
 #Preview {
     InfoPage(
         store: Store(
-            initialState: InfoReducer.State()
+            initialState: InfoReducer.State(version: "v1.0.0")
         ) {
             InfoReducer()
         }

@@ -28,12 +28,17 @@ package struct HomeReducer: Reducer {
         case info(InfoReducer.Action)
     }
 
+    // MARK: - Properties
+    @Dependency(\.bundle)
+    private var bundle
+
     // MARK: - Body
     package var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             case .openInfo:
-                state.info = .init()
+                let version = bundle.shortVersionString()
+                state.info = .init(version: "v\(version)")
                 return .none
             case .dismissInfo, .info(.dismiss):
                 state.info = nil
