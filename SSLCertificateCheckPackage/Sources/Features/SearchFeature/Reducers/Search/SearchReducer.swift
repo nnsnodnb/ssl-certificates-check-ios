@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import Foundation
 import InfoFeature
+import Logger
 
 package struct SearchReducer: Reducer {
     // MARK: - State
@@ -71,13 +72,16 @@ package struct SearchReducer: Reducer {
                 }
                 state.searchButtonDisabled = false
                 state.searchableURL = url
+                Logger.info("Valid text: \(text)")
                 return .none
             case .openInfo:
                 let version = bundle.shortVersionString()
                 state.info = .init(version: "v\(version)")
+                Logger.info("Open Info")
                 return .none
             case .dismissInfo, .info(.dismiss):
                 state.info = nil
+                Logger.info("Dismiss Info")
                 return .none
             case .search:
                 guard !state.searchButtonDisabled,
@@ -85,6 +89,7 @@ package struct SearchReducer: Reducer {
                     return .none
                 }
                 state.isLoading = true
+                Logger.info("Start searching")
                 return .run(
                     operation: { send in
                         let x509 = try await search.fetchCertificates(url)
@@ -97,6 +102,7 @@ package struct SearchReducer: Reducer {
             case let .searchResponse(.success(x509)):
                 state.isLoading = false
                 state.destinations.append(.searchResult(x509))
+                Logger.info("Open SearchResult")
                 return .none
             case let .searchResponse(.failure(error)):
                 state.isLoading = false
@@ -115,6 +121,7 @@ package struct SearchReducer: Reducer {
                         TextState("Please check or re-run the URL.")
                     }
                 )
+                Logger.error("Failed searching: \(error)")
                 return .none
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations

@@ -16,6 +16,7 @@ extension PackageDescription.Target.Dependency {
     static let infoFeature: Self = .target(name: "InfoFeature")
     static let licenseFeature: Self = .target(name: "LicenseFeature")
     static let searchFeature: Self = .target(name: "SearchFeature")
+    static let logger: Self = .target(name: "Logger")
     static let uiComponents: Self = .target(name: "UIComponents")
 
     static var composableArchitecture: Self {
@@ -136,12 +137,19 @@ let package = Package(
             dependencies: [
                 .composableArchitecture,
                 .infoFeature,
+                .logger,
                 .openSSLSwift,
                 .sfSafeSymbols,
             ],
             path: "Sources/Features/SearchFeature"
         ),
         // Misc
+        .target(
+            name: "Logger",
+            dependencies: [
+                .composableArchitecture,
+            ]
+        ),
         .target(
             name: "UIComponents",
             dependencies: [
