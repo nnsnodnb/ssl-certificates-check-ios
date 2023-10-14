@@ -164,6 +164,10 @@ let package = Package(
         ),
         // Tests
         .testTarget(
+            name: "InfoFeatureTests",
+            dependencies: [.infoFeature]
+        ),
+        .testTarget(
             name: "SearchFeatureTests",
             dependencies: [
                 .searchFeature,
