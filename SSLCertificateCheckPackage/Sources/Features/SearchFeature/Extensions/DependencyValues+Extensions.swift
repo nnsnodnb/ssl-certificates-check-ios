@@ -15,3 +15,11 @@ package extension DependencyValues {
         set { self[BundleClient.self] = newValue }
     }
 }
+
+// MARK: - SearchClient
+package extension DependencyValues {
+    var search: SearchClient {
+        get { self[SearchClient.self] }
+        set { self[SearchClient.self] = newValue }
+    }
+}

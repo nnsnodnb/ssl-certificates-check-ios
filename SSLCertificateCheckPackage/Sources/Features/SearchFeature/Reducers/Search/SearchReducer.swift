@@ -16,7 +16,9 @@ package struct SearchReducer: Reducer {
         var info: InfoReducer.State?
         var searchButtonDisabled = true
         var text: String = ""
+        var searchableURL: URL?
         var isLoading = false
+        @PresentationState var alert: AlertState<Action.Alert>?
 
         // MARK: - Initialize
         package init(info: InfoReducer.State? = nil) {
@@ -31,12 +33,20 @@ package struct SearchReducer: Reducer {
         case dismissInfo
         case checkURL
         case search
+        case searchResponse(TaskResult<X509>)
         case info(InfoReducer.Action)
+        case alert(PresentationAction<Alert>)
+
+        // MARK: - Alert
+        package enum Alert: Equatable {
+        }
     }
 
     // MARK: - Properties
     @Dependency(\.bundle)
     private var bundle
+    @Dependency(\.search)
+    private var search
 
     // MARK: - Body
     package var body: some Reducer<State, Action> {
@@ -59,14 +69,50 @@ package struct SearchReducer: Reducer {
                       !host.isEmpty,
                       host.split(separator: ".").count > 1 else {
                     state.searchButtonDisabled = true
+                    state.searchableURL = nil
                     return .none
                 }
                 state.searchButtonDisabled = false
+                state.searchableURL = url
                 return .none
             case .search:
-                // TODO: Search
+                guard let url = state.searchableURL else {
+                    return .none
+                }
+                state.isLoading = true
+                return .run(
+                    operation: { send in
+                        let x509 = try await search.fetchCertificates(url)
+                        await send(.searchResponse(.success(x509)))
+                    },
+                    catch: { error, send in
+                        await send(.searchResponse(.failure(error)))
+                    }
+                )
+            case let .searchResponse(.success(x509)):
+                state.isLoading = false
+                return .none
+            case let .searchResponse(.failure(error)):
+                state.isLoading = false
+                state.alert = AlertState(
+                    title: {
+                        TextState("Failed to obtain certificate")
+                    },
+                    actions: {
+                        ButtonState(
+                            label: {
+                                TextState("Close")
+                            }
+                        )
+                    },
+                    message: {
+                        TextState("Please check or re-run the URL.")
+                    }
+                )
                 return .none
             case .info:
+                return .none
+            case .alert:
                 return .none
             }
         }

@@ -31,6 +31,7 @@ package struct SearchPage: View {
                     )
             }
             .sheet(store: store, viewStore)
+            .alert(store: store.scope(state: \.$alert, action: SearchReducer.Action.alert))
         })
     }
 
@@ -93,7 +94,8 @@ private extension View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(
                     action: {
-                        // TODO: Search
+                        keyboardClose()
+                        viewStore.send(.search)
                     },
                     label: {
                         Image(systemSymbol: .magnifyingglassCircle)

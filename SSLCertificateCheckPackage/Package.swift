@@ -157,6 +157,7 @@ let package = Package(
             dependencies: [
                 .composableArchitecture,
                 .infoFeature,
+                .openSSLSwift,
                 .sfSafeSymbols,
             ],
             path: "Sources/Features/SearchFeature",
