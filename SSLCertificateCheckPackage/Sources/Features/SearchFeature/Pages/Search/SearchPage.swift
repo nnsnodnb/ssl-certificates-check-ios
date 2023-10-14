@@ -34,15 +34,7 @@ package struct SearchPage: View {
                                 isFocused = false
                             }
                         )
-                        .navigationDestination(
-                            for: SearchReducer.State.Destination.self,
-                            destination: { destination in
-                                switch destination {
-                                case let .searchResult(x509):
-                                    SearchResultPage(x509: x509)
-                                }
-                            }
-                        )
+                        .navigationDestination()
                 }
             )
             .sheet(store: store, viewStore)
@@ -128,6 +120,18 @@ private extension View {
                 .padding(.trailing, 8)
             }
         }
+    }
+
+    func navigationDestination() -> some View {
+        navigationDestination(
+            for: SearchReducer.State.Destination.self,
+            destination: { destination in
+                switch destination {
+                case let .searchResult(x509):
+                    SearchResultPage(x509: x509)
+                }
+            }
+        )
     }
 
     func sheet(store: StoreOf<SearchReducer>, _ viewStore: ViewStoreOf<SearchReducer>) -> some View {
