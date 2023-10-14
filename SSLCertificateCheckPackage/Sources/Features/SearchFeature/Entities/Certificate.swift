@@ -28,8 +28,9 @@ package struct X509: Sendable, Hashable {
             throw Error.notExistsCertificates
         }
         self.certificates = try serverCertificates
-            .map {
-                let data = SecCertificateCopyData($0) as Data
+            .enumerated()
+            .map { number, certificate in
+                let data = SecCertificateCopyData(certificate) as Data
                 let x509 = try OpenSSL.X509(der: data)
 
                 let subject = try Content(x509.subjectOneLine())
@@ -41,6 +42,7 @@ package struct X509: Sendable, Hashable {
                     .map { String(format: "%.2hhx", $0) }
                     .joined(separator: " ")
                 return Certificate(
+                    id: number,
                     subject: subject,
                     issuer: issuer,
                     serialNumber: serialNumber,
@@ -60,8 +62,9 @@ package struct X509: Sendable, Hashable {
 
 // MARK: - Certificate
 package extension X509 {
-    struct Certificate: Sendable, Hashable {
+    struct Certificate: Sendable, Identifiable, Hashable {
         // MARK: - Properties
+        package let id: Int
         package let subject: Content
         package let issuer: Content
         package let serialNumber: String
@@ -79,37 +82,45 @@ package extension X509 {
         package let organization: String?
         package let organizationUnit: String?
         package let country: String?
-        package let all: String?
+        package let all: String
 
         // MARK: - Initialize
         package init(_ text: String) {
             let elements = text.split(separator: "/")
             // CN
             if let element = elements.lazy.first(where: { $0.starts(with: "CN=") }) {
-                self.commonName = element.replacingOccurrences(of: "CN=", with: "")
+                self.commonName = element
+                    .replacingOccurrences(of: "CN=", with: "")
+                    .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
                 self.commonName = "Unknown"
             }
             // O
             if let element = elements.lazy.first(where: { $0.starts(with: "O=") }) {
-                self.organization = element.replacingOccurrences(of: "O=", with: "")
+                self.organization = element
+                    .replacingOccurrences(of: "O=", with: "")
+                    .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
                 self.organization = nil
             }
             // OU
             if let element = elements.lazy.first(where: { $0.starts(with: "OU=") }) {
-                self.organizationUnit = element.replacingOccurrences(of: "OU=", with: "")
+                self.organizationUnit = element
+                    .replacingOccurrences(of: "OU=", with: "")
+                    .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
                 self.organizationUnit = nil
             }
             // C
             if let element = elements.lazy.first(where: { $0.starts(with: "C=") }) {
-                self.country = element.replacingOccurrences(of: "C=", with: "")
+                self.country = element
+                    .replacingOccurrences(of: "C=", with: "")
+                    .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
                 self.country = nil
             }
 
-            self.all = text
+            self.all = elements.joined(separator: "\n").replacingOccurrences(of: "\\xC2\\xA0", with: " ")
         }
     }
 }

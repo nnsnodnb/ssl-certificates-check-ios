@@ -13,7 +13,18 @@ package struct SearchResultPage: View {
 
     // MARK: - Body
     package var body: some View {
-        Text("SearchResultPage")
+        List {
+            ForEach(x509.certificates) { certificate in
+                NavigationLink(
+                    destination: {
+                        SearchResultDetailPage(certificate: certificate)
+                    },
+                    label: {
+                        Text(certificate.subject.commonName)
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -22,6 +33,7 @@ package struct SearchResultPage: View {
         x509: .init(
             certificates: [
                 .init(
+                    id: 1,
                     subject: .init("/C=US/ST=California/L=Los Angeles/O=Internet\\xC2\\xA0Corporation\\xC2\\xA0for\\xC2\\xA0Assigned\\xC2\\xA0Names\\xC2\\xA0and\\xC2\\xA0Numbers/CN=www.example.org"), // swiftlint:disable:this line_length
                     issuer: .init("/C=US/O=DigiCert Inc/CN=DigiCert TLS RSA SHA256 2020 CA1"),
                     serialNumber: "16115816404043435608139631424403370993",
