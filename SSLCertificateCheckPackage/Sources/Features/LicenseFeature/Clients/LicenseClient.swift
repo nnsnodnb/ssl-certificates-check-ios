@@ -11,7 +11,7 @@ import XCTestDynamicOverlay
 
 package struct LicenseClient {
     // MARK: - Properties
-    package var fetchLicenses: @Sendable () -> [License]
+    package var fetchLicenses: @Sendable () async throws -> [License]
 }
 
 // MARK: - DependencyKey

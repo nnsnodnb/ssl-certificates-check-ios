@@ -22,6 +22,7 @@ package struct LicenseListReducer: Reducer {
     // MARK: - Action
     package enum Action {
         case fetchLicenses
+        case fetchLicensesResponse(TaskResult<[License]>)
     }
 
     // MARK: - Properties
@@ -37,8 +38,14 @@ package struct LicenseListReducer: Reducer {
         Reduce { state, action in
             switch action {
             case .fetchLicenses:
-                let licenses = license.fetchLicenses()
+                return .run { send in
+                    let licenses = try await license.fetchLicenses()
+                    await send(.fetchLicensesResponse(.success(licenses)))
+                }
+            case let .fetchLicensesResponse(.success(licenses)):
                 state.licenses = .init(uniqueElements: licenses)
+                return .none
+            case .fetchLicensesResponse(.failure):
                 return .none
             }
         }
