@@ -11,26 +11,12 @@ extension String {
 
 // MARK: - Target.Dependency extension
 extension PackageDescription.Target.Dependency {
-    // MARK: - Name
-    enum Name: String {
-        case application = "Application"
-        case infoFeature = "InfoFeature"
-        case licenseFeature = "LicenseFeature"
-        case searchFeature = "SearchFeature"
-        case uiComponents = "UIComponents"
-    }
-
-    // MARK: - Extension
-    static func named(_ name: Name) -> Self {
-        return .target(name: name.rawValue)
-    }
-
     // MARK: - Aliases
-    static let application: Self = .named(.application)
-    static let infoFeature: Self = .named(.infoFeature)
-    static let licenseFeature: Self = .named(.licenseFeature)
-    static let searchFeature: Self = .named(.searchFeature)
-    static let uiComponents: Self = .named(.uiComponents)
+    static let application: Self = .target(name: "Application")
+    static let infoFeature: Self = .target(name: "InfoFeature")
+    static let licenseFeature: Self = .target(name: "LicenseFeature")
+    static let searchFeature: Self = .target(name: "SearchFeature")
+    static let uiComponents: Self = .target(name: "UIComponents")
 
     static var composableArchitecture: Self {
         .product(
