@@ -1,6 +1,6 @@
 # ssl-certificates-check-ios
 
-SSL Certificates check for iOS
+TLS/SSL Certificates check for iOS
 
 ## Environment
 
