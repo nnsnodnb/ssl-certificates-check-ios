@@ -10,6 +10,7 @@ import Foundation
 import XCTestDynamicOverlay
 
 package struct BundleClient {
+    // MARK: - Properties
     package var shortVersionString: @Sendable () -> String
 }
 

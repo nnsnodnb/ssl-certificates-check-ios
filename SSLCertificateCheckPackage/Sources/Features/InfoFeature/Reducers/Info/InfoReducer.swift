@@ -18,6 +18,7 @@ package struct InfoReducer: Reducer {
         var destinations: [Destination]
         var interactiveDismissDisabled = true
         var url: URL?
+        @PresentationState var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
         package enum Destination {
@@ -51,12 +52,25 @@ package struct InfoReducer: Reducer {
     // MARK: - Action
     package enum Action {
         case dismiss
+        case openAppReview
         case pushLicenseList
         case safari(State.Link?)
         case url(URL?)
+        case confirmOpenForeignBrowserAlert(URL)
+        case openForeignBrowser(URL)
         case navigationPathChanged([State.Destination])
+        case alert(PresentationAction<Alert>)
         case licenseList(LicenseListReducer.Action)
+
+        // MARK: - Alert
+        package enum Alert: Equatable {
+            case openURL(URL)
+        }
     }
+
+    // MARK: - Properties
+    @Dependency(\.application)
+    private var application
 
     // MARK: - Initialize
     package init() {
@@ -68,6 +82,9 @@ package struct InfoReducer: Reducer {
             switch action {
             case .dismiss:
                 return .none
+            case .openAppReview:
+                let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
+                return .send(.confirmOpenForeignBrowserAlert(url))
             case .pushLicenseList:
                 state.licenseList = .init()
                 state.destinations.append(.licenseList)
@@ -81,9 +98,38 @@ package struct InfoReducer: Reducer {
                 return .none
             case .url(.some):
                 return .none
+            case let .confirmOpenForeignBrowserAlert(url):
+                state.alert = AlertState(
+                    title: {
+                        TextState("Open an external browser.")
+                    },
+                    actions: {
+                        ButtonState(
+                            role: .cancel,
+                            label: {
+                                TextState("Cancel")
+                            }
+                        )
+                        ButtonState(
+                            action: .openURL(url),
+                            label: {
+                                TextState("Open")
+                            }
+                        )
+                    }
+                )
+                return .none
+            case let .openForeignBrowser(url):
+                return .run { _ in
+                    _ = await application.open(url)
+                }
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
                 state.interactiveDismissDisabled = !destinations.isEmpty
+                return .none
+            case let .alert(.presented(.openURL(url))):
+                return .send(.openForeignBrowser(url))
+            case .alert:
                 return .none
             case .licenseList:
                 return .none

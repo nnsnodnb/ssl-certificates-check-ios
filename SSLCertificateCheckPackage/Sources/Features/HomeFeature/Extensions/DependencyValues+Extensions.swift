@@ -1,5 +1,5 @@
 //
-//  DependencyValues+Extension.swift
+//  DependencyValues+Extensions.swift
 //
 //
 //  Created by Yuya Oka on 2023/10/14.

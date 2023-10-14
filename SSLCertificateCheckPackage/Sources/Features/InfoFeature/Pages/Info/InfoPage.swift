@@ -33,6 +33,7 @@ package struct InfoPage: View {
                 }
             )
             .interactiveDismissDisabled(viewStore.interactiveDismissDisabled)
+            .alert(store: store.scope(state: \.$alert, action: InfoReducer.Action.alert))
         })
     }
 
@@ -80,7 +81,7 @@ private extension InfoPage {
         Section {
             buttonRow(
                 action: {
-                    print("Review")
+                    viewStore.send(.openAppReview)
                 },
                 image: {
                     Image(systemSymbol: .starBubble)
