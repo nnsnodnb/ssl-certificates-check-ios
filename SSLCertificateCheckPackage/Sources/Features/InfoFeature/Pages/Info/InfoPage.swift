@@ -32,6 +32,7 @@ package struct InfoPage: View {
                         .safari(viewStore)
                 }
             )
+            .interactiveDismissDisabled(viewStore.interactiveDismissDisabled)
         })
     }
 

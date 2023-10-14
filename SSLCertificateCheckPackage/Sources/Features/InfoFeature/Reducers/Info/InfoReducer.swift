@@ -15,6 +15,7 @@ package struct InfoReducer: Reducer {
         // MARK: - Properties
         var licenseList: LicenseListReducer.State?
         var destinations: [Destination]
+        var interactiveDismissDisabled = true
         var url: URL?
 
         // MARK: - Destination
@@ -68,6 +69,7 @@ package struct InfoReducer: Reducer {
             case .pushLicenseList:
                 state.licenseList = .init()
                 state.destinations.append(.licenseList)
+                state.interactiveDismissDisabled = true
                 return .none
             case let .safari(.some(link)):
                 state.url = link.url
@@ -79,6 +81,7 @@ package struct InfoReducer: Reducer {
                 return .none
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
+                state.interactiveDismissDisabled = !destinations.isEmpty
                 return .none
             case .licenseList:
                 return .none
