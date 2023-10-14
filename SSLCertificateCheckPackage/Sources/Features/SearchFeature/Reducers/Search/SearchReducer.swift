@@ -1,5 +1,5 @@
 //
-//  HomeReducer.swift
+//  SearchReducer.swift
 //
 //
 //  Created by Yuya Oka on 2023/10/13.
@@ -9,7 +9,7 @@ import ComposableArchitecture
 import Foundation
 import InfoFeature
 
-package struct HomeReducer: Reducer {
+package struct SearchReducer: Reducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties

@@ -14,9 +14,9 @@ extension PackageDescription.Target.Dependency {
     // MARK: - Name
     enum Name: String {
         case application = "Application"
-        case homeFeature = "HomeFeature"
         case infoFeature = "InfoFeature"
         case licenseFeature = "LicenseFeature"
+        case searchFeature = "SearchFeature"
         case uiComponents = "UIComponents"
     }
 
@@ -27,9 +27,9 @@ extension PackageDescription.Target.Dependency {
 
     // MARK: - Aliases
     static let application: Self = .named(.application)
-    static let homeFeature: Self = .named(.homeFeature)
     static let infoFeature: Self = .named(.infoFeature)
     static let licenseFeature: Self = .named(.licenseFeature)
+    static let searchFeature: Self = .named(.searchFeature)
     static let uiComponents: Self = .named(.uiComponents)
 
     static var composableArchitecture: Self {
@@ -117,27 +117,15 @@ let package = Package(
         .target(
             name: .application,
             dependencies: [
-                .homeFeature,
                 .firebaseAnalyticsSwift,
                 .firebaseCrashlytics,
+                .searchFeature,
             ],
             plugins: [
                 .swiftLintPlugin,
             ]
         ),
         // Features
-        .target(
-            name: "HomeFeature",
-            dependencies: [
-                .composableArchitecture,
-                .infoFeature,
-                .sfSafeSymbols,
-            ],
-            path: "Sources/Features/HomeFeature",
-            plugins: [
-                .swiftLintPlugin,
-            ]
-        ),
         .target(
             name: "InfoFeature",
             dependencies: [
@@ -164,6 +152,18 @@ let package = Package(
                 .swiftLintPlugin,
             ]
         ),
+        .target(
+            name: "SearchFeature",
+            dependencies: [
+                .composableArchitecture,
+                .infoFeature,
+                .sfSafeSymbols,
+            ],
+            path: "Sources/Features/SearchFeature",
+            plugins: [
+                .swiftLintPlugin,
+            ]
+        ),
         // Misc
         .target(
             name: "UIComponents",
@@ -173,9 +173,9 @@ let package = Package(
         ),
         // Tests
         .testTarget(
-            name: "HomeFeatureTests",
+            name: "SearchFeatureTests",
             dependencies: [
-                .homeFeature,
+                .searchFeature,
             ]
         ),
     ]

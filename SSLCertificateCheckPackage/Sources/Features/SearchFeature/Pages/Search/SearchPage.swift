@@ -1,5 +1,5 @@
 //
-//  HomePage.swift
+//  SearchPage.swift
 //
 //
 //  Created by Yuya Oka on 2023/10/13.
@@ -10,9 +10,9 @@ import InfoFeature
 import SFSafeSymbols
 import SwiftUI
 
-package struct HomePage: View {
+package struct SearchPage: View {
     // MARK: - Properties
-    private let store: StoreOf<HomeReducer>
+    private let store: StoreOf<SearchReducer>
 
     // MARK: - Body
     package var body: some View {
@@ -27,7 +27,7 @@ package struct HomePage: View {
                     send: { $0 ? .openInfo : .dismissInfo }
                 ),
                 content: {
-                    IfLetStore(store.scope(state: \.info, action: HomeReducer.Action.info)) { store in
+                    IfLetStore(store.scope(state: \.info, action: SearchReducer.Action.info)) { store in
                         InfoPage(store: store)
                     }
                 }
@@ -37,14 +37,14 @@ package struct HomePage: View {
 
     // MARK: - Initialize
     package init(
-        store: StoreOf<HomeReducer> = Store(initialState: HomeReducer.State()) { HomeReducer() }
+        store: StoreOf<SearchReducer> = Store(initialState: SearchReducer.State()) { SearchReducer() }
     ) {
         self.store = store
     }
 }
 
 private extension View {
-    func toolbar(_ viewStore: ViewStoreOf<HomeReducer>) -> some View {
+    func toolbar(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
         toolbar {
             ToolbarItem(
                 placement: .topBarLeading,
@@ -64,11 +64,11 @@ private extension View {
 }
 
 #Preview {
-    HomePage(
+    SearchPage(
         store: Store(
-            initialState: HomeReducer.State()
+            initialState: SearchReducer.State()
         ) {
-            HomeReducer()
+            SearchReducer()
         }
     )
 }
