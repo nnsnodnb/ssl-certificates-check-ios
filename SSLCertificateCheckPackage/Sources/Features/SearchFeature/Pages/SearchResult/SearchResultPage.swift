@@ -28,6 +28,7 @@ package struct SearchResultPage: View {
     }
 }
 
+#if DEBUG
 #Preview {
     SearchResultPage(
         x509: .init(
@@ -45,3 +46,4 @@ package struct SearchResultPage: View {
         )
     )
 }
+#endif
