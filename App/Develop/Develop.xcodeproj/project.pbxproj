@@ -223,7 +223,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = moe.nnsnodnb.SSLCertificateCheck;
-				PROVISIONING_PROFILE_SPECIFIER = "match Develop moe.nnsnodnb.SSLCertificateCheck";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development moe.nnsnodnb.SSLCertificateCheck";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -286,7 +286,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = moe.nnsnodnb.SSLCertificateCheck;
-				PROVISIONING_PROFILE_SPECIFIER = "match Develop moe.nnsnodnb.SSLCertificateCheck";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development moe.nnsnodnb.SSLCertificateCheck";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
