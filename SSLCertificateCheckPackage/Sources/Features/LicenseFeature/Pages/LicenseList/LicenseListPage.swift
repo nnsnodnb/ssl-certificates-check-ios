@@ -5,12 +5,16 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
 package struct LicenseListPage: View {
+    // MARK: - Properties
+    private let store: StoreOf<LicenseListReducer>
+
     // MARK: - Body
     package var body: some View {
-        NavigationStack {
+        WithViewStore(store, observe: { $0 }, content: { viewStore in
             List {
                 ForEach(LicensesPlugin.licenses) { license in
                     Button {
@@ -23,14 +27,23 @@ package struct LicenseListPage: View {
                 }
             }
             .navigationTitle("Licenses")
-        }
+        })
     }
 
     // MARK: - Initialize
-    package init() {
+    package init(store: StoreOf<LicenseListReducer>) {
+        self.store = store
     }
 }
 
 #Preview {
-    LicenseListPage()
+    NavigationStack {
+        LicenseListPage(
+            store: Store(
+                initialState: LicenseListReducer.State()
+            ) {
+                LicenseListReducer()
+            }
+        )
+    }
 }

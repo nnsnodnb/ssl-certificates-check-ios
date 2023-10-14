@@ -6,32 +6,29 @@
 //
 
 import ComposableArchitecture
+import LicenseFeature
 import SFSafeSymbols
 import SwiftUI
 
 package struct InfoPage: View {
     // MARK: - Properties
-    package let store: StoreOf<InfoReducer>
+    private let store: StoreOf<InfoReducer>
 
     // MARK: - Body
     package var body: some View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
-            NavigationStack {
-                form()
-                    .navigationTitle("App Information")
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button(
-                                action: {
-                                    viewStore.send(.dismiss)
-                                },
-                                label: {
-                                    Image(systemSymbol: .xmark)
-                                }
-                            )
-                        }
-                    }
-            }
+            NavigationStack(
+                path: viewStore.binding(
+                    get: \.destinations,
+                    send: InfoReducer.Action.navigationPathChanged
+                ),
+                root: {
+                    form(viewStore)
+                        .navigationTitle("App Information")
+                        .navigationDestination(store: store)
+                        .toolbar(viewStore)
+                }
+            )
         })
     }
 
@@ -43,14 +40,14 @@ package struct InfoPage: View {
 
 // MARK: - Private method
 private extension InfoPage {
-    func form() -> some View {
+    func form(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
         Form {
-            firstSection()
-            secondSection()
+            firstSection(viewStore)
+            secondSection(viewStore)
         }
     }
 
-    func firstSection() -> some View {
+    func firstSection(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
         Section {
             buttonRow(
                 action: {
@@ -75,7 +72,7 @@ private extension InfoPage {
         }
     }
 
-    func secondSection() -> some View {
+    func secondSection(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
         Section {
             buttonRow(
                 action: {
@@ -90,12 +87,12 @@ private extension InfoPage {
             )
             buttonRow(
                 action: {
-                    print("License")
+                    viewStore.send(.pushLicenseList)
                 },
                 image: {
                     Image(systemSymbol: .listBulletRectangleFill)
                         .resizable()
-                        .foregroundColor(.green)
+                        .foregroundStyle(.green)
                 },
                 title: "Licenses"
             )
@@ -146,6 +143,37 @@ private extension InfoPage {
                 }
             }
         )
+    }
+}
+
+private extension View {
+    func toolbar(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+        toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(
+                    action: {
+                        viewStore.send(.dismiss)
+                    },
+                    label: {
+                        Image(systemSymbol: .xmark)
+                    }
+                )
+            }
+        }
+    }
+
+    func navigationDestination(store: StoreOf<InfoReducer>) -> some View {
+        navigationDestination(for: InfoReducer.State.Destination.self) { destination in
+            switch destination {
+            case .licenseList:
+                IfLetStore(
+                    store.scope(state: \.licenseList, action: InfoReducer.Action.licenseList),
+                    then: { store in
+                        LicenseListPage(store: store)
+                    }
+                )
+            }
+        }
     }
 }
 

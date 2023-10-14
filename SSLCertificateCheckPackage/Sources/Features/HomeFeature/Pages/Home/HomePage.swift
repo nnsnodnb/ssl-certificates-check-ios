@@ -12,7 +12,7 @@ import SwiftUI
 
 package struct HomePage: View {
     // MARK: - Properties
-    package let store: StoreOf<HomeReducer>
+    private let store: StoreOf<HomeReducer>
 
     // MARK: - Body
     package var body: some View {

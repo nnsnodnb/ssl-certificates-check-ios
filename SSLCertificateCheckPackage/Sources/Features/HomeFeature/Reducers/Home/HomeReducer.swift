@@ -13,10 +13,11 @@ package struct HomeReducer: Reducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
-        package var info: InfoReducer.State?
+        var info: InfoReducer.State?
 
         // MARK: - Initialize
-        package init() {
+        package init(info: InfoReducer.State? = nil) {
+            self.info = info
         }
     }
 
@@ -36,6 +37,8 @@ package struct HomeReducer: Reducer {
                 return .none
             case .dismissInfo, .info(.dismiss):
                 state.info = nil
+                return .none
+            case .info:
                 return .none
             }
         }

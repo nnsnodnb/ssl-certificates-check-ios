@@ -7,18 +7,33 @@
 
 import ComposableArchitecture
 import Foundation
+import LicenseFeature
 
 package struct InfoReducer: Reducer {
     // MARK: - State
     package struct State: Equatable {
+        // MARK: - Properties
+        var licenseList: LicenseListReducer.State?
+        var destinations: [Destination]
+
+        // MARK: - Destination
+        package enum Destination {
+            case licenseList
+        }
+
         // MARK: - Initialize
-        package init() {
+        package init(licenseList: LicenseListReducer.State? = nil, destinations: [Destination] = []) {
+            self.licenseList = licenseList
+            self.destinations = destinations
         }
     }
 
     // MARK: - Action
     package enum Action {
         case dismiss
+        case pushLicenseList
+        case navigationPathChanged([State.Destination])
+        case licenseList(LicenseListReducer.Action)
     }
 
     // MARK: - Initialize
@@ -31,7 +46,28 @@ package struct InfoReducer: Reducer {
             switch action {
             case .dismiss:
                 return .none
+            case .pushLicenseList:
+                state.licenseList = .init()
+                state.destinations.append(.licenseList)
+                return .none
+            case let .navigationPathChanged(destinations):
+                state.destinations = destinations
+                return .none
+            case .licenseList:
+                return .none
             }
+        }
+//        .ifLet(\.licenseList, action: /Action.licenseList) {
+//            EmptyReducer()
+//                .ifLet(\.self, action: .self) {
+//                    LicenseListReducer()
+//                }
+//                .ifLet(\.rootType, action: .rawValue) {
+//                    LicenseListReducer()
+//                }
+//        }
+        .ifLet(\.licenseList, action: /Action.licenseList) {
+            LicenseListReducer()
         }
     }
 }
