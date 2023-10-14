@@ -15,24 +15,39 @@ package struct LicenseListPage: View {
     // MARK: - Body
     package var body: some View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
-            List {
-                ForEach(LicensesPlugin.licenses) { license in
-                    Button {
-                        print(license.name)
-                    } label: {
-                        Text(license.name)
-                            .foregroundStyle(.black)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+            list(viewStore)
+                .navigationTitle("Licenses")
+                .task(priority: .high) {
+                    guard viewStore.licenses.isEmpty else { return }
+                    viewStore.send(.fetchLicenses)
                 }
-            }
-            .navigationTitle("Licenses")
         })
     }
 
     // MARK: - Initialize
     package init(store: StoreOf<LicenseListReducer>) {
         self.store = store
+    }
+}
+
+// MARK: - Private method
+@MainActor
+private extension LicenseListPage {
+    func list(_ viewStore: ViewStoreOf<LicenseListReducer>) -> some View {
+        List {
+            ForEach(viewStore.licenses) { license in
+                NavigationLink(
+                    destination: {
+                        LicenseDetailPage(license: license)
+                    },
+                    label: {
+                        Text(license.name)
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                )
+            }
+        }
     }
 }
 

@@ -57,15 +57,6 @@ package struct InfoReducer: Reducer {
                 return .none
             }
         }
-//        .ifLet(\.licenseList, action: /Action.licenseList) {
-//            EmptyReducer()
-//                .ifLet(\.self, action: .self) {
-//                    LicenseListReducer()
-//                }
-//                .ifLet(\.rootType, action: .rawValue) {
-//                    LicenseListReducer()
-//                }
-//        }
         .ifLet(\.licenseList, action: /Action.licenseList) {
             LicenseListReducer()
         }
