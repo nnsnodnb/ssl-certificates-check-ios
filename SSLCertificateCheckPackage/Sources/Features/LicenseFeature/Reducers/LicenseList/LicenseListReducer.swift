@@ -24,6 +24,10 @@ package struct LicenseListReducer: Reducer {
         case fetchLicenses
     }
 
+    // MARK: - Properties
+    @Dependency(\.license)
+    private var license
+
     // MARK: - Initialize
     package init() {
     }
@@ -33,8 +37,7 @@ package struct LicenseListReducer: Reducer {
         Reduce { state, action in
             switch action {
             case .fetchLicenses:
-                // TODO: Fetch licenses from DI client
-                let licenses = LicensesPlugin.licenses.map { License(id: $0.id, name: $0.name, licenseText: $0.licenseText) }
+                let licenses = license.fetchLicenses()
                 state.licenses = .init(uniqueElements: licenses)
                 return .none
             }

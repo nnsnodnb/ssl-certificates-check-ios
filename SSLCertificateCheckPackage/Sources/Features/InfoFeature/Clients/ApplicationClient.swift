@@ -20,4 +20,7 @@ extension ApplicationClient: DependencyKey {
     package static let liveValue: ApplicationClient = .init(
         open: { @MainActor in await UIApplication.shared.open($0) }
     )
+    package static let testValue: ApplicationClient = .init(
+        open: unimplemented("\(Self.self).open")
+    )
 }
