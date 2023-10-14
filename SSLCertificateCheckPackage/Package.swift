@@ -17,6 +17,7 @@ extension PackageDescription.Target.Dependency {
         case homeFeature = "HomeFeature"
         case infoFeature = "InfoFeature"
         case licenseFeature = "LicenseFeature"
+        case uiComponents = "UIComponents"
     }
 
     // MARK: - Extension
@@ -29,6 +30,7 @@ extension PackageDescription.Target.Dependency {
     static let homeFeature: Self = .named(.homeFeature)
     static let infoFeature: Self = .named(.infoFeature)
     static let licenseFeature: Self = .named(.licenseFeature)
+    static let uiComponents: Self = .named(.uiComponents)
 
     static var composableArchitecture: Self {
         .product(
@@ -143,6 +145,7 @@ let package = Package(
                 .firebaseAnalyticsSwift,
                 .licenseFeature,
                 .safariUI,
+                .uiComponents,
             ],
             path: "Sources/Features/InfoFeature",
             plugins: [
@@ -159,6 +162,13 @@ let package = Package(
             plugins: [
                 .licensesPlugin,
                 .swiftLintPlugin,
+            ]
+        ),
+        // Misc
+        .target(
+            name: "UIComponents",
+            dependencies: [
+                .sfSafeSymbols,
             ]
         ),
         // Tests

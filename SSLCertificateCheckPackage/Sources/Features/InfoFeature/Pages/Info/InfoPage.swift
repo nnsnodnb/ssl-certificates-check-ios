@@ -9,6 +9,7 @@ import ComposableArchitecture
 import LicenseFeature
 import SFSafeSymbols
 import SwiftUI
+import UIComponents
 
 package struct InfoPage: View {
     // MARK: - Properties
@@ -136,10 +137,7 @@ private extension InfoPage {
                             .foregroundStyle(Color.primary)
                     }
                     Spacer()
-                    Image(systemSymbol: .chevronRight)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.secondary)
-                        .opacity(0.5)
+                    ListRowChevronRight()
                 }
             }
         )
