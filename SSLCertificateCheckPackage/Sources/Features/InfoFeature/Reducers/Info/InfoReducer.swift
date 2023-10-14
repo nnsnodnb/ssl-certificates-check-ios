@@ -16,7 +16,7 @@ package struct InfoReducer: Reducer {
         let version: String
         var licenseList: LicenseListReducer.State?
         var destinations: [Destination]
-        var interactiveDismissDisabled = true
+        var interactiveDismissDisabled = false
         var url: URL?
         @PresentationState var alert: AlertState<Action.Alert>?
 
