@@ -19,17 +19,32 @@ package struct SearchPage: View {
     // MARK: - Body
     package var body: some View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
-            NavigationStack {
-                form(viewStore)
-                    .navigationTitle("Check TLS/SSL Certificates")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar(
-                        viewStore,
-                        keyboardClose: {
-                            isFocused = false
-                        }
-                    )
-            }
+            NavigationStack(
+                path: viewStore.binding(
+                    get: \.destinations,
+                    send: SearchReducer.Action.navigationPathChanged
+                ),
+                root: {
+                    form(viewStore)
+                        .navigationTitle("Check TLS/SSL Certificates")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(
+                            viewStore,
+                            keyboardClose: {
+                                isFocused = false
+                            }
+                        )
+                        .navigationDestination(
+                            for: SearchReducer.State.Destination.self,
+                            destination: { destination in
+                                switch destination {
+                                case let .searchResult(x509):
+                                    SearchResultPage(x509: x509)
+                                }
+                            }
+                        )
+                }
+            )
             .sheet(store: store, viewStore)
             .alert(store: store.scope(state: \.$alert, action: SearchReducer.Action.alert))
         })

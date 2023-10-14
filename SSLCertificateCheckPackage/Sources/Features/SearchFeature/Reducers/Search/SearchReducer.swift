@@ -18,7 +18,13 @@ package struct SearchReducer: Reducer {
         var text: String = ""
         var searchableURL: URL?
         var isLoading = false
+        var destinations: [Destination] = []
         @PresentationState var alert: AlertState<Action.Alert>?
+
+        // MARK: - Destination
+        package enum Destination: Hashable {
+            case searchResult(X509)
+        }
 
         // MARK: - Initialize
         package init(info: InfoReducer.State? = nil) {
@@ -34,6 +40,7 @@ package struct SearchReducer: Reducer {
         case checkURL
         case search
         case searchResponse(TaskResult<X509>)
+        case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
         case alert(PresentationAction<Alert>)
 
@@ -91,6 +98,7 @@ package struct SearchReducer: Reducer {
                 )
             case let .searchResponse(.success(x509)):
                 state.isLoading = false
+                state.destinations.append(.searchResult(x509))
                 return .none
             case let .searchResponse(.failure(error)):
                 state.isLoading = false
@@ -109,6 +117,9 @@ package struct SearchReducer: Reducer {
                         TextState("Please check or re-run the URL.")
                     }
                 )
+                return .none
+            case let .navigationPathChanged(destinations):
+                state.destinations = destinations
                 return .none
             case .info:
                 return .none
