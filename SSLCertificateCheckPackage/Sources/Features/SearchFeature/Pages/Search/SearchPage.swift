@@ -76,7 +76,9 @@ private extension SearchPage {
                             .padding(.horizontal, 8)
                             PasteButton(payloadType: URL.self) { urls in
                                 guard let url = urls.first else { return }
-                                viewStore.send(.pasteURLChanged(url))
+                                Task { @MainActor in
+                                    viewStore.send(.pasteURLChanged(url))
+                                }
                             }
                             .buttonBorderShape(.capsule)
                             .labelStyle(.iconOnly)
