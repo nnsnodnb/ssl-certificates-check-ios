@@ -22,6 +22,7 @@
 		CF7E0EB62AD835C7003244D1 /* DevelopApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopApp.swift; sourceTree = "<group>"; };
 		CF7E0EBA2AD835C8003244D1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CF7E0EBD2AD835C8003244D1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CFBD32DF2ADC0BAA00AE46D3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +61,7 @@
 				CF7E0EB62AD835C7003244D1 /* DevelopApp.swift */,
 				CF45F2CD2AD85E54004CAE8D /* GoogleService-Info.plist */,
 				CF7E0EBA2AD835C8003244D1 /* Assets.xcassets */,
+				CFBD32DF2ADC0BAA00AE46D3 /* PrivacyInfo.xcprivacy */,
 				CF7E0EBC2AD835C8003244D1 /* Preview Content */,
 			);
 			path = Develop;
