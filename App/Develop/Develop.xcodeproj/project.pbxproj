@@ -299,7 +299,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				DEVELOPMENT_ASSET_PATHS = "\"Develop/Preview Content\"";
 				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
@@ -327,7 +326,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				DEVELOPMENT_ASSET_PATHS = "\"Develop/Preview Content\"";
 				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
