@@ -36,6 +36,7 @@ package struct SearchReducer: Reducer {
     // MARK: - Action
     package enum Action: Equatable {
         case textChanged(String)
+        case pasteURLChanged(URL)
         case openInfo
         case dismissInfo
         case search
@@ -74,6 +75,11 @@ package struct SearchReducer: Reducer {
                 state.searchableURL = url
                 Logger.info("Valid text: \(text)")
                 return .none
+            case let .pasteURLChanged(url):
+                guard url.scheme == "https", let host = url.host() else {
+                    return .none
+                }
+                return .send(.textChanged(host))
             case .openInfo:
                 let version = bundle.shortVersionString()
                 state.info = .init(version: "v\(version)")

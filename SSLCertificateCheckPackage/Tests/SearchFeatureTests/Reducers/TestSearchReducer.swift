@@ -42,6 +42,60 @@ final class TestSearchReducer: XCTestCase {
         }
     }
 
+    func testPasteURLChangedValidScheme() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://example.com")!
+        await store.send(.pasteURLChanged(url))
+        await store.receive(.textChanged("example.com"), timeout: 0) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")!
+        }
+    }
+
+    func testPasteURLChangedValidSchemeWithPath() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://example.com/hoge/foo")!
+        await store.send(.pasteURLChanged(url))
+        await store.receive(.textChanged("example.com"), timeout: 0) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")!
+        }
+    }
+
+    func testPasteURLChangedValidSchemeWithoutHost() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://")!
+        await store.send(.pasteURLChanged(url))
+    }
+
+    func testPasteURLChangedInvalidScheme() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "http://example.com")!
+        await store.send(.pasteURLChanged(url))
+    }
+
     func testOpenInfo() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()

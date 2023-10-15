@@ -51,6 +51,7 @@ package struct SearchPage: View {
 }
 
 // MARK: - Private method
+@MainActor
 private extension SearchPage {
     func form(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
         Form {
@@ -60,17 +61,26 @@ private extension SearchPage {
                         Text("https://")
                             .padding(.horizontal, 8)
                         Divider()
-                        TextField(
-                            "example.com",
-                            text: viewStore.binding(
-                                get: \.text,
-                                send: SearchReducer.Action.textChanged
+                        HStack(alignment: .center, spacing: 0) {
+                            TextField(
+                                "example.com",
+                                text: viewStore.binding(
+                                    get: \.text,
+                                    send: SearchReducer.Action.textChanged
+                                )
                             )
-                        )
-                        .keyboardType(.URL)
-                        .textCase(.lowercase)
-                        .focused($isFocused)
-                        .padding(.horizontal, 8)
+                            .keyboardType(.URL)
+                            .textCase(.lowercase)
+                            .focused($isFocused)
+                            .padding(.horizontal, 8)
+                            PasteButton(payloadType: URL.self) { urls in
+                                guard let url = urls.first else { return }
+                                viewStore.send(.pasteURLChanged(url))
+                            }
+                            .buttonBorderShape(.capsule)
+                            .labelStyle(.iconOnly)
+                            .offset(x: 8)
+                        }
                     }
                 },
                 header: {
