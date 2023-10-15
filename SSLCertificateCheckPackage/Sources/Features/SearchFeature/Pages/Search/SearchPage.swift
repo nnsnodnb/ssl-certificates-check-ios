@@ -75,6 +75,7 @@ private extension SearchPage {
                 },
                 header: {
                     Text("Enter the host you want to check")
+                        .padding(.top, 16)
                 }
             )
         }
