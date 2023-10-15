@@ -10,6 +10,7 @@ import InfoFeature
 import SFSafeSymbols
 import SwiftUI
 
+@MainActor
 package struct SearchPage: View {
     // MARK: - Properties
     private let store: StoreOf<SearchReducer>
@@ -103,6 +104,7 @@ private extension SearchPage {
     }
 }
 
+@MainActor
 private extension View {
     func toolbar(_ viewStore: ViewStoreOf<SearchReducer>, keyboardClose: @escaping () -> Void) -> some View {
         toolbar {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 package struct LicenseDetailPage: View {
     // MARK: - Properties
     private let license: License

@@ -12,6 +12,7 @@ import SFSafeSymbols
 import SwiftUI
 import UIComponents
 
+@MainActor
 package struct InfoPage: View {
     // MARK: - Properties
     private let store: StoreOf<InfoReducer>
@@ -44,6 +45,7 @@ package struct InfoPage: View {
 }
 
 // MARK: - Private method
+@MainActor
 private extension InfoPage {
     func form(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
         Form {
@@ -148,6 +150,7 @@ private extension InfoPage {
     }
 }
 
+@MainActor
 private extension View {
     func toolbar(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
         toolbar {

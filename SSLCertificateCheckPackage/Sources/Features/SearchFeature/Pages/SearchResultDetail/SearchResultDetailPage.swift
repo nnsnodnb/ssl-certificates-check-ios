@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 package struct SearchResultDetailPage: View {
     // MARK: - Properties
     package let certificate: X509.Certificate
@@ -29,6 +30,7 @@ package struct SearchResultDetailPage: View {
 }
 
 // MARK: - Private method
+@MainActor
 private extension SearchResultDetailPage {
     func form() -> some View {
         Form {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 package struct SearchResultPage: View {
     // MARK: - Properties
     package let x509: X509

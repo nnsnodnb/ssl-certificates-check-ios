@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import SwiftUI
 
+@MainActor
 package struct LicenseListPage: View {
     // MARK: - Properties
     private let store: StoreOf<LicenseListReducer>
