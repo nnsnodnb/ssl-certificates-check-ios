@@ -96,6 +96,106 @@ final class TestSearchReducer: XCTestCase {
         await store.send(.pasteURLChanged(url))
     }
 
+    func testUniversalLinksChangedURLValidURL() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
+        await store.send(.universalLinksURLChanged(url))
+        await store.receive(.textChanged("example.com"), timeout: 0) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+    }
+
+    func testUniversalLinksChangedURLValidURLWhenOpenedInfo() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State(info: .init(version: "v1.0.0-test"))
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
+        await store.send(.universalLinksURLChanged(url)) {
+            $0.info = nil
+        }
+        await store.receive(.textChanged("example.com"), timeout: 0) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+    }
+
+    func testUniversalLinksChangedURLValidURLWhenOpenedSearchResult() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        await store.send(.navigationPathChanged([.searchResult(.stub)])) {
+            $0.destinations = [.searchResult(.stub)]
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
+        await store.send(.universalLinksURLChanged(url)) {
+            $0.destinations = []
+        }
+        await store.receive(.textChanged("example.com"), timeout: 0) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+    }
+
+    func testUniversalLinksChangedURLNotIncludeEncodedURLQuery() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encoded=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
+        await store.send(.universalLinksURLChanged(url))
+    }
+
+    func testUniversalLinksChangedURLNotBase64Encoded() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ")!
+        await store.send(.universalLinksURLChanged(url))
+    }
+
+    func testUniversalLinksChangedURLInvalidScheme() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cDovL2V4YW1wbGUuY29t")!
+        await store.send(.universalLinksURLChanged(url))
+    }
+
+    func testUniversalLinksChangedURLHostIsNone() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cDovLw==")!
+        await store.send(.universalLinksURLChanged(url))
+    }
+
     func testOpenInfo() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
