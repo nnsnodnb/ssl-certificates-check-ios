@@ -47,10 +47,10 @@ Fetch Provisioning Profile & Apple Distribution Certificate
 
 Gym for AdHoc
 
-### ios appstore
+### ios release
 
 ```sh
-[bundle exec] fastlane ios appstore
+[bundle exec] fastlane ios release
 ```
 
 Gym for AppStore
