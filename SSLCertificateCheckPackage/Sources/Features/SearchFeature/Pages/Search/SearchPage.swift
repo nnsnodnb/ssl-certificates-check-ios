@@ -61,39 +61,16 @@ private extension SearchPage {
         Form {
             Section(
                 content: {
-                    HStack(alignment: .center, spacing: 0) {
-                        Text("https://")
-                            .padding(.horizontal, 8)
-                        Divider()
-                        HStack(alignment: .center, spacing: 0) {
-                            TextField(
-                                "example.com",
-                                text: viewStore.binding(
-                                    get: \.text,
-                                    send: SearchReducer.Action.textChanged
-                                )
-                            )
-                            .keyboardType(.URL)
-                            .textCase(.lowercase)
-                            .focused($isFocused)
-                            .padding(.horizontal, 8)
-                            PasteButton(payloadType: URL.self) { urls in
-                                guard let url = urls.first else { return }
-                                Task { @MainActor in
-                                    viewStore.send(.pasteURLChanged(url))
-                                }
-                            }
-                            .buttonBorderShape(.capsule)
-                            .labelStyle(.iconOnly)
-                            .offset(x: 8)
-                        }
-                    }
+                    input(viewStore)
                 },
                 header: {
                     Text("Enter the host you want to check")
                         .padding(.top, 16)
                 }
             )
+            Section {
+                introductionShareExtension()
+            }
         }
         .overlay {
             if viewStore.isLoading {
@@ -106,6 +83,40 @@ private extension SearchPage {
                     .ignoresSafeArea(edges: .bottom)
             }
         }
+    }
+
+    func input(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+        HStack(alignment: .center, spacing: 0) {
+            Text("https://")
+                .padding(.horizontal, 8)
+            Divider()
+            HStack(alignment: .center, spacing: 0) {
+                TextField(
+                    "example.com",
+                    text: viewStore.binding(
+                        get: \.text,
+                        send: SearchReducer.Action.textChanged
+                    )
+                )
+                .keyboardType(.URL)
+                .textCase(.lowercase)
+                .focused($isFocused)
+                .padding(.horizontal, 8)
+                PasteButton(payloadType: URL.self) { urls in
+                    guard let url = urls.first else { return }
+                    Task { @MainActor in
+                        viewStore.send(.pasteURLChanged(url))
+                    }
+                }
+                .buttonBorderShape(.capsule)
+                .labelStyle(.iconOnly)
+                .offset(x: 8)
+            }
+        }
+    }
+
+    func introductionShareExtension() -> some View {
+        Text("Share Extension")
     }
 }
 
