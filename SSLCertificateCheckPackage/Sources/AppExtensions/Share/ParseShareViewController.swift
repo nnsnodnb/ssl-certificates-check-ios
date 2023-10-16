@@ -5,7 +5,6 @@
 //  Created by Yuya Oka on 2023/10/16.
 //
 
-import Social
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
