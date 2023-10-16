@@ -1,5 +1,6 @@
 included:
   - SSLCertificateCheckPackage/Sources
+  - SSLCertificateCheckPackage/Tests
   - App
 
 opt_in_rules:

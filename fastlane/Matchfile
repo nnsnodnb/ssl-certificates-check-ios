@@ -1,5 +1,5 @@
 readonly(true)
-app_identifier("moe.nnsnodnb.SSLCertificateCheck")
+app_identifier(["moe.nnsnodnb.SSLCertificateCheck", "moe.nnsnodnb.SSLCertificateCheck.ShareExtension"])
 git_url("git@github.com:nnsnodnb/ios-certificates.git")
 git_branch("certs")
 shallow_clone(true)

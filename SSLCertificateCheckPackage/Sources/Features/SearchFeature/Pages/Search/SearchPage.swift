@@ -40,6 +40,9 @@ package struct SearchPage: View {
             )
             .sheet(store: store, viewStore)
             .alert(store: store.scope(state: \.$alert, action: SearchReducer.Action.alert))
+            .onOpenURL(perform: { url in
+                viewStore.send(.universalLinksURLChanged(url))
+            })
         })
     }
 

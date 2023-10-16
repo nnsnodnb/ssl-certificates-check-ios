@@ -37,6 +37,7 @@ package struct SearchReducer: Reducer {
     package enum Action: Equatable {
         case textChanged(String)
         case pasteURLChanged(URL)
+        case universalLinksURLChanged(URL)
         case openInfo
         case dismissInfo
         case search
@@ -79,6 +80,25 @@ package struct SearchReducer: Reducer {
                 guard url.scheme == "https", let host = url.host() else {
                     return .none
                 }
+                return .send(.textChanged(host))
+            case let .universalLinksURLChanged(url):
+                guard let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                      let queryItems = urlComponents.queryItems,
+                      let encodedURL = queryItems.first(where: { $0.name == "encodedURL" })?.value else {
+                    return .none
+                }
+                Logger.debug("Universal Links set encodedURL: \(encodedURL)")
+                guard let data = Data(base64Encoded: encodedURL),
+                      let plainURLString = String(data: data, encoding: .utf8) else {
+                    return .none
+                }
+                Logger.debug("Universal Links set plainURL: \(plainURLString)")
+                guard let plainURL = URL(string: plainURLString),
+                      plainURL.scheme == "https", let host = plainURL.host() else {
+                    return .none
+                }
+                state.info = nil
+                state.destinations = []
                 return .send(.textChanged(host))
             case .openInfo:
                 let version = bundle.shortVersionString()

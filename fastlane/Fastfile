@@ -39,7 +39,7 @@ platform :ios do
   end
 
   desc "Gym for AppStore"
-  lane :appstore do
+  lane :release do
     setup_appstore_certificates
 
     gym(

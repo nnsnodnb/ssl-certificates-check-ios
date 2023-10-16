@@ -7,6 +7,7 @@ import PackageDescription
 extension String {
     static let packageName = "SSLCertificateCheckPackage"
     static let application = "Application"
+    static let shareExtension = "Share"
 }
 
 // MARK: - Target.Dependency extension
@@ -15,8 +16,9 @@ extension PackageDescription.Target.Dependency {
     static let application: Self = .target(name: "Application")
     static let infoFeature: Self = .target(name: "InfoFeature")
     static let licenseFeature: Self = .target(name: "LicenseFeature")
-    static let searchFeature: Self = .target(name: "SearchFeature")
     static let logger: Self = .target(name: "Logger")
+    static let searchFeature: Self = .target(name: "SearchFeature")
+    static let share: Self = .target(name: "Share")
     static let uiComponents: Self = .target(name: "UIComponents")
 
     static var composableArchitecture: Self {
@@ -89,6 +91,10 @@ let package = Package(
             name: .packageName,
             targets: [.application]
         ),
+        .library(
+            name: .shareExtension,
+            targets: [.shareExtension]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.16.0")),
@@ -108,6 +114,11 @@ let package = Package(
                 .firebaseCrashlytics,
                 .searchFeature,
             ]
+        ),
+        // AppExtensions
+        .target(
+            name: .shareExtension,
+            path: "Sources/AppExtensions/Share"
         ),
         // Features
         .target(

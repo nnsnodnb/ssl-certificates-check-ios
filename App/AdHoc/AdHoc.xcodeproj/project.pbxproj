@@ -13,7 +13,35 @@
 		CF7E0EF72AD84688003244D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0EF62AD84688003244D1 /* Assets.xcassets */; };
 		CF7E0EFA2AD84688003244D1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0EF92AD84688003244D1 /* Preview Assets.xcassets */; };
 		CF7E0F022AD846A3003244D1 /* SSLCertificateCheckPackage in Frameworks */ = {isa = PBXBuildFile; productRef = CF7E0F012AD846A3003244D1 /* SSLCertificateCheckPackage */; };
+		CFECF1BA2ADD5E5100E86AC0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFECF1B92ADD5E5100E86AC0 /* ShareViewController.swift */; };
+		CFECF1BD2ADD5E5100E86AC0 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFECF1BB2ADD5E5100E86AC0 /* MainInterface.storyboard */; };
+		CFECF1C12ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CFECF1C62ADD5EA900E86AC0 /* Share in Frameworks */ = {isa = PBXBuildFile; productRef = CFECF1C52ADD5EA900E86AC0 /* Share */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CFECF1BF2ADD5E5100E86AC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF7E0EE72AD84686003244D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CFECF1B62ADD5E5100E86AC0;
+			remoteInfo = ShareExtensionAdHoc;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CFECF12C2ADD57F900E86AC0 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CFECF1C12ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CF45F2CF2AD85E97004CAE8D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -24,6 +52,10 @@
 		CF7E0EF92AD84688003244D1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CFBD32E02ADC0DBE00AE46D3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		CFBD32E32ADC6B1C00AE46D3 /* AdHoc.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdHoc.entitlements; sourceTree = "<group>"; };
+		CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtensionAdHoc.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFECF1B92ADD5E5100E86AC0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		CFECF1BC2ADD5E5100E86AC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		CFECF1BE2ADD5E5100E86AC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +67,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFECF1B42ADD5E5100E86AC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFECF1C62ADD5EA900E86AC0 /* Share in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -42,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				CF7E0EF12AD84686003244D1 /* AdHoc */,
+				CFECF1B82ADD5E5100E86AC0 /* ShareExtensionAdHoc */,
 				CF7E0EF02AD84686003244D1 /* Products */,
 				CF7E0F002AD846A3003244D1 /* Frameworks */,
 			);
@@ -51,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				CF7E0EEF2AD84686003244D1 /* AdHoc.app */,
+				CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,6 +126,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CFECF1B82ADD5E5100E86AC0 /* ShareExtensionAdHoc */ = {
+			isa = PBXGroup;
+			children = (
+				CFECF1B92ADD5E5100E86AC0 /* ShareViewController.swift */,
+				CFECF1BB2ADD5E5100E86AC0 /* MainInterface.storyboard */,
+				CFECF1BE2ADD5E5100E86AC0 /* Info.plist */,
+			);
+			path = ShareExtensionAdHoc;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -94,10 +146,12 @@
 				CF7E0EEB2AD84686003244D1 /* Sources */,
 				CF7E0EEC2AD84686003244D1 /* Frameworks */,
 				CF7E0EED2AD84686003244D1 /* Resources */,
+				CFECF12C2ADD57F900E86AC0 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CFECF1C02ADD5E5100E86AC0 /* PBXTargetDependency */,
 			);
 			name = AdHoc;
 			packageProductDependencies = (
@@ -106,6 +160,26 @@
 			productName = AdHoc;
 			productReference = CF7E0EEF2AD84686003244D1 /* AdHoc.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CFECF1B62ADD5E5100E86AC0 /* ShareExtensionAdHoc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFECF1C22ADD5E5100E86AC0 /* Build configuration list for PBXNativeTarget "ShareExtensionAdHoc" */;
+			buildPhases = (
+				CFECF1B32ADD5E5100E86AC0 /* Sources */,
+				CFECF1B42ADD5E5100E86AC0 /* Frameworks */,
+				CFECF1B52ADD5E5100E86AC0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShareExtensionAdHoc;
+			packageProductDependencies = (
+				CFECF1C52ADD5EA900E86AC0 /* Share */,
+			);
+			productName = ShareExtensionAdHoc;
+			productReference = CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -118,6 +192,9 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					CF7E0EEE2AD84686003244D1 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					CFECF1B62ADD5E5100E86AC0 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -136,6 +213,7 @@
 			projectRoot = "";
 			targets = (
 				CF7E0EEE2AD84686003244D1 /* AdHoc */,
+				CFECF1B62ADD5E5100E86AC0 /* ShareExtensionAdHoc */,
 			);
 		};
 /* End PBXProject section */
@@ -151,6 +229,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFECF1B52ADD5E5100E86AC0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFECF1BD2ADD5E5100E86AC0 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -163,7 +249,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFECF1B32ADD5E5100E86AC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFECF1BA2ADD5E5100E86AC0 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CFECF1C02ADD5E5100E86AC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CFECF1B62ADD5E5100E86AC0 /* ShareExtensionAdHoc */;
+			targetProxy = CFECF1BF2ADD5E5100E86AC0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CFECF1BB2ADD5E5100E86AC0 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CFECF1BC2ADD5E5100E86AC0 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		CF7E0EFB2AD84688003244D1 /* Debug */ = {
@@ -298,6 +411,7 @@
 		CF7E0EFE2AD84688003244D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AdHoc/AdHoc.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "\"AdHoc/Preview Content\"";
@@ -326,6 +440,7 @@
 		CF7E0EFF2AD84688003244D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AdHoc/AdHoc.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "\"AdHoc/Preview Content\"";
@@ -342,6 +457,73 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CFECF1C32ADD5E5100E86AC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShareExtensionAdHoc/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShareExtensionAdHoc;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = moe.nnsnodnb.SSLCertificateCheck.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AdHoc moe.nnsnodnb.SSLCertificateCheck.ShareExtension";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CFECF1C42ADD5E5100E86AC0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShareExtensionAdHoc/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShareExtensionAdHoc;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = moe.nnsnodnb.SSLCertificateCheck.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AdHoc moe.nnsnodnb.SSLCertificateCheck.ShareExtension";
+				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -372,12 +554,25 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CFECF1C22ADD5E5100E86AC0 /* Build configuration list for PBXNativeTarget "ShareExtensionAdHoc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFECF1C32ADD5E5100E86AC0 /* Debug */,
+				CFECF1C42ADD5E5100E86AC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		CF7E0F012AD846A3003244D1 /* SSLCertificateCheckPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SSLCertificateCheckPackage;
+		};
+		CFECF1C52ADD5EA900E86AC0 /* Share */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Share;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
