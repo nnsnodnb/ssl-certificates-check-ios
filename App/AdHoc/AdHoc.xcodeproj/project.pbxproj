@@ -13,10 +13,10 @@
 		CF7E0EF72AD84688003244D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0EF62AD84688003244D1 /* Assets.xcassets */; };
 		CF7E0EFA2AD84688003244D1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0EF92AD84688003244D1 /* Preview Assets.xcassets */; };
 		CF7E0F022AD846A3003244D1 /* SSLCertificateCheckPackage in Frameworks */ = {isa = PBXBuildFile; productRef = CF7E0F012AD846A3003244D1 /* SSLCertificateCheckPackage */; };
-		CFECF1BA2ADD5E5100E86AC0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFECF1B92ADD5E5100E86AC0 /* ShareViewController.swift */; };
 		CFECF1BD2ADD5E5100E86AC0 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFECF1BB2ADD5E5100E86AC0 /* MainInterface.storyboard */; };
 		CFECF1C12ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CFECF1C62ADD5EA900E86AC0 /* Share in Frameworks */ = {isa = PBXBuildFile; productRef = CFECF1C52ADD5EA900E86AC0 /* Share */; };
+		CFECF1DE2ADD5F7800E86AC0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFECF1DD2ADD5F7800E86AC0 /* ShareViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,9 +53,9 @@
 		CFBD32E02ADC0DBE00AE46D3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		CFBD32E32ADC6B1C00AE46D3 /* AdHoc.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdHoc.entitlements; sourceTree = "<group>"; };
 		CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtensionAdHoc.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		CFECF1B92ADD5E5100E86AC0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		CFECF1BC2ADD5E5100E86AC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		CFECF1BE2ADD5E5100E86AC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CFECF1DD2ADD5F7800E86AC0 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = ../../ShareExtension/ShareViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,7 +129,7 @@
 		CFECF1B82ADD5E5100E86AC0 /* ShareExtensionAdHoc */ = {
 			isa = PBXGroup;
 			children = (
-				CFECF1B92ADD5E5100E86AC0 /* ShareViewController.swift */,
+				CFECF1DD2ADD5F7800E86AC0 /* ShareViewController.swift */,
 				CFECF1BB2ADD5E5100E86AC0 /* MainInterface.storyboard */,
 				CFECF1BE2ADD5E5100E86AC0 /* Info.plist */,
 			);
@@ -196,6 +196,7 @@
 					};
 					CFECF1B62ADD5E5100E86AC0 = {
 						CreatedOnToolsVersion = 15.0;
+						LastSwiftMigration = 1500;
 					};
 				};
 			};
@@ -253,7 +254,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CFECF1BA2ADD5E5100E86AC0 /* ShareViewController.swift in Sources */,
+				CFECF1DE2ADD5F7800E86AC0 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +470,7 @@
 		CFECF1C32ADD5E5100E86AC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -504,6 +506,7 @@
 		CFECF1C42ADD5E5100E86AC0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";

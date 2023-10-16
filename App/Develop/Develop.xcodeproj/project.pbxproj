@@ -13,10 +13,10 @@
 		CF7E0EBB2AD835C8003244D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0EBA2AD835C8003244D1 /* Assets.xcassets */; };
 		CF7E0EBE2AD835C8003244D1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0EBD2AD835C8003244D1 /* Preview Assets.xcassets */; };
 		CF7E0EE52AD83B2F003244D1 /* SSLCertificateCheckPackage in Frameworks */ = {isa = PBXBuildFile; productRef = CF7E0EE42AD83B2F003244D1 /* SSLCertificateCheckPackage */; };
-		CFECF1A62ADD5D9100E86AC0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFECF1A52ADD5D9100E86AC0 /* ShareViewController.swift */; };
 		CFECF1A92ADD5D9100E86AC0 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFECF1A72ADD5D9100E86AC0 /* MainInterface.storyboard */; };
 		CFECF1AD2ADD5D9100E86AC0 /* ShareExtensionDevelop.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CFECF1A32ADD5D9000E86AC0 /* ShareExtensionDevelop.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CFECF1B22ADD5DE800E86AC0 /* Share in Frameworks */ = {isa = PBXBuildFile; productRef = CFECF1B12ADD5DE800E86AC0 /* Share */; };
+		CFECF1E02ADD5F8400E86AC0 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFECF1DF2ADD5F8400E86AC0 /* ShareViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,9 +53,9 @@
 		CFBD32DF2ADC0BAA00AE46D3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		CFBD32E22ADC655E00AE46D3 /* Develop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Develop.entitlements; sourceTree = "<group>"; };
 		CFECF1A32ADD5D9000E86AC0 /* ShareExtensionDevelop.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtensionDevelop.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		CFECF1A52ADD5D9100E86AC0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		CFECF1A82ADD5D9100E86AC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		CFECF1AA2ADD5D9100E86AC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CFECF1DF2ADD5F8400E86AC0 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = ../../ShareExtension/ShareViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,7 +129,7 @@
 		CFECF1A42ADD5D9100E86AC0 /* ShareExtensionDevelop */ = {
 			isa = PBXGroup;
 			children = (
-				CFECF1A52ADD5D9100E86AC0 /* ShareViewController.swift */,
+				CFECF1DF2ADD5F8400E86AC0 /* ShareViewController.swift */,
 				CFECF1A72ADD5D9100E86AC0 /* MainInterface.storyboard */,
 				CFECF1AA2ADD5D9100E86AC0 /* Info.plist */,
 			);
@@ -196,6 +196,7 @@
 					};
 					CFECF1A22ADD5D9000E86AC0 = {
 						CreatedOnToolsVersion = 15.0;
+						LastSwiftMigration = 1500;
 					};
 				};
 			};
@@ -253,7 +254,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CFECF1A62ADD5D9100E86AC0 /* ShareViewController.swift in Sources */,
+				CFECF1E02ADD5F8400E86AC0 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,6 +474,7 @@
 		CFECF1AF2ADD5D9100E86AC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 99649YXF6E;
@@ -496,6 +498,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -504,6 +507,7 @@
 		CFECF1B02ADD5D9100E86AC0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 99649YXF6E;
