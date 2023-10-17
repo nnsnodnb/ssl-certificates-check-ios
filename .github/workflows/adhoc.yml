@@ -1,0 +1,57 @@
+name: AdHoc
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  adhoc:
+    runs-on: macos-13
+
+    env:
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Cache Swift Packages
+        uses: actions/cache@v3
+        id: cache-swiftpm
+        with:
+          path: .swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+
+      - name: Write IDESkipPackagePluginFingerprintValidatation
+        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
+
+      - name: Setup app-distribution-key.json
+        env:
+          APP_DISTRIBUTION_KEY_BASE64: ${{ secrets.APP_DISTRIBUTION_KEY_BASE64 }}
+        run: echo "${APP_DISTRIBUTION_KEY_BASE64}" | base64 -d > /tmp/app-distribution-key.json
+
+      - name: Fastlane adhoc
+        env:
+          FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 20
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_KEYCHAIN_NAME: "fastlane_keychain"
+          MATCH_KEYCHAIN_PASSWORD: ""
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/app-distribution-key.json
+          GIT_PRIVATE_KEY_BASE64: ${{ secrets.GIT_PRIVATE_KEY_BASE64 }}
+        run: |
+          MATCH_GIT_PRIVATE_KEY=$(echo -n "${GIT_PRIVATE_KEY_BASE64}" | base64 -d)
+          export MATCH_GIT_PRIVATE_KEY
+          bundle exec fastlane ios adhoc
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: certs-check-adhoc
+          path: Products
