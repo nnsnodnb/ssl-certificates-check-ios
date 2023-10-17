@@ -46,6 +46,7 @@
 /* Begin PBXFileReference section */
 		CF45F2CF2AD85E97004CAE8D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF45F2D52AD86074004CAE8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CF4E2F362ADEE41500ECB5A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CF7E0EEF2AD84686003244D1 /* AdHoc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdHoc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF7E0EF22AD84686003244D1 /* AdHocApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdHocApp.swift; sourceTree = "<group>"; };
 		CF7E0EF62AD84688003244D1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 		CF7E0EF12AD84686003244D1 /* AdHoc */ = {
 			isa = PBXGroup;
 			children = (
+				CF4E2F362ADEE41500ECB5A2 /* Info.plist */,
 				CFBD32E32ADC6B1C00AE46D3 /* AdHoc.entitlements */,
 				CF45F2D52AD86074004CAE8D /* AppDelegate.swift */,
 				CF7E0EF22AD84686003244D1 /* AdHocApp.swift */,
@@ -333,6 +335,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
@@ -395,6 +398,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
@@ -418,7 +422,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"AdHoc/Preview Content\"";
 				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AdHoc/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -447,7 +452,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"AdHoc/Preview Content\"";
 				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AdHoc/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
