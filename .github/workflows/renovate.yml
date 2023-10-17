@@ -1,0 +1,88 @@
+name: Renovate
+
+on:
+  pull_request:
+    paths:
+      - SSLCertificateCheckPackage/Package.swift
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    outputs:
+      files_changes: ${{ steps.files_changes.outputs.files }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: trilom/file-changes-action@v1.2.4
+      id: files_changes
+
+  resolve-swift-packages:
+    runs-on: macos-13
+    needs: precheck
+    if: contains(fromJson(needs.precheck.outputs.files_changes), 'SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') == false
+
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
+
+    steps:
+    - uses: Cyberbeni/install-swift-tool@v2
+      with:
+        url: https://github.com/nnsnodnb/github-apps-token-swift
+        version: '*'
+
+    - name: Configure Access Token for GitHub Apps
+      id: get-github-app
+      env:
+        APP_ID: ${{ secrets.APP_ID }}
+        PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+      run: |
+        echo "${PRIVATE_KEY}" > /tmp/github-apps-private-key.pem
+        token=$(github-apps-token create \
+                  -a "${APP_ID}" \
+                  -p /tmp/github-apps-private-key.pem \
+                  --owner nnsnodnb \
+                  -r ssl-certificates-check-ios \
+                  --contents write)
+        echo "token=${token}" >> "${GITHUB_OUTPUT}"
+        rm /tmp/github-apps-private-key.pem
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ steps.get-github-app.outputs.token }}
+
+    - name: Cache Swift Packages
+      uses: actions/cache@v3
+      with:
+        path: .swiftpm
+        key: ${{ runner.os }}-swiftpm-${{ hashFiles('SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+
+    - name: Resolve Swift Packages
+      run: xcodebuild -resolvePackageDependencies -scheme SSLCertificateCheckPackage-Package -workspace SSLCertificateCheck.xcworkspace -clonedSourcePackagesDirPath .swiftpm
+
+    - name: Git Config
+      run: |
+        git config --global user.email "aoi-chan-bot[bot]@users.noreply.github.com"
+        git config --global user.name "aoi-chan-bot[bot]"
+
+    - name: Commit & Push
+      env:
+        HEAD_REF: ${{ github.head_ref }}
+      run: |
+        git add SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved
+        if git commit -m "Resolve Swift Package"; then
+          git push origin "HEAD:${HEAD_REF}"
+        fi
+
+    - name: Revoke Access Token for GitHub Apps
+      if: success() || failure()
+      run: |
+        if [[ -n "${{ steps.get-github-app.outputs.token }}" ]]; then
+          github-apps-token revoke --token "${{ steps.get-github-app.outputs.token }}"
+        fi

@@ -1,0 +1,72 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: macos-13
+
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Swift Packages
+        uses: actions/cache@v3
+        id: cache-swiftpm
+        with:
+          path: .swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+
+      - name: Write IDESkipPackagePluginFingerprintValidatation
+        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
+
+      - name: Make test-result folder
+        run: mkdir -p test-results
+
+      - name: Xcode test for InfoFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+              -scheme InfoFeatureTests \
+              -workspace SSLCertificateCheck.xcworkspace \
+              -parallel-testing-enabled=YES \
+              -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+              -resultBundlePath "test-results/Test-InfoFeatureTests.xcresult" \
+              -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for LicenseFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+              -scheme LicenseFeatureTests \
+              -workspace SSLCertificateCheck.xcworkspace \
+              -parallel-testing-enabled=YES \
+              -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+              -resultBundlePath "test-results/Test-LicenseFeatureTests.xcresult" \
+              -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for SearchFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+            -scheme SearchFeatureTests \
+            -workspace SSLCertificateCheck.xcworkspace \
+            -parallel-testing-enabled=YES \
+            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+            -resultBundlePath "test-results/Test-SearchFeatureTests.xcresult" \
+            -disableAutomaticPackageResolution | xcpretty
+
+      - name: xcresulttool for InfoFeatureTests
+        uses: kishikawakatsumi/xcresulttool@v1
+        if: success() || failure()
+        with:
+          path: |
+            test-results/Test-InfoFeatureTests.xcresult
+            test-results/Test-LicenseFeatureTests.xcresult
+            test-results/Test-SearchFeatureTests.xcresult
