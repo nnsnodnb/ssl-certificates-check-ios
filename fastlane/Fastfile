@@ -36,6 +36,19 @@ platform :ios do
       scheme: "AdHoc",
       xcargs: "MARKETING_VERSION='#{generate_adhoc_marketing_version}'",
     )
+
+    upload_symbols_to_crashlytics(
+      gsp_path: "App/AdHoc/AdHoc/GoogleService-Info.plist",
+      binary_path: ".swiftpm/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols"
+    )
+
+    if is_ci
+      firebase_app_distribution(
+        app: "1:721577322193:ios:355e6cf202f5ce2bc9c7f0",
+        ipa_path: "Products/SSLCertificateCheck.ipa",
+        groups: "owner",
+      )
+    end
   end
 
   desc "Gym for AppStore"
@@ -46,6 +59,18 @@ platform :ios do
       export_method: "app-store",
       scheme: "Production",
     )
+
+    upload_symbols_to_crashlytics(
+      gsp_path: "App/Production/Production/GoogleService-Info.plist",
+      binary_path: ".swiftpm/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols"
+    )
+
+    if is_ci
+      deliver(
+        ipa: "Products/SSLCertificateCheck.ipa",
+        precheck_default_rule_level: :error,
+      )
+    end
   end
 
   # Private
