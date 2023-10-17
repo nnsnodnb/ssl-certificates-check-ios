@@ -62,8 +62,7 @@ jobs:
             -resultBundlePath "test-results/Test-SearchFeatureTests.xcresult" \
             -disableAutomaticPackageResolution | xcpretty
 
-      - name: xcresulttool for InfoFeatureTests
-        uses: kishikawakatsumi/xcresulttool@v1
+      - uses: kishikawakatsumi/xcresulttool@v1
         if: success() || failure()
         with:
           path: |
