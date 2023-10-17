@@ -6,7 +6,7 @@ on:
       - ".github/workflows/*.yml"
 
 jobs:
-  swiftlint:
+  actionlint:
     runs-on: ubuntu-latest
 
     permissions:
