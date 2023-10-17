@@ -69,7 +69,7 @@ private extension SearchPage {
                 }
             )
             Section {
-                introductionShareExtension()
+                introductionShareExtension(viewStore)
             }
         }
         .overlay {
@@ -115,8 +115,37 @@ private extension SearchPage {
         }
     }
 
-    func introductionShareExtension() -> some View {
-        Text("Share Extension")
+    func introductionShareExtension(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .center, spacing: 8) {
+                Text("App provides ShareExtension feature")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Divider()
+                if viewStore.isShareExtensionImageShow {
+                    VStack(alignment: .center, spacing: 12) {
+                        Text("Open a https site and open share sheet in Safari. Then tap '**CertsCheck**' logo.")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(.imgShareExtension)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
+                    }
+                }
+                Button(
+                    action: {
+                        viewStore.send(.toggleIntroductionShareExtension)
+                    },
+                    label: {
+                        Text(viewStore.isShareExtensionImageShow ? "Close" : "About more")
+                            .frame(maxWidth: .infinity)
+                    }
+                )
+                .buttonStyle(BorderlessButtonStyle())
+                .frame(height: 24)
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.vertical, 8)
     }
 }
 
