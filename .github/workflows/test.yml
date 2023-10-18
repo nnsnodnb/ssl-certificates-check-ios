@@ -4,7 +4,17 @@ on:
   push:
     branches:
       - main
+    paths:
+      - .github/workflows/test.yml
+      - App/**
+      - SSLCertificateCheck.xcworkspace/**
+      - SSLCertificateCheckPackage/**
   pull_request:
+    paths:
+      - .github/workflows/test.yml
+      - App/**
+      - SSLCertificateCheck.xcworkspace/**
+      - SSLCertificateCheckPackage/**
 
 jobs:
   test:
