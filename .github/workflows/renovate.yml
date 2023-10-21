@@ -3,6 +3,7 @@ name: Renovate
 on:
   pull_request:
     paths:
+      - .github/workflows/renovate.yml
       - SSLCertificateCheckPackage/Package.swift
 
 jobs:
@@ -65,7 +66,7 @@ jobs:
         key: ${{ runner.os }}-swiftpm-${{ hashFiles('SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
 
     - name: Resolve Swift Packages
-      run: xcodebuild -resolvePackageDependencies -scheme SSLCertificateCheckPackage-Package -workspace SSLCertificateCheck.xcworkspace -clonedSourcePackagesDirPath .swiftpm
+      run: xcodebuild -resolvePackageDependencies -scheme SSLCertificateCheckPackage -workspace SSLCertificateCheck.xcworkspace -clonedSourcePackagesDirPath .swiftpm
 
     - name: Git Config
       run: |
