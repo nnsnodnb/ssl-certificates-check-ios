@@ -172,7 +172,7 @@ package struct SearchReducer: Reducer {
             case .info:
                 return .none
             case let .searchResult(.selectCertificate(certificate)):
-                guard !state.destinations.isEmpty else {
+                guard state.searchResult != nil else {
                     return .none
                 }
                 state.destinations.append(.searchResultDetail(certificate))
