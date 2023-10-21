@@ -80,8 +80,10 @@ package extension X509 {
         // MARK: - Properties
         package let commonName: String
         package let organization: String?
-        package let organizationUnit: String?
+        package let organizationalUnit: String?
         package let country: String?
+        package let stateOrProvinceName: String?
+        package let locality: String?
         package let all: String
 
         // MARK: - Initialize
@@ -105,11 +107,11 @@ package extension X509 {
             }
             // OU
             if let element = elements.lazy.first(where: { $0.starts(with: "OU=") }) {
-                self.organizationUnit = element
+                self.organizationalUnit = element
                     .replacingOccurrences(of: "OU=", with: "")
                     .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
-                self.organizationUnit = nil
+                self.organizationalUnit = nil
             }
             // C
             if let element = elements.lazy.first(where: { $0.starts(with: "C=") }) {
@@ -118,6 +120,23 @@ package extension X509 {
                     .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
                 self.country = nil
+            }
+            // ST/S
+            if let element = elements.lazy.first(where: { $0.starts(with: "ST=") || $0.starts(with: "S=") }) {
+                self.stateOrProvinceName = element
+                    .replacingOccurrences(of: "ST=", with: "")
+                    .replacingOccurrences(of: "S=", with: "")
+                    .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
+            } else {
+                self.stateOrProvinceName = nil
+            }
+            // L
+            if let element = elements.lazy.first(where: { $0.starts(with: "L=") }) {
+                self.locality = element
+                    .replacingOccurrences(of: "L=", with: "")
+                    .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
+            } else {
+                self.locality = nil
             }
 
             self.all = elements.joined(separator: "\n").replacingOccurrences(of: "\\xC2\\xA0", with: " ")

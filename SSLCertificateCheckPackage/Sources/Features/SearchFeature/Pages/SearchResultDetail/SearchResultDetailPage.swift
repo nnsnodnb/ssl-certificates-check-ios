@@ -55,11 +55,17 @@ private extension SearchResultDetailPage {
                 if let organization = content.organization {
                     item(title: "Organization", content: organization)
                 }
-                if let organizationUnit = content.organizationUnit {
-                    item(title: "Organization unit", content: organizationUnit)
+                if let organizationalUnit = content.organizationalUnit {
+                    item(title: "Organizational unit", content: organizationalUnit)
                 }
                 if let country = content.country {
                     item(title: "Country", content: country)
+                }
+                if let stateOrProvinceName = content.stateOrProvinceName {
+                    item(title: "State or Province name", content: stateOrProvinceName)
+                }
+                if let locality = content.locality {
+                    item(title: "Locality", content: locality)
                 }
                 item(title: nil, content: content.all)
             },
