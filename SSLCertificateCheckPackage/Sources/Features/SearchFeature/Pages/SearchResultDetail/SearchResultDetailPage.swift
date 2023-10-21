@@ -61,6 +61,12 @@ private extension SearchResultDetailPage {
                 if let country = content.country {
                     item(title: "Country", content: country)
                 }
+                if let stateOrProvinceName = content.stateOrProvinceName {
+                    item(title: "State or Province name", content: stateOrProvinceName)
+                }
+                if let locality = content.locality {
+                    item(title: "Locality", content: locality)
+                }
                 item(title: nil, content: content.all)
             },
             header: {
