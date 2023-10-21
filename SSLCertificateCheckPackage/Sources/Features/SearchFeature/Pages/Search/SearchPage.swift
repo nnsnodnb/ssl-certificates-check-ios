@@ -39,6 +39,9 @@ package struct SearchPage: View {
                             }
                         )
                         .navigationDestination(store: store)
+                        .onAppear {
+                            viewStore.send(.checkFirstExperience)
+                        }
                 }
             )
             .sheet(store: store, viewStore)
@@ -46,9 +49,6 @@ package struct SearchPage: View {
             .onOpenURL(perform: { url in
                 viewStore.send(.universalLinksURLChanged(url))
             })
-            .onAppear {
-                viewStore.send(.checkFirstExperience)
-            }
             .onChange(of: viewStore.isRequestReview) {
                 guard $0 else { return }
                 requestReview()

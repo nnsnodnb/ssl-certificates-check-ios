@@ -323,6 +323,110 @@ final class TestSearchReducer: XCTestCase { // swiftlint:disable:this type_body_
         }
     }
 
+    func testCheckFirstExperienceIsCheckFirstExperienceIsFalse() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        await store.send(.checkFirstExperience)
+    }
+
+    func testCheckFirstExperienceIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let x509 = X509.stub
+        store.dependencies.search = .init(
+            fetchCertificates: { _ in x509 }
+        )
+        store.dependencies.keyValueStore = .init(
+            bool: { _ in false },
+            setBool: { _, _ in }
+        )
+
+        await store.send(.textChanged("example.com")) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+        await store.send(.search) {
+            $0.isLoading = true
+        }
+        await store.receive(.searchResponse(.success(x509)), timeout: 0) {
+            $0.isLoading = false
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+        }
+        guard let certificate = x509.certificates.first else {
+            XCTFail("Certificate is empty")
+            return
+        }
+        await store.send(.searchResult(.selectCertificate(certificate))) {
+            $0.destinations = [.searchResult, .searchResultDetail]
+            $0.searchResultDetail = .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate)
+        }
+        await store.send(.searchResultDetail(.appear)) {
+            $0.isCheckFirstExperience = true
+        }
+        await store.send(.checkFirstExperience) {
+            $0.isCheckFirstExperience = false
+        }
+        await store.receive(.checkFirstExperienceResponse(.success(false)), timeout: 0) {
+            $0.isRequestReview = true
+        }
+    }
+
+    func testCheckFirstExperienceIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let x509 = X509.stub
+        store.dependencies.search = .init(
+            fetchCertificates: { _ in x509 }
+        )
+        store.dependencies.keyValueStore = .init(
+            bool: { _ in true },
+            setBool: { _, _ in }
+        )
+
+        await store.send(.textChanged("example.com")) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+        await store.send(.search) {
+            $0.isLoading = true
+        }
+        await store.receive(.searchResponse(.success(x509)), timeout: 0) {
+            $0.isLoading = false
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+        }
+        guard let certificate = x509.certificates.first else {
+            XCTFail("Certificate is empty")
+            return
+        }
+        await store.send(.searchResult(.selectCertificate(certificate))) {
+            $0.destinations = [.searchResult, .searchResultDetail]
+            $0.searchResultDetail = .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate)
+        }
+        await store.send(.searchResultDetail(.appear)) {
+            $0.isCheckFirstExperience = true
+        }
+        await store.send(.checkFirstExperience) {
+            $0.isCheckFirstExperience = false
+        }
+        await store.receive(.checkFirstExperienceResponse(.success(true)), timeout: 0)
+    }
+
     func testNavigationPathChanged() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -396,7 +500,8 @@ final class TestSearchReducer: XCTestCase { // swiftlint:disable:this type_body_
             return
         }
         await store.send(.searchResult(.selectCertificate(certificate))) {
-            $0.destinations = [.searchResult, .searchResultDetail(certificate)]
+            $0.destinations = [.searchResult, .searchResultDetail]
+            $0.searchResultDetail = .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate)
         }
     }
 

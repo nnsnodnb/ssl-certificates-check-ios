@@ -51,6 +51,7 @@ package struct SearchReducer: Reducer {
         case checkFirstExperience
         case displayedRequestReview
         case searchResponse(TaskResult<X509>)
+        case checkFirstExperienceResponse(TaskResult<Bool>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
         case searchResult(SearchResultReducer.Action)
@@ -67,6 +68,8 @@ package struct SearchReducer: Reducer {
     private var bundle
     @Dependency(\.search)
     private var search
+    @Dependency(\.keyValueStore)
+    private var keyValueStore
 
     // MARK: - Body
     package var body: some ReducerOf<Self> {
@@ -143,11 +146,16 @@ package struct SearchReducer: Reducer {
                 guard state.isCheckFirstExperience else {
                     return .none
                 }
-                // TODO: 初回検索の確認
-                return .none
+                state.isCheckFirstExperience = false
+                return .run { send in
+                    let result = await keyValueStore.bool(.wasRequestReviewFinishFirstSearchExperience)
+                    await send(.checkFirstExperienceResponse(.success(result)))
+                }
             case .displayedRequestReview:
                 state.isRequestReview = false
-                return .none
+                return .run { _ in
+                    await keyValueStore.setBool(true, .wasRequestReviewFinishFirstSearchExperience)
+                }
             case let .searchResponse(.success(x509)):
                 state.isLoading = false
                 state.destinations.append(.searchResult)
@@ -172,6 +180,13 @@ package struct SearchReducer: Reducer {
                     }
                 )
                 Logger.error("Failed searching: \(error)")
+                return .none
+            case let .checkFirstExperienceResponse(.success(result)):
+                guard !result else { return .none }
+                state.isRequestReview = true
+                return .none
+            case .checkFirstExperienceResponse(.failure):
+                // do not enter
                 return .none
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
