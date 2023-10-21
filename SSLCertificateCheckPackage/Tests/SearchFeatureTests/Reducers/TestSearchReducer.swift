@@ -10,7 +10,7 @@ import ComposableArchitecture
 import XCTest
 
 @MainActor
-final class TestSearchReducer: XCTestCase {
+final class TestSearchReducer: XCTestCase { // swiftlint:disable:this type_body_length
     func testTextChanged() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -137,8 +137,8 @@ final class TestSearchReducer: XCTestCase {
             SearchReducer()
         }
 
-        await store.send(.navigationPathChanged([.searchResult(.stub)])) {
-            $0.destinations = [.searchResult(.stub)]
+        await store.send(.navigationPathChanged([.searchResult])) {
+            $0.destinations = [.searchResult]
         }
 
         let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
@@ -275,7 +275,8 @@ final class TestSearchReducer: XCTestCase {
         }
         await store.receive(.searchResponse(.success(x509)), timeout: 0) {
             $0.isLoading = false
-            $0.destinations = [.searchResult(x509)]
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
         }
     }
 
@@ -344,10 +345,12 @@ final class TestSearchReducer: XCTestCase {
         }
         await store.receive(.searchResponse(.success(x509)), timeout: 0) {
             $0.isLoading = false
-            $0.destinations = [.searchResult(x509)]
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
         }
         await store.send(.navigationPathChanged([])) {
             $0.destinations = []
+            $0.searchResult = nil
         }
     }
 
@@ -408,4 +411,4 @@ final class TestSearchReducer: XCTestCase {
             $0.alert = nil
         }
     }
-}
+} // swiftlint:disable:this file_length

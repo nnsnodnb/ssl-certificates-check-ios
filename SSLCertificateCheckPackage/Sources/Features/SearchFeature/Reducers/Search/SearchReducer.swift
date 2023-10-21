@@ -19,6 +19,7 @@ package struct SearchReducer: Reducer {
         var text: String = ""
         var isShareExtensionImageShow = false
         var searchableURL: URL?
+        var searchResult: Identified<X509, SearchResultReducer.State?>?
         var isRequestReview = false
         var isLoading = false
         var destinations: [Destination] = []
@@ -26,7 +27,8 @@ package struct SearchReducer: Reducer {
 
         // MARK: - Destination
         package enum Destination: Hashable {
-            case searchResult(X509)
+            case searchResult
+            case searchResultDetail(X509.Certificate)
         }
 
         // MARK: - Initialize
@@ -48,6 +50,7 @@ package struct SearchReducer: Reducer {
         case searchResponse(TaskResult<X509>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
+        case searchResult(SearchResultReducer.Action)
         case alert(PresentationAction<Alert>)
 
         // MARK: - Alert
@@ -62,7 +65,7 @@ package struct SearchReducer: Reducer {
     private var search
 
     // MARK: - Body
-    package var body: some Reducer<State, Action> {
+    package var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case let .textChanged(text):
@@ -137,7 +140,8 @@ package struct SearchReducer: Reducer {
                 return .none
             case let .searchResponse(.success(x509)):
                 state.isLoading = false
-                state.destinations.append(.searchResult(x509))
+                state.destinations.append(.searchResult)
+                state.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
                 Logger.info("Open SearchResult")
                 return .none
             case let .searchResponse(.failure(error)):
@@ -161,8 +165,19 @@ package struct SearchReducer: Reducer {
                 return .none
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
+                if destinations.isEmpty {
+                    state.searchResult = nil
+                }
                 return .none
             case .info:
+                return .none
+            case let .searchResult(.selectCertificate(certificate)):
+                guard !state.destinations.isEmpty else {
+                    return .none
+                }
+                state.destinations.append(.searchResultDetail(certificate))
+                return .none
+            case .searchResult:
                 return .none
             case .alert:
                 state.alert = nil
@@ -171,6 +186,12 @@ package struct SearchReducer: Reducer {
         }
         .ifLet(\.info, action: /Action.info) {
             InfoReducer()
+        }
+        .ifLet(\.searchResult, action: /Action.searchResult) {
+            EmptyReducer()
+                .ifLet(\.value, action: .self) {
+                    SearchResultReducer()
+                }
         }
     }
 }

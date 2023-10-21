@@ -77,7 +77,7 @@ package struct InfoReducer: Reducer {
     }
 
     // MARK: - Body
-    package var body: some Reducer<State, Action> {
+    package var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .dismiss:

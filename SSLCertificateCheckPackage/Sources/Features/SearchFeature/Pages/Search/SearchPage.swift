@@ -38,7 +38,7 @@ package struct SearchPage: View {
                                 isFocused = false
                             }
                         )
-                        .navigationDestination()
+                        .navigationDestination(store: store)
                 }
             )
             .sheet(store: store, viewStore)
@@ -195,13 +195,29 @@ private extension View {
         }
     }
 
-    func navigationDestination() -> some View {
+    func navigationDestination(store: StoreOf<SearchReducer>) -> some View {
         navigationDestination(
             for: SearchReducer.State.Destination.self,
             destination: { destination in
                 switch destination {
-                case let .searchResult(x509):
-                    SearchResultPage(x509: x509)
+                case .searchResult:
+                    IfLetStore(
+                        store.scope(
+                            state: \.searchResult?.value,
+                            action: SearchReducer.Action.searchResult
+                        ),
+                        then: { store in
+                            SearchResultPage(store: store)
+                        }
+                    )
+                case let .searchResultDetail(certificate):
+                    SearchResultDetailPage(
+                        store: .init(
+                            initialState: SearchResultDetailReducer.State(certificate: certificate)
+                        ) {
+                            SearchResultDetailReducer()
+                        }
+                    )
                 }
             }
         )

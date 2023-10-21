@@ -5,12 +5,13 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
 @MainActor
 package struct SearchResultDetailPage: View {
     // MARK: - Properties
-    package let certificate: X509.Certificate
+    package let store: StoreOf<SearchResultDetailReducer>
 
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -23,21 +24,23 @@ package struct SearchResultDetailPage: View {
 
     // MARK: - Body
     package var body: some View {
-        form()
-            .navigationTitle(certificate.subject.commonName)
-            .navigationBarTitleDisplayMode(.inline)
+        WithViewStore(store, observe: { $0 }, content: { viewStore in
+            form(viewStore)
+                .navigationTitle(viewStore.certificate.subject.commonName)
+                .navigationBarTitleDisplayMode(.inline)
+        })
     }
 }
 
 // MARK: - Private method
 @MainActor
 private extension SearchResultDetailPage {
-    func form() -> some View {
+    func form(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Form {
-            contentSection(title: "Issued to", content: certificate.subject)
-            contentSection(title: "Issued by", content: certificate.issuer)
-            validityPeriodSection()
-            otherSection()
+            contentSection(title: "Issued to", content: viewStore.certificate.subject)
+            contentSection(title: "Issued by", content: viewStore.certificate.issuer)
+            validityPeriodSection(viewStore)
+            otherSection(viewStore)
         }
         .formStyle(.grouped)
     }
@@ -64,11 +67,11 @@ private extension SearchResultDetailPage {
         )
     }
 
-    func validityPeriodSection() -> some View {
+    func validityPeriodSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Section(
             content: {
-                item(title: "Issued", content: dateFormatter.string(from: certificate.issuedAt))
-                item(title: "Expired", content: dateFormatter.string(from: certificate.expiredAt))
+                item(title: "Issued", content: dateFormatter.string(from: viewStore.certificate.issuedAt))
+                item(title: "Expired", content: dateFormatter.string(from: viewStore.certificate.expiredAt))
             },
             header: {
                 Text("Validity Period")
@@ -77,10 +80,10 @@ private extension SearchResultDetailPage {
         )
     }
 
-    func otherSection() -> some View {
+    func otherSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Section {
-            item(title: "Serial Number", content: certificate.serialNumber)
-            item(title: "SHA-256 Fingerprint", content: certificate.sha256Fingerprint)
+            item(title: "Serial Number", content: viewStore.certificate.serialNumber)
+            item(title: "SHA-256 Fingerprint", content: viewStore.certificate.sha256Fingerprint)
         }
     }
 
@@ -99,14 +102,20 @@ private extension SearchResultDetailPage {
 
 #Preview {
     SearchResultDetailPage(
-        certificate: .init(
-            id: 1,
-            subject: .init("/C=US/ST=California/L=Los Angeles/O=Internet\\xC2\\xA0Corporation\\xC2\\xA0for\\xC2\\xA0Assigned\\xC2\\xA0Names\\xC2\\xA0and\\xC2\\xA0Numbers/CN=www.example.org"), // swiftlint:disable:this line_length
-            issuer: .init("/C=US/O=DigiCert Inc/CN=DigiCert TLS RSA SHA256 2020 CA1"),
-            serialNumber: "16115816404043435608139631424403370993",
-            issuedAt: .init(),
-            expiredAt: .init(),
-            sha256Fingerprint: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96" // swiftlint:disable:this line_length
-        )
+        store: .init(
+            initialState: SearchResultDetailReducer.State(
+                certificate: .init(
+                    id: 1,
+                    subject: .init("/C=US/ST=California/L=Los Angeles/O=Internet\\xC2\\xA0Corporation\\xC2\\xA0for\\xC2\\xA0Assigned\\xC2\\xA0Names\\xC2\\xA0and\\xC2\\xA0Numbers/CN=www.example.org"), // swiftlint:disable:this line_length
+                    issuer: .init("/C=US/O=DigiCert Inc/CN=DigiCert TLS RSA SHA256 2020 CA1"),
+                    serialNumber: "16115816404043435608139631424403370993",
+                    issuedAt: .init(),
+                    expiredAt: .init(),
+                    sha256Fingerprint: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96" // swiftlint:disable:this line_length
+                )
+            )
+        ) {
+            SearchResultDetailReducer()
+        }
     )
 }
