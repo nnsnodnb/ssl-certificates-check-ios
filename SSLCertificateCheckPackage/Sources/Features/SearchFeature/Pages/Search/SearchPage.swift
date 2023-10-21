@@ -46,6 +46,9 @@ package struct SearchPage: View {
             .onOpenURL(perform: { url in
                 viewStore.send(.universalLinksURLChanged(url))
             })
+            .onAppear {
+                viewStore.send(.checkFirstExperience)
+            }
             .onChange(of: viewStore.isRequestReview) {
                 guard $0 else { return }
                 requestReview()
@@ -210,12 +213,14 @@ private extension View {
                             SearchResultPage(store: store)
                         }
                     )
-                case let .searchResultDetail(certificate):
-                    SearchResultDetailPage(
-                        store: .init(
-                            initialState: SearchResultDetailReducer.State(certificate: certificate)
-                        ) {
-                            SearchResultDetailReducer()
+                case .searchResultDetail:
+                    IfLetStore(
+                        store.scope(
+                            state: \.searchResultDetail?.value,
+                            action: SearchReducer.Action.searchResultDetail
+                        ),
+                        then: { store in
+                            SearchResultDetailPage(store: store)
                         }
                     )
                 }
