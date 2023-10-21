@@ -23,3 +23,11 @@ package extension DependencyValues {
         set { self[SearchClient.self] = newValue }
     }
 }
+
+// MARK: - KeyValueStoreClient
+package extension DependencyValues {
+    var keyValueStore: KeyValueStoreClient {
+        get { self[KeyValueStoreClient.self] }
+        set { self[KeyValueStoreClient.self] = newValue }
+    }
+}

@@ -10,7 +10,7 @@ import ComposableArchitecture
 import XCTest
 
 @MainActor
-final class TestSearchReducer: XCTestCase {
+final class TestSearchReducer: XCTestCase { // swiftlint:disable:this type_body_length
     func testTextChanged() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -137,8 +137,8 @@ final class TestSearchReducer: XCTestCase {
             SearchReducer()
         }
 
-        await store.send(.navigationPathChanged([.searchResult(.stub)])) {
-            $0.destinations = [.searchResult(.stub)]
+        await store.send(.navigationPathChanged([.searchResult])) {
+            $0.destinations = [.searchResult]
         }
 
         let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
@@ -275,7 +275,8 @@ final class TestSearchReducer: XCTestCase {
         }
         await store.receive(.searchResponse(.success(x509)), timeout: 0) {
             $0.isLoading = false
-            $0.destinations = [.searchResult(x509)]
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
         }
     }
 
@@ -322,6 +323,110 @@ final class TestSearchReducer: XCTestCase {
         }
     }
 
+    func testCheckFirstExperienceIsCheckFirstExperienceIsFalse() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        await store.send(.checkFirstExperience)
+    }
+
+    func testCheckFirstExperienceIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let x509 = X509.stub
+        store.dependencies.search = .init(
+            fetchCertificates: { _ in x509 }
+        )
+        store.dependencies.keyValueStore = .init(
+            bool: { _ in false },
+            setBool: { _, _ in }
+        )
+
+        await store.send(.textChanged("example.com")) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+        await store.send(.search) {
+            $0.isLoading = true
+        }
+        await store.receive(.searchResponse(.success(x509)), timeout: 0) {
+            $0.isLoading = false
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+        }
+        guard let certificate = x509.certificates.first else {
+            XCTFail("Certificate is empty")
+            return
+        }
+        await store.send(.searchResult(.selectCertificate(certificate))) {
+            $0.destinations = [.searchResult, .searchResultDetail]
+            $0.searchResultDetail = .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate)
+        }
+        await store.send(.searchResultDetail(.appear)) {
+            $0.isCheckFirstExperience = true
+        }
+        await store.send(.checkFirstExperience) {
+            $0.isCheckFirstExperience = false
+        }
+        await store.receive(.checkFirstExperienceResponse(.success(false)), timeout: 0) {
+            $0.isRequestReview = true
+        }
+    }
+
+    func testCheckFirstExperienceIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State()
+        ) {
+            SearchReducer()
+        }
+
+        let x509 = X509.stub
+        store.dependencies.search = .init(
+            fetchCertificates: { _ in x509 }
+        )
+        store.dependencies.keyValueStore = .init(
+            bool: { _ in true },
+            setBool: { _, _ in }
+        )
+
+        await store.send(.textChanged("example.com")) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+        await store.send(.search) {
+            $0.isLoading = true
+        }
+        await store.receive(.searchResponse(.success(x509)), timeout: 0) {
+            $0.isLoading = false
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+        }
+        guard let certificate = x509.certificates.first else {
+            XCTFail("Certificate is empty")
+            return
+        }
+        await store.send(.searchResult(.selectCertificate(certificate))) {
+            $0.destinations = [.searchResult, .searchResultDetail]
+            $0.searchResultDetail = .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate)
+        }
+        await store.send(.searchResultDetail(.appear)) {
+            $0.isCheckFirstExperience = true
+        }
+        await store.send(.checkFirstExperience) {
+            $0.isCheckFirstExperience = false
+        }
+        await store.receive(.checkFirstExperienceResponse(.success(true)), timeout: 0)
+    }
+
     func testNavigationPathChanged() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -344,10 +449,12 @@ final class TestSearchReducer: XCTestCase {
         }
         await store.receive(.searchResponse(.success(x509)), timeout: 0) {
             $0.isLoading = false
-            $0.destinations = [.searchResult(x509)]
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
         }
         await store.send(.navigationPathChanged([])) {
             $0.destinations = []
+            $0.searchResult = nil
         }
     }
 
@@ -360,6 +467,41 @@ final class TestSearchReducer: XCTestCase {
 
         await store.send(.info(.dismiss)) {
             $0.info = nil
+        }
+    }
+
+    func testSearchResultSelectCertificate() async throws {
+        let store = TestStore(
+            initialState: SearchReducer.State(info: .init(version: "v1.0.0-test"))
+        ) {
+            SearchReducer()
+        }
+
+        let x509 = X509.stub
+        store.dependencies.search = .init(
+            fetchCertificates: { _ in x509 }
+        )
+
+        await store.send(.textChanged("example.com")) {
+            $0.text = "example.com"
+            $0.searchButtonDisabled = false
+            $0.searchableURL = URL(string: "https://example.com")
+        }
+        await store.send(.search) {
+            $0.isLoading = true
+        }
+        await store.receive(.searchResponse(.success(x509)), timeout: 0) {
+            $0.isLoading = false
+            $0.destinations = [.searchResult]
+            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+        }
+        guard let certificate = x509.certificates.first else {
+            XCTFail("Certificate is empty")
+            return
+        }
+        await store.send(.searchResult(.selectCertificate(certificate))) {
+            $0.destinations = [.searchResult, .searchResultDetail]
+            $0.searchResultDetail = .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate)
         }
     }
 
@@ -408,4 +550,4 @@ final class TestSearchReducer: XCTestCase {
             $0.alert = nil
         }
     }
-}
+} // swiftlint:disable:this file_length

@@ -19,13 +19,18 @@ package struct SearchReducer: Reducer {
         var text: String = ""
         var isShareExtensionImageShow = false
         var searchableURL: URL?
+        var searchResult: Identified<X509, SearchResultReducer.State?>?
+        var searchResultDetail: Identified<X509.Certificate, SearchResultDetailReducer.State?>?
+        var isCheckFirstExperience = false
+        var isRequestReview = false
         var isLoading = false
         var destinations: [Destination] = []
         @PresentationState var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
         package enum Destination: Hashable {
-            case searchResult(X509)
+            case searchResult
+            case searchResultDetail
         }
 
         // MARK: - Initialize
@@ -43,9 +48,14 @@ package struct SearchReducer: Reducer {
         case dismissInfo
         case search
         case toggleIntroductionShareExtension
+        case checkFirstExperience
+        case displayedRequestReview
         case searchResponse(TaskResult<X509>)
+        case checkFirstExperienceResponse(TaskResult<Bool>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
+        case searchResult(SearchResultReducer.Action)
+        case searchResultDetail(SearchResultDetailReducer.Action)
         case alert(PresentationAction<Alert>)
 
         // MARK: - Alert
@@ -58,9 +68,11 @@ package struct SearchReducer: Reducer {
     private var bundle
     @Dependency(\.search)
     private var search
+    @Dependency(\.keyValueStore)
+    private var keyValueStore
 
     // MARK: - Body
-    package var body: some Reducer<State, Action> {
+    package var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case let .textChanged(text):
@@ -130,9 +142,24 @@ package struct SearchReducer: Reducer {
             case .toggleIntroductionShareExtension:
                 state.isShareExtensionImageShow.toggle()
                 return .none
+            case .checkFirstExperience:
+                guard state.isCheckFirstExperience else {
+                    return .none
+                }
+                state.isCheckFirstExperience = false
+                return .run { send in
+                    let result = await keyValueStore.bool(.wasRequestReviewFinishFirstSearchExperience)
+                    await send(.checkFirstExperienceResponse(.success(result)))
+                }
+            case .displayedRequestReview:
+                state.isRequestReview = false
+                return .run { _ in
+                    await keyValueStore.setBool(true, .wasRequestReviewFinishFirstSearchExperience)
+                }
             case let .searchResponse(.success(x509)):
                 state.isLoading = false
-                state.destinations.append(.searchResult(x509))
+                state.destinations.append(.searchResult)
+                state.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
                 Logger.info("Open SearchResult")
                 return .none
             case let .searchResponse(.failure(error)):
@@ -154,10 +181,34 @@ package struct SearchReducer: Reducer {
                 )
                 Logger.error("Failed searching: \(error)")
                 return .none
+            case let .checkFirstExperienceResponse(.success(result)):
+                guard !result else { return .none }
+                state.isRequestReview = true
+                return .none
+            case .checkFirstExperienceResponse(.failure):
+                // do not enter
+                return .none
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
+                if destinations.isEmpty {
+                    state.searchResult = nil
+                } else if destinations.endIndex == 1 {
+                    state.searchResultDetail = nil
+                }
                 return .none
             case .info:
+                return .none
+            case let .searchResult(.selectCertificate(certificate)):
+                guard state.searchResult != nil else {
+                    return .none
+                }
+                state.destinations.append(.searchResultDetail)
+                state.searchResultDetail = .init(.init(certificate: certificate), id: certificate)
+                return .none
+            case .searchResult:
+                return .none
+            case .searchResultDetail(.appear):
+                state.isCheckFirstExperience = true
                 return .none
             case .alert:
                 state.alert = nil
@@ -166,6 +217,18 @@ package struct SearchReducer: Reducer {
         }
         .ifLet(\.info, action: /Action.info) {
             InfoReducer()
+        }
+        .ifLet(\.searchResult, action: /Action.searchResult) {
+            EmptyReducer()
+                .ifLet(\.value, action: .self) {
+                    SearchResultReducer()
+                }
+        }
+        .ifLet(\.searchResultDetail, action: /Action.searchResultDetail) {
+            EmptyReducer()
+                .ifLet(\.value, action: .self) {
+                    SearchResultDetailReducer()
+                }
         }
     }
 }

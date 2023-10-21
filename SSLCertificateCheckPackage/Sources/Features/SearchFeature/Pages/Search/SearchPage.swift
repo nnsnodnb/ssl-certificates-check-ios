@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import InfoFeature
 import SFSafeSymbols
+import StoreKit
 import SwiftUI
 
 @MainActor
@@ -16,6 +17,8 @@ package struct SearchPage: View {
     private let store: StoreOf<SearchReducer>
 
     @FocusState private var isFocused: Bool
+    @Environment(\.requestReview)
+    private var requestReview
 
     // MARK: - Body
     package var body: some View {
@@ -35,7 +38,10 @@ package struct SearchPage: View {
                                 isFocused = false
                             }
                         )
-                        .navigationDestination()
+                        .navigationDestination(store: store)
+                        .onAppear {
+                            viewStore.send(.checkFirstExperience)
+                        }
                 }
             )
             .sheet(store: store, viewStore)
@@ -43,6 +49,11 @@ package struct SearchPage: View {
             .onOpenURL(perform: { url in
                 viewStore.send(.universalLinksURLChanged(url))
             })
+            .onChange(of: viewStore.isRequestReview) {
+                guard $0 else { return }
+                requestReview()
+                viewStore.send(.displayedRequestReview)
+            }
         })
     }
 
@@ -187,13 +198,31 @@ private extension View {
         }
     }
 
-    func navigationDestination() -> some View {
+    func navigationDestination(store: StoreOf<SearchReducer>) -> some View {
         navigationDestination(
             for: SearchReducer.State.Destination.self,
             destination: { destination in
                 switch destination {
-                case let .searchResult(x509):
-                    SearchResultPage(x509: x509)
+                case .searchResult:
+                    IfLetStore(
+                        store.scope(
+                            state: \.searchResult?.value,
+                            action: SearchReducer.Action.searchResult
+                        ),
+                        then: { store in
+                            SearchResultPage(store: store)
+                        }
+                    )
+                case .searchResultDetail:
+                    IfLetStore(
+                        store.scope(
+                            state: \.searchResultDetail?.value,
+                            action: SearchReducer.Action.searchResultDetail
+                        ),
+                        then: { store in
+                            SearchResultDetailPage(store: store)
+                        }
+                    )
                 }
             }
         )

@@ -151,6 +151,7 @@ let package = Package(
                 .logger,
                 .openSSLSwift,
                 .sfSafeSymbols,
+                .uiComponents,
             ],
             path: "Sources/Features/SearchFeature"
         ),
