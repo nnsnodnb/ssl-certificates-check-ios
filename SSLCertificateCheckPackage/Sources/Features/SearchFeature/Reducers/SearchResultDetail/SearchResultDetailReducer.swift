@@ -17,12 +17,16 @@ package struct SearchResultDetailReducer: Reducer {
 
     // MARK: - Action
     package enum Action: Equatable {
+        case appear
     }
 
     // MARK: - Body
     package var body: some ReducerOf<Self> {
-        Reduce { _, _ in
-            return .none
+        Reduce { _, action in
+            switch action {
+            case .appear:
+                return .none
+            }
         }
     }
 }

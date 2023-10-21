@@ -28,6 +28,9 @@ package struct SearchResultDetailPage: View {
             form(viewStore)
                 .navigationTitle(viewStore.certificate.subject.commonName)
                 .navigationBarTitleDisplayMode(.inline)
+                .onAppear {
+                    viewStore.send(.appear)
+                }
         })
     }
 }
