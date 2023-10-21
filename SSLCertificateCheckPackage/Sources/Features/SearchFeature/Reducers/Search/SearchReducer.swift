@@ -19,6 +19,7 @@ package struct SearchReducer: Reducer {
         var text: String = ""
         var isShareExtensionImageShow = false
         var searchableURL: URL?
+        var isRequestReview = false
         var isLoading = false
         var destinations: [Destination] = []
         @PresentationState var alert: AlertState<Action.Alert>?
@@ -43,6 +44,7 @@ package struct SearchReducer: Reducer {
         case dismissInfo
         case search
         case toggleIntroductionShareExtension
+        case displayedRequestReview
         case searchResponse(TaskResult<X509>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
@@ -129,6 +131,9 @@ package struct SearchReducer: Reducer {
                 )
             case .toggleIntroductionShareExtension:
                 state.isShareExtensionImageShow.toggle()
+                return .none
+            case .displayedRequestReview:
+                state.isRequestReview = false
                 return .none
             case let .searchResponse(.success(x509)):
                 state.isLoading = false

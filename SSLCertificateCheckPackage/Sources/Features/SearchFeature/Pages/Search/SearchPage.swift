@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import InfoFeature
 import SFSafeSymbols
+import StoreKit
 import SwiftUI
 
 @MainActor
@@ -16,6 +17,8 @@ package struct SearchPage: View {
     private let store: StoreOf<SearchReducer>
 
     @FocusState private var isFocused: Bool
+    @Environment(\.requestReview)
+    private var requestReview
 
     // MARK: - Body
     package var body: some View {
@@ -43,6 +46,11 @@ package struct SearchPage: View {
             .onOpenURL(perform: { url in
                 viewStore.send(.universalLinksURLChanged(url))
             })
+            .onChange(of: viewStore.isRequestReview) {
+                guard $0 else { return }
+                requestReview()
+                viewStore.send(.displayedRequestReview)
+            }
         })
     }
 
