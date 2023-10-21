@@ -3,6 +3,7 @@ name: Renovate
 on:
   pull_request:
     paths:
+      - .github/workflows/renovate.yml
       - SSLCertificateCheckPackage/Package.swift
 
 jobs:
