@@ -34,8 +34,32 @@ package struct SearchReducer: Reducer {
         }
 
         // MARK: - Initialize
-        package init(info: InfoReducer.State? = nil) {
+        package init(
+            info: InfoReducer.State? = nil,
+            searchButtonDisabled: Bool = true,
+            text: String = "",
+            isShareExtensionImageShow: Bool = false,
+            searchableURL: URL? = nil,
+            searchResult: Identified<X509, SearchResultReducer.State?>? = nil,
+            searchResultDetail: Identified<X509.Certificate, SearchResultDetailReducer.State?>? = nil,
+            isCheckFirstExperience: Bool = false,
+            isRequestReview: Bool = false,
+            isLoading: Bool = false,
+            destinations: [Destination] = [],
+            alert: AlertState<Action.Alert>? = nil
+        ) {
             self.info = info
+            self.searchButtonDisabled = searchButtonDisabled
+            self.text = text
+            self.isShareExtensionImageShow = isShareExtensionImageShow
+            self.searchableURL = searchableURL
+            self.searchResult = searchResult
+            self.searchResultDetail = searchResultDetail
+            self.isCheckFirstExperience = isCheckFirstExperience
+            self.isRequestReview = isRequestReview
+            self.isLoading = isLoading
+            self.destinations = destinations
+            self.alert = alert
         }
     }
 
