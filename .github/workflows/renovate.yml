@@ -7,16 +7,6 @@ on:
       - SSLCertificateCheckPackage/Package.swift
 
 jobs:
-  check:
-    runs-on: macos-13
-
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
-
-    steps:
-    - uses: actions/checkout@v4
-    - run: xcodebuild -list -workspace SSLCertificateCheck.xcworkspace
-
   precheck:
     runs-on: ubuntu-latest
     if: startsWith(github.head_ref, 'renovate/')
