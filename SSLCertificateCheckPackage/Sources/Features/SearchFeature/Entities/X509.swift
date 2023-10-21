@@ -80,7 +80,7 @@ package extension X509 {
         // MARK: - Properties
         package let commonName: String
         package let organization: String?
-        package let organizationUnit: String?
+        package let organizationalUnit: String?
         package let country: String?
         package let stateOrProvinceName: String?
         package let locality: String?
@@ -107,11 +107,11 @@ package extension X509 {
             }
             // OU
             if let element = elements.lazy.first(where: { $0.starts(with: "OU=") }) {
-                self.organizationUnit = element
+                self.organizationalUnit = element
                     .replacingOccurrences(of: "OU=", with: "")
                     .replacingOccurrences(of: "\\xC2\\xA0", with: " ")
             } else {
-                self.organizationUnit = nil
+                self.organizationalUnit = nil
             }
             // C
             if let element = elements.lazy.first(where: { $0.starts(with: "C=") }) {
