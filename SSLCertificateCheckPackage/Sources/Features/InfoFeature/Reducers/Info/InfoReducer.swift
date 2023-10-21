@@ -15,7 +15,7 @@ package struct InfoReducer: Reducer {
         // MARK: - Properties
         let version: String
         var licenseList: LicenseListReducer.State?
-        var destinations: [Destination]
+        var destinations: [Destination] = []
         var interactiveDismissDisabled = false
         var url: URL?
         @PresentationState var alert: AlertState<Action.Alert>?
@@ -42,10 +42,20 @@ package struct InfoReducer: Reducer {
         }
 
         // MARK: - Initialize
-        package init(version: String, licenseList: LicenseListReducer.State? = nil, destinations: [Destination] = []) {
+        package init(
+            version: String,
+            licenseList: LicenseListReducer.State? = nil,
+            destinations: [Destination] = [],
+            interactiveDismissDisabled: Bool = false,
+            url: URL? = nil,
+            alert: AlertState<Action.Alert>? = nil
+        ) {
             self.version = version
             self.licenseList = licenseList
             self.destinations = destinations
+            self.interactiveDismissDisabled = interactiveDismissDisabled
+            self.url = url
+            self.alert = alert
         }
     }
 
