@@ -1,6 +1,6 @@
 //
-//  TestLicenseListReducer.swift
-//  
+//  TestLicenseListReducerFetchLicensesResponse.swift
+//
 //
 //  Created by Yuya Oka on 2023/10/15.
 //
@@ -10,8 +10,8 @@ import ComposableArchitecture
 import XCTest
 
 @MainActor
-final class TestLicenseListReducer: XCTestCase {
-    func testFetchLicensesSuccessResponse() async throws {
+final class TestLicenseListReducerFetchLicensesResponse: XCTestCase { // swiftlint:disable:this type_name
+    func testSuccess() async throws {
         let store = TestStore(
             initialState: LicenseListReducer.State()
         ) {
