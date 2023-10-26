@@ -11,7 +11,8 @@ import SwiftUI
 @main
 struct AdHocApp: App {
     // MARK: - Properties
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @UIApplicationDelegateAdaptor(AppDelegate.self)
+    var delegate
 
     // MARK: - Body
     var body: some Scene {
