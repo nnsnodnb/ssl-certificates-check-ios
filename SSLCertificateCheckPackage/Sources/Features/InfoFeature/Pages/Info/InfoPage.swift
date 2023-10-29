@@ -64,7 +64,7 @@ private extension InfoPage {
                     Image(.icGithub)
                         .resizable()
                 },
-                title: "Source codes"
+                title: "Source code"
             )
             buttonRow(
                 action: {
