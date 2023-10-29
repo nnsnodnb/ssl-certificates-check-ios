@@ -20,6 +20,7 @@ extension PackageDescription.Target.Dependency {
     static let searchFeature: Self = .target(name: "SearchFeature")
     static let share: Self = .target(name: "Share")
     static let uiComponents: Self = .target(name: "UIComponents")
+    static let x509Parser: Self = .target(name: "X509Parser")
 
     static var composableArchitecture: Self {
         .product(
@@ -60,6 +61,13 @@ extension PackageDescription.Target.Dependency {
         .product(
             name: "SFSafeSymbols",
             package: "SFSafeSymbols"
+        )
+    }
+
+    static var x509: Self {
+        .product(
+            name: "X509",
+            package: "swift-certificates"
         )
     }
 }
@@ -169,6 +177,12 @@ let package = Package(
                 .sfSafeSymbols,
             ]
         ),
+        .target(
+            name: "X509Parser",
+            dependencies: [
+                .x509,
+            ]
+        ),
         // Tests
         .testTarget(
             name: "InfoFeatureTests",
@@ -186,6 +200,15 @@ let package = Package(
             name: "SearchFeatureTests",
             dependencies: [
                 .searchFeature,
+            ],
+            resources: [
+                .process("Resources/"),
+            ]
+        ),
+        .testTarget(
+            name: "X509ParserTests",
+            dependencies: [
+                .x509Parser,
             ],
             resources: [
                 .process("Resources/"),
