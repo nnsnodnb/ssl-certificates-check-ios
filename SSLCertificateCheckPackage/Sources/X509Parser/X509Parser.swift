@@ -5,13 +5,11 @@
 //  Created by Yuya Oka on 2023/10/27.
 //
 
+import CryptoKit
 import Foundation
 import X509
 
 package struct X509Parser {
-    // MARK: - Properties
-    private let x509: Certificate
-
     package static func parse(from derData: Data) throws -> X509 {
         let count = derData.count
         let derEncoded = derData.withUnsafeBytes {
@@ -19,17 +17,22 @@ package struct X509Parser {
             return [UInt8](UnsafeBufferPointer(start: address, count: count))
         }
         let certificate = try Certificate(derEncoded: derEncoded)
-        _ = certificate.version.description.replacingOccurrences(of: "X509", with: "")
-        _ = certificate.serialNumber.bytes.map { String(format: "%0.2x", $0) }.joined(separator: ":")
-        _ = certificate.publicKey.description.replacingOccurrences(of: ".PublicKey", with: "")
-        _ = certificate.notValidBefore
-        _ = certificate.notValidAfter
-        _ = certificate.issuer.map { $0.description }
-        certificate.subject.map { $0.description }
-        certificate.extensions
-        certificate.signature
-        certificate.signatureAlgorithm
-        let x509 = X509()
+        // TODO: extensions, signature, signatureAlgorithm
+        let version = certificate.version.description.replacingOccurrences(of: "X509v", with: "")
+        let serialNumber = certificate.serialNumber.bytes.map { String(format: "%0.2x", $0) }.joined(separator: ":")
+        let issuer = try X509.DistinguishedNames(value: certificate.issuer.description)
+        let subject = try X509.DistinguishedNames(value: certificate.subject.description)
+        let sha256Fingerprint = SHA256.hash(data: derData).map { String(format: "%0.2x", $0) }.joined(separator: " ")
+
+        let x509 = X509(
+            version: version,
+            serialNumber: serialNumber,
+            notValidBefore: certificate.notValidBefore,
+            notValidAfter: certificate.notValidAfter,
+            issuer: issuer,
+            subject: subject,
+            sha256Fingerprint: sha256Fingerprint
+        )
         return x509
     }
 }
