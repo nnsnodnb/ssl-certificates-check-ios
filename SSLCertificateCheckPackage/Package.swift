@@ -192,9 +192,6 @@ let package = Package(
             name: "SearchFeatureTests",
             dependencies: [
                 .searchFeature,
-            ],
-            resources: [
-                .process("Resources/"),
             ]
         ),
         .testTarget(
