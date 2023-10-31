@@ -10,6 +10,28 @@ import Foundation
 import X509
 
 package struct X509Parser {
+    // MARK: - Error
+    package enum Error: Swift.Error {
+        case notExistsCertificates
+        case unknown
+    }
+
+    package static func parse(serverTrust: SecTrust) throws -> [X509] {
+        var error: CFError?
+        guard SecTrustEvaluateWithError(serverTrust, &error) else {
+            throw error ?? Error.unknown
+        }
+        guard let serverCertificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate] else {
+            throw Error.notExistsCertificates
+        }
+        let x509Certificates = try serverCertificates.map { certificate in
+            let data = SecCertificateCopyData(certificate) as Data
+            let x509 = try Self.parse(from: data)
+            return x509
+        }
+        return x509Certificates
+    }
+
     package static func parse(from derData: Data) throws -> X509 {
         let count = derData.count
         let derEncoded = derData.withUnsafeBytes {

@@ -7,11 +7,12 @@
 
 import Dependencies
 import Foundation
+import X509Parser
 import XCTestDynamicOverlay
 
 package struct SearchClient: Sendable {
     // MARK: - Properties
-    package var fetchCertificates: @Sendable (URL) async throws -> X509
+    package var fetchCertificates: @Sendable (URL) async throws -> [X509]
 }
 
 // MARK: - DependencyKey
@@ -33,14 +34,14 @@ private extension SearchClient {
             case unknown
         }
 
-        static func fetchCertificates(fromURL url: URL) async throws -> X509 {
+        static func fetchCertificates(fromURL url: URL) async throws -> [X509] {
             let sessionDelegate = SessionDelegate()
             let session = URLSession(configuration: .ephemeral, delegate: sessionDelegate, delegateQueue: nil)
             _ = try await session.data(from: url)
             guard let serverTrust = sessionDelegate.serverTrust else {
                 throw Error.unknown
             }
-            return try X509(serverTrust: serverTrust)
+            return try X509Parser.parse(serverTrust: serverTrust)
         }
     }
 }

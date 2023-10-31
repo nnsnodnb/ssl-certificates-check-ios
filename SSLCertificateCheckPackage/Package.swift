@@ -161,6 +161,7 @@ let package = Package(
                 .openSSLSwift,
                 .sfSafeSymbols,
                 .uiComponents,
+                .x509Parser,
             ],
             path: "Sources/Features/SearchFeature"
         ),

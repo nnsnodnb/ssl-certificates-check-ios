@@ -7,22 +7,18 @@
 
 import ComposableArchitecture
 import Foundation
+import X509Parser
 
 package struct SearchResultReducer: Reducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
-        package let certificates: IdentifiedArrayOf<X509.Certificate>
-
-        // MARK: - Initialize
-        package init(x509: X509) {
-            self.certificates = .init(uniqueElements: x509.certificates)
-        }
+        package let certificates: IdentifiedArrayOf<X509>
     }
 
     // MARK: - Action
     package enum Action: Equatable {
-        case selectCertificate(X509.Certificate)
+        case selectCertificate(X509)
     }
 
     // MARK: - Body

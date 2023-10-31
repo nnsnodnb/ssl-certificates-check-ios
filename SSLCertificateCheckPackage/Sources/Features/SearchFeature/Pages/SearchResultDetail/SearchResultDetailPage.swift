@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import SwiftUI
+import X509Parser
 
 @MainActor
 package struct SearchResultDetailPage: View {
@@ -26,7 +27,7 @@ package struct SearchResultDetailPage: View {
     package var body: some View {
         WithViewStore(store, observe: { $0 }, content: { viewStore in
             form(viewStore)
-                .navigationTitle(viewStore.certificate.subject.commonName)
+                .navigationTitle(viewStore.x509.subject.commonName ?? "")
                 .navigationBarTitleDisplayMode(.inline)
                 .onAppear {
                     viewStore.send(.appear)
@@ -40,34 +41,36 @@ package struct SearchResultDetailPage: View {
 private extension SearchResultDetailPage {
     func form(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Form {
-            contentSection(title: "Issued to", content: viewStore.certificate.subject)
-            contentSection(title: "Issued by", content: viewStore.certificate.issuer)
+            contentSection(title: "Issued to", distinguishedNames: viewStore.x509.subject)
+            contentSection(title: "Issued by", distinguishedNames: viewStore.x509.issuer)
             validityPeriodSection(viewStore)
             otherSection(viewStore)
         }
         .formStyle(.grouped)
     }
 
-    func contentSection(title: String, content: X509.Content) -> some View {
+    func contentSection(title: String, distinguishedNames: X509.DistinguishedNames) -> some View {
         Section(
             content: {
-                item(title: "Common name", content: content.commonName)
-                if let organization = content.organization {
+                if let commonName = distinguishedNames.commonName {
+                    item(title: "Common name", content: commonName)
+                }
+                if let organization = distinguishedNames.organization {
                     item(title: "Organization", content: organization)
                 }
-                if let organizationalUnit = content.organizationalUnit {
+                if let organizationalUnit = distinguishedNames.organizationalUnit {
                     item(title: "Organizational unit", content: organizationalUnit)
                 }
-                if let country = content.country {
+                if let country = distinguishedNames.country {
                     item(title: "Country", content: country)
                 }
-                if let stateOrProvinceName = content.stateOrProvinceName {
+                if let stateOrProvinceName = distinguishedNames.stateOrProvinceName {
                     item(title: "State or Province name", content: stateOrProvinceName)
                 }
-                if let locality = content.locality {
+                if let locality = distinguishedNames.locality {
                     item(title: "Locality", content: locality)
                 }
-                item(title: nil, content: content.all)
+                item(title: nil, content: distinguishedNames.all)
             },
             header: {
                 Text(title)
@@ -79,8 +82,8 @@ private extension SearchResultDetailPage {
     func validityPeriodSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Section(
             content: {
-                item(title: "Issued", content: dateFormatter.string(from: viewStore.certificate.issuedAt))
-                item(title: "Expired", content: dateFormatter.string(from: viewStore.certificate.expiredAt))
+                item(title: "Issued", content: dateFormatter.string(from: viewStore.x509.notValidBefore))
+                item(title: "Expired", content: dateFormatter.string(from: viewStore.x509.notValidAfter))
             },
             header: {
                 Text("Validity Period")
@@ -91,8 +94,8 @@ private extension SearchResultDetailPage {
 
     func otherSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Section {
-            item(title: "Serial Number", content: viewStore.certificate.serialNumber)
-            item(title: "SHA-256 Fingerprint", content: viewStore.certificate.sha256Fingerprint)
+            item(title: "Serial Number", content: viewStore.x509.serialNumber)
+            item(title: "SHA-256 Fingerprint", content: viewStore.x509.sha256Fingerprint)
         }
     }
 
@@ -109,18 +112,20 @@ private extension SearchResultDetailPage {
     }
 }
 
+// swiftlint:disable force_try
+// swiftlint:disable line_length
 #Preview {
     SearchResultDetailPage(
         store: .init(
             initialState: SearchResultDetailReducer.State(
-                certificate: .init(
-                    id: 1,
-                    subject: .init("/C=US/ST=California/L=Los Angeles/O=Internet\\xC2\\xA0Corporation\\xC2\\xA0for\\xC2\\xA0Assigned\\xC2\\xA0Names\\xC2\\xA0and\\xC2\\xA0Numbers/CN=www.example.org"), // swiftlint:disable:this line_length
-                    issuer: .init("/C=US/O=DigiCert Inc/CN=DigiCert TLS RSA SHA256 2020 CA1"),
+                x509: X509(
+                    version: "3",
                     serialNumber: "16115816404043435608139631424403370993",
-                    issuedAt: .init(),
-                    expiredAt: .init(),
-                    sha256Fingerprint: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96" // swiftlint:disable:this line_length
+                    notValidBefore: .init(),
+                    notValidAfter: .init(),
+                    issuer: try! .init(value: "C=US,O=DigiCert Inc,CN=DigiCert TLS RSA SHA256 2020 CA1"),
+                    subject: try! .init(value: "C=US,ST=California,L=Los Angeles,O=Internet C2 Corporation for Assigned Names and Numbers,CN=www.example.org"),
+                    sha256Fingerprint: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96"
                 )
             )
         ) {
@@ -128,3 +133,5 @@ private extension SearchResultDetailPage {
         }
     )
 }
+// swiftlint:enable force_try
+// swiftlint:enable line_length

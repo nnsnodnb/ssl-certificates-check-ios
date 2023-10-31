@@ -7,8 +7,10 @@
 
 import Foundation
 
-package struct X509: Hashable, Sendable {
+package struct X509: Hashable, Sendable, Identifiable {
     // MARK: - Properties
+    package var id: String { serialNumber }
+
     package let version: String
     package let serialNumber: String
     package let notValidBefore: Date
@@ -16,6 +18,25 @@ package struct X509: Hashable, Sendable {
     package let issuer: DistinguishedNames
     package let subject: DistinguishedNames
     package let sha256Fingerprint: String
+
+    // MARK: - Initialize
+    package init(
+        version: String,
+        serialNumber: String,
+        notValidBefore: Date,
+        notValidAfter: Date,
+        issuer: DistinguishedNames,
+        subject: DistinguishedNames,
+        sha256Fingerprint: String
+    ) {
+        self.version = version
+        self.serialNumber = serialNumber
+        self.notValidBefore = notValidBefore
+        self.notValidAfter = notValidAfter
+        self.issuer = issuer
+        self.subject = subject
+        self.sha256Fingerprint = sha256Fingerprint
+    }
 }
 
 // MARK: - DistinguishedNames
@@ -36,24 +57,6 @@ package extension X509 {
         }
 
         // MARK: - Initialize
-        package init(
-            commonName: String?,
-            organization: String?,
-            organizationalUnit: String?,
-            country: String?,
-            stateOrProvinceName: String?,
-            locality: String?,
-            all: String
-        ) {
-            self.commonName = commonName
-            self.organization = organization
-            self.organizationalUnit = organizationalUnit
-            self.country = country
-            self.stateOrProvinceName = stateOrProvinceName
-            self.locality = locality
-            self.all = all
-        }
-
         package init(value: String) throws {
             let attributes = value.split(separator: ",")
             // CN
