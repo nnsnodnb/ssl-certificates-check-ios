@@ -35,4 +35,4 @@ Then change scheme to `Develop` and build and run.
 
 ## License
 
-This software is licensed under the MPL-2.0 license (See [LICENSE](LICENSE)).
+This software is licensed under the MIT license (See [LICENSE](LICENSE)).
