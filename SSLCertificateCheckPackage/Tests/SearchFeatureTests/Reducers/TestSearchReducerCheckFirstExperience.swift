@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 @testable import SearchFeature
+import X509Parser
 import XCTest
 
 @MainActor
@@ -23,17 +24,13 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
 
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
         let x509 = X509.stub
-        guard let certificate = x509.certificates.first else {
-            XCTFail("Certificate is empty")
-            return
-        }
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
                 text: "example.com",
                 searchableURL: URL(string: "https://example.com"),
-                searchResult: .init(SearchResultReducer.State(x509: x509), id: x509),
-                searchResultDetail: .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate),
+                searchResult: .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509]),
+                searchResultDetail: .init(SearchResultDetailReducer.State(x509: x509), id: x509),
                 isCheckFirstExperience: true,
                 destinations: [.searchResult, .searchResultDetail]
             )
@@ -56,17 +53,13 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
 
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
         let x509 = X509.stub
-        guard let certificate = x509.certificates.first else {
-            XCTFail("Certificate is empty")
-            return
-        }
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
                 text: "example.com",
                 searchableURL: URL(string: "https://example.com"),
-                searchResult: .init(SearchResultReducer.State(x509: x509), id: x509),
-                searchResultDetail: .init(SearchResultDetailReducer.State(certificate: certificate), id: certificate),
+                searchResult: .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509]),
+                searchResultDetail: .init(SearchResultDetailReducer.State(x509: x509), id: x509),
                 isCheckFirstExperience: true,
                 destinations: [.searchResult, .searchResultDetail]
             )

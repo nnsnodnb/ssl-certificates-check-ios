@@ -102,3 +102,23 @@ package extension X509 {
         }
     }
 }
+
+#if DEBUG
+// swiftlint:disable force_try
+// swiftlint:disable line_length
+package extension X509 {
+    static var stub: Self {
+        .init(
+            version: "3",
+            serialNumber: "16115816404043435608139631424403370993",
+            notValidBefore: .init(),
+            notValidAfter: .init(),
+            issuer: try! .init(value: "C=US,O=DigiCert Inc,CN=DigiCert TLS RSA SHA256 2020 CA1"),
+            subject: try! .init(value: "C=US,ST=California,L=Los Angeles,O=Internet C2 Corporation for Assigned Names and Numbers,CN=www.example.org"),
+            sha256Fingerprint: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96"
+        )
+    }
+}
+// swiftlint:enable force_try
+// swiftlint:enable line_length
+#endif

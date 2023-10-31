@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 @testable import SearchFeature
+import X509Parser
 import XCTest
 
 @MainActor
@@ -48,16 +49,16 @@ final class TestSearchReducerSearch: XCTestCase {
 
         let x509 = X509.stub
         store.dependencies.search = .init(
-            fetchCertificates: { _ in x509 }
+            fetchCertificates: { _ in [x509] }
         )
 
         await store.send(.search) {
             $0.isLoading = true
         }
-        await store.receive(.searchResponse(.success(x509)), timeout: 0) {
+        await store.receive(.searchResponse(.success([x509])), timeout: 0) {
             $0.isLoading = false
             $0.destinations = [.searchResult]
-            $0.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+            $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
         }
     }
 
