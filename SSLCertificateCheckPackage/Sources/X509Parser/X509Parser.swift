@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/27.
 //
 
+import _CryptoExtras
 import CryptoKit
 import Foundation
 import X509
@@ -41,10 +42,23 @@ package struct X509Parser {
         let certificate = try Certificate(derEncoded: derEncoded)
         // TODO: extensions, signature, signatureAlgorithm
         let version = certificate.version.description.replacingOccurrences(of: "X509v", with: "")
-        let serialNumber = certificate.serialNumber.bytes.map { String(format: "%0.2x", $0) }.joined(separator: ":")
+        let serialNumber = Data(certificate.serialNumber.bytes).hexadecimalString(separator: ":")
         let issuer = try X509.DistinguishedNames(value: certificate.issuer.description)
         let subject = try X509.DistinguishedNames(value: certificate.subject.description)
-        let sha256Fingerprint = SHA256.hash(data: derData).map { String(format: "%0.2x", $0) }.joined(separator: " ")
+        let certificateSHA256Fingerprint = SHA256.hash(data: derData).hexadecimalString(separator: " ")
+        let publicKeySHA256Fingerprint = SHA256.hash(data: {
+            if let p256 = P256.Signing.PublicKey(certificate.publicKey) {
+                return p256.derRepresentation
+            } else if let p384 = P384.Signing.PublicKey(certificate.publicKey) {
+                return p384.derRepresentation
+            } else if let p521 = P521.Signing.PublicKey(certificate.publicKey) {
+                return p521.derRepresentation
+            } else if let rsa = _RSA.Signing.PublicKey(certificate.publicKey) {
+                return rsa.derRepresentation
+            } else {
+                return Data()
+            }
+        }()).hexadecimalString(separator: " ")
 
         let x509 = X509(
             version: version,
@@ -53,7 +67,10 @@ package struct X509Parser {
             notValidAfter: certificate.notValidAfter,
             issuer: issuer,
             subject: subject,
-            sha256Fingerprint: sha256Fingerprint
+            sha256Fingerprint: .init(
+                certificate: certificateSHA256Fingerprint,
+                publicKey: publicKeySHA256Fingerprint
+            )
         )
         return x509
     }
