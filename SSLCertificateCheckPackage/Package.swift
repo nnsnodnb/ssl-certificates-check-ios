@@ -20,6 +20,7 @@ extension PackageDescription.Target.Dependency {
     static let searchFeature: Self = .target(name: "SearchFeature")
     static let share: Self = .target(name: "Share")
     static let uiComponents: Self = .target(name: "UIComponents")
+    static let x509Parser: Self = .target(name: "X509Parser")
 
     static var composableArchitecture: Self {
         .product(
@@ -42,13 +43,6 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
-    static var openSSLSwift: Self {
-        .product(
-            name: "OpenSSL-Swift",
-            package: "OpenSSL-Swift"
-        )
-    }
-
     static var safariUI: Self {
         .product(
             name: "SafariUI",
@@ -60,6 +54,13 @@ extension PackageDescription.Target.Dependency {
         .product(
             name: "SFSafeSymbols",
             package: "SFSafeSymbols"
+        )
+    }
+
+    static var x509: Self {
+        .product(
+            name: "X509",
+            package: "swift-certificates"
         )
     }
 }
@@ -99,10 +100,10 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.17.0")),
         .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.1.6")),
-        .package(url: "https://github.com/gematik/OpenSSL-Swift.git", .upToNextMajor(from: "4.1.0")),
         .package(url: "https://github.com/vsanthanam/SafariUI.git", .upToNextMajor(from: "3.0.1")),
         .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "4.1.1")),
         .package(url: "https://github.com/realm/SwiftLint.git", .upToNextMajor(from: "0.53.0")),
+        .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.0.1")),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.3.0")),
     ],
     targets: [
@@ -149,9 +150,9 @@ let package = Package(
                 .composableArchitecture,
                 .infoFeature,
                 .logger,
-                .openSSLSwift,
                 .sfSafeSymbols,
                 .uiComponents,
+                .x509Parser,
             ],
             path: "Sources/Features/SearchFeature"
         ),
@@ -166,6 +167,12 @@ let package = Package(
             name: "UIComponents",
             dependencies: [
                 .sfSafeSymbols,
+            ]
+        ),
+        .target(
+            name: "X509Parser",
+            dependencies: [
+                .x509,
             ]
         ),
         // Tests
@@ -185,6 +192,12 @@ let package = Package(
             name: "SearchFeatureTests",
             dependencies: [
                 .searchFeature,
+            ]
+        ),
+        .testTarget(
+            name: "X509ParserTests",
+            dependencies: [
+                .x509Parser,
             ],
             resources: [
                 .process("Resources/"),

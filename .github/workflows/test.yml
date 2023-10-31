@@ -75,6 +75,18 @@ jobs:
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
 
+      - name: Xcode test for X509ParserTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+            -scheme X509ParserTests \
+            -workspace SSLCertificateCheck.xcworkspace \
+            -parallel-testing-enabled=YES \
+            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+            -resultBundlePath "test-results/Test-X509ParserTests.xcresult" \
+            -clonedSourcePackagesDirPath .swiftpm \
+            -disableAutomaticPackageResolution | xcpretty
+
       - uses: kishikawakatsumi/xcresulttool@v1
         if: success() || failure()
         with:
@@ -82,3 +94,4 @@ jobs:
             test-results/Test-InfoFeatureTests.xcresult
             test-results/Test-LicenseFeatureTests.xcresult
             test-results/Test-SearchFeatureTests.xcresult
+            test-results/Test-X509ParserTests.xcresult

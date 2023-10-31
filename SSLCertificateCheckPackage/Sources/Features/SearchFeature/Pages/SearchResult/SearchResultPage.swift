@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import SwiftUI
 import UIComponents
+import X509Parser
 
 @MainActor
 package struct SearchResultPage: View {
@@ -32,23 +33,26 @@ private extension SearchResultPage {
         }
     }
 
-    func row(_ viewStore: ViewStoreOf<SearchResultReducer>, for certificate: X509.Certificate) -> some View {
-        HStack(alignment: .center, spacing: 0) {
-            Button(
-                action: {
-                    viewStore.send(.selectCertificate(certificate), animation: .default)
-                },
-                label: {
-                    HStack(alignment: .center, spacing: 0) {
-                        Text(certificate.subject.commonName)
-                        Spacer()
-                        ListRowChevronRight()
+    @ViewBuilder
+    func row(_ viewStore: ViewStoreOf<SearchResultReducer>, for x509: X509) -> some View {
+        if let commonName = x509.subject.commonName {
+            HStack(alignment: .center, spacing: 0) {
+                Button(
+                    action: {
+                        viewStore.send(.selectCertificate(x509), animation: .default)
+                    },
+                    label: {
+                        HStack(alignment: .center, spacing: 0) {
+                            Text(commonName)
+                            Spacer()
+                            ListRowChevronRight()
+                        }
                     }
-                }
-            )
-            .tint(.primary)
+                )
+                .tint(.primary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -56,7 +60,11 @@ private extension SearchResultPage {
 #Preview {
     SearchResultPage(
         store: .init(
-            initialState: SearchResultReducer.State(x509: .stub)
+            initialState: SearchResultReducer.State(
+                certificates: .init(
+                    uniqueElements: [.stub]
+                )
+            )
         ) {
             SearchResultReducer()
         }

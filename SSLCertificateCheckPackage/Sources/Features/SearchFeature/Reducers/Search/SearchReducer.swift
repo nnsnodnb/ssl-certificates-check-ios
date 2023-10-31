@@ -9,6 +9,7 @@ import ComposableArchitecture
 import Foundation
 import InfoFeature
 import Logger
+import X509Parser
 
 package struct SearchReducer: Reducer {
     // MARK: - State
@@ -19,8 +20,8 @@ package struct SearchReducer: Reducer {
         var text: String = ""
         var isShareExtensionImageShow = false
         var searchableURL: URL?
-        var searchResult: Identified<X509, SearchResultReducer.State?>?
-        var searchResultDetail: Identified<X509.Certificate, SearchResultDetailReducer.State?>?
+        var searchResult: Identified<[X509], SearchResultReducer.State?>?
+        var searchResultDetail: Identified<X509, SearchResultDetailReducer.State?>?
         var isCheckFirstExperience = false
         var isRequestReview = false
         var isLoading = false
@@ -40,8 +41,8 @@ package struct SearchReducer: Reducer {
             text: String = "",
             isShareExtensionImageShow: Bool = false,
             searchableURL: URL? = nil,
-            searchResult: Identified<X509, SearchResultReducer.State?>? = nil,
-            searchResultDetail: Identified<X509.Certificate, SearchResultDetailReducer.State?>? = nil,
+            searchResult: Identified<[X509], SearchResultReducer.State?>? = nil,
+            searchResultDetail: Identified<X509, SearchResultDetailReducer.State?>? = nil,
             isCheckFirstExperience: Bool = false,
             isRequestReview: Bool = false,
             isLoading: Bool = false,
@@ -74,7 +75,7 @@ package struct SearchReducer: Reducer {
         case toggleIntroductionShareExtension
         case checkFirstExperience
         case displayedRequestReview
-        case searchResponse(TaskResult<X509>)
+        case searchResponse(TaskResult<[X509]>)
         case checkFirstExperienceResponse(TaskResult<Bool>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
@@ -115,7 +116,8 @@ package struct SearchReducer: Reducer {
                 Logger.info("Valid text: \(text)")
                 return .none
             case let .pasteURLChanged(url):
-                guard url.scheme == "https", let host = url.host() else {
+                guard url.scheme == "https",
+                      let host = url.host() else {
                     return .none
                 }
                 return .send(.textChanged(host))
@@ -132,7 +134,8 @@ package struct SearchReducer: Reducer {
                 }
                 Logger.debug("Universal Links set plainURL: \(plainURLString)")
                 guard let plainURL = URL(string: plainURLString),
-                      plainURL.scheme == "https", let host = plainURL.host() else {
+                      plainURL.scheme == "https",
+                      let host = plainURL.host() else {
                     return .none
                 }
                 state.info = nil
@@ -143,7 +146,8 @@ package struct SearchReducer: Reducer {
                 state.info = .init(version: "v\(version)")
                 Logger.info("Open Info")
                 return .none
-            case .dismissInfo, .info(.dismiss):
+            case .dismissInfo,
+                    .info(.dismiss):
                 state.info = nil
                 Logger.info("Dismiss Info")
                 return .none
@@ -180,10 +184,13 @@ package struct SearchReducer: Reducer {
                 return .run { _ in
                     await keyValueStore.setBool(true, .wasRequestReviewFinishFirstSearchExperience)
                 }
-            case let .searchResponse(.success(x509)):
+            case let .searchResponse(.success(certificates)):
                 state.isLoading = false
                 state.destinations.append(.searchResult)
-                state.searchResult = .init(SearchResultReducer.State(x509: x509), id: x509)
+                state.searchResult = .init(
+                    SearchResultReducer.State(certificates: .init(uniqueElements: certificates)),
+                    id: certificates
+                )
                 Logger.info("Open SearchResult")
                 return .none
             case let .searchResponse(.failure(error)):
@@ -222,12 +229,12 @@ package struct SearchReducer: Reducer {
                 return .none
             case .info:
                 return .none
-            case let .searchResult(.selectCertificate(certificate)):
+            case let .searchResult(.selectCertificate(x509)):
                 guard state.searchResult != nil else {
                     return .none
                 }
                 state.destinations.append(.searchResultDetail)
-                state.searchResultDetail = .init(.init(certificate: certificate), id: certificate)
+                state.searchResultDetail = .init(.init(x509: x509), id: x509)
                 return .none
             case .searchResult:
                 return .none

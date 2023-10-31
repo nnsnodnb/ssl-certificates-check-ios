@@ -7,12 +7,13 @@
 
 import ComposableArchitecture
 import Foundation
+import X509Parser
 
 package struct SearchResultDetailReducer: Reducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
-        package let certificate: X509.Certificate
+        package let x509: X509
     }
 
     // MARK: - Action
