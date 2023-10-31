@@ -127,15 +127,6 @@
       }
     },
     {
-      "identity" : "openssl-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/gematik/OpenSSL-Swift.git",
-      "state" : {
-        "revision" : "2ff3b2b7745f86eaa6a94c44299dd4f330a0943a",
-        "version" : "4.1.0"
-      }
-    },
-    {
       "identity" : "promises",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/promises.git",
