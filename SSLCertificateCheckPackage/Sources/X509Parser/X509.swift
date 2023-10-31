@@ -17,7 +17,7 @@ package struct X509: Hashable, Sendable, Identifiable {
     package let notValidAfter: Date
     package let issuer: DistinguishedNames
     package let subject: DistinguishedNames
-    package let sha256Fingerprint: String
+    package let sha256Fingerprint: SHA256Fingerprint
 
     // MARK: - Initialize
     package init(
@@ -27,7 +27,7 @@ package struct X509: Hashable, Sendable, Identifiable {
         notValidAfter: Date,
         issuer: DistinguishedNames,
         subject: DistinguishedNames,
-        sha256Fingerprint: String
+        sha256Fingerprint: SHA256Fingerprint
     ) {
         self.version = version
         self.serialNumber = serialNumber
@@ -103,6 +103,21 @@ package extension X509 {
     }
 }
 
+// MARK: - SHA256Fingerprint
+package extension X509 {
+    struct SHA256Fingerprint: Hashable, Sendable {
+        // MARK: - Properties
+        package let certificate: String
+        package let publicKey: String
+
+        // MARK: - Initialize
+        package init(certificate: String, publicKey: String) {
+            self.certificate = certificate
+            self.publicKey = publicKey
+        }
+    }
+}
+
 #if DEBUG
 // swiftlint:disable force_try
 // swiftlint:disable line_length
@@ -115,7 +130,10 @@ package extension X509 {
             notValidAfter: .init(),
             issuer: try! .init(value: "C=US,O=DigiCert Inc,CN=DigiCert TLS RSA SHA256 2020 CA1"),
             subject: try! .init(value: "C=US,ST=California,L=Los Angeles,O=Internet C2 Corporation for Assigned Names and Numbers,CN=www.example.org"),
-            sha256Fingerprint: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96"
+            sha256Fingerprint: .init(
+                certificate: "5e f2 f2 14 26 0a b8 f5 8e 55 ee a4 2e 4a c0 4b 0f 17 18 07 d8 d1 18 5f dd d6 74 70 e9 ab 60 96",
+                publicKey: "5e cf a9 8d 1a 76 dd 09 26 5d e1 f7 d4 a1 00 8c cd 5a 5a fc 69 1d 3e af 63 2f aa da 5b 6a b5 a3"
+            )
         )
     }
 }
