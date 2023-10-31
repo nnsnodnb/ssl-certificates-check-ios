@@ -44,6 +44,7 @@ private extension SearchResultDetailPage {
             contentSection(title: "Issued to", distinguishedNames: viewStore.x509.subject)
             contentSection(title: "Issued by", distinguishedNames: viewStore.x509.issuer)
             validityPeriodSection(viewStore)
+            sha256FingerprintSection(viewStore)
             otherSection(viewStore)
         }
         .formStyle(.grouped)
@@ -92,10 +93,22 @@ private extension SearchResultDetailPage {
         )
     }
 
+    func sha256FingerprintSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
+        Section(
+            content: {
+                item(title: "Certificate", content: viewStore.x509.sha256Fingerprint.certificate)
+                item(title: "Public key", content: viewStore.x509.sha256Fingerprint.publicKey)
+            },
+            header: {
+                Text("SHA256 Fingerprints")
+                    .font(.system(size: 14))
+            }
+        )
+    }
+
     func otherSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Section {
             item(title: "Serial Number", content: viewStore.x509.serialNumber)
-            item(title: "SHA-256 Fingerprint", content: viewStore.x509.sha256Fingerprint)
         }
     }
 
@@ -112,6 +125,7 @@ private extension SearchResultDetailPage {
     }
 }
 
+#if DEBUG
 #Preview {
     SearchResultDetailPage(
         store: .init(
@@ -121,3 +135,4 @@ private extension SearchResultDetailPage {
         }
     )
 }
+#endif
