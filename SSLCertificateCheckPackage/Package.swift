@@ -29,9 +29,9 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
-    static var firebaseAnalyticsSwift: Self {
+    static var firebaseAnalytics: Self {
         .product(
-            name: "FirebaseAnalyticsSwift",
+            name: "FirebaseAnalytics",
             package: "firebase-ios-sdk"
         )
     }
@@ -111,7 +111,7 @@ let package = Package(
         .target(
             name: .application,
             dependencies: [
-                .firebaseAnalyticsSwift,
+                .firebaseAnalytics,
                 .firebaseCrashlytics,
                 .searchFeature,
             ]
@@ -126,7 +126,7 @@ let package = Package(
             name: "InfoFeature",
             dependencies: [
                 .composableArchitecture,
-                .firebaseAnalyticsSwift,
+                .firebaseAnalytics,
                 .licenseFeature,
                 .safariUI,
                 .uiComponents,
@@ -137,7 +137,7 @@ let package = Package(
             name: "LicenseFeature",
             dependencies: [
                 .composableArchitecture,
-                .firebaseAnalyticsSwift,
+                .firebaseAnalytics,
             ],
             path: "Sources/Features/LicenseFeature",
             plugins: [
