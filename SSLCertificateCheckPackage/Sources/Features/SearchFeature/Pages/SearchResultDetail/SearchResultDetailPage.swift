@@ -41,13 +41,20 @@ package struct SearchResultDetailPage: View {
 private extension SearchResultDetailPage {
     func form(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
         Form {
+            otherSection(viewStore)
             contentSection(title: "Issued to", distinguishedNames: viewStore.x509.subject)
             contentSection(title: "Issued by", distinguishedNames: viewStore.x509.issuer)
             validityPeriodSection(viewStore)
             sha256FingerprintSection(viewStore)
-            otherSection(viewStore)
         }
         .formStyle(.grouped)
+    }
+
+    func otherSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
+        Section {
+            item(title: "Version", content: "Version \(viewStore.x509.version)")
+            item(title: "Serial Number", content: viewStore.x509.serialNumber)
+        }
     }
 
     func contentSection(title: String, distinguishedNames: X509.DistinguishedNames) -> some View {
@@ -104,12 +111,6 @@ private extension SearchResultDetailPage {
                     .font(.system(size: 14))
             }
         )
-    }
-
-    func otherSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
-        Section {
-            item(title: "Serial Number", content: viewStore.x509.serialNumber)
-        }
     }
 
     func item(title: String?, content: String) -> some View {
