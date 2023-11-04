@@ -43,8 +43,8 @@ package struct X509Parser {
         // TODO: extensions, signature, signatureAlgorithm
         let version = certificate.version.description.replacingOccurrences(of: "X509v", with: "")
         let serialNumber = Data(certificate.serialNumber.bytes).hexadecimalString(separator: ":")
-        let issuer = try X509.DistinguishedNames(value: certificate.issuer.description)
-        let subject = try X509.DistinguishedNames(value: certificate.subject.description)
+        let issuer = try X509.DistinguishedNames(attributes: certificate.issuer.reversed().map { String(describing: $0) })
+        let subject = try X509.DistinguishedNames(attributes: certificate.subject.reversed().map { String(describing: $0) })
         let certificateSHA256Fingerprint = SHA256.hash(data: derData).hexadecimalString(separator: " ")
         let publicKeySHA256Fingerprint = SHA256.hash(data: {
             if let p256 = P256.Signing.PublicKey(certificate.publicKey) {
