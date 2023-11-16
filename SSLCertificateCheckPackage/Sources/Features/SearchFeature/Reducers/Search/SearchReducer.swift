@@ -11,7 +11,8 @@ import InfoFeature
 import Logger
 import X509Parser
 
-package struct SearchReducer: Reducer {
+@Reducer
+package struct SearchReducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
@@ -246,16 +247,16 @@ package struct SearchReducer: Reducer {
                 return .none
             }
         }
-        .ifLet(\.info, action: /Action.info) {
+        .ifLet(\.info, action: \.info) {
             InfoReducer()
         }
-        .ifLet(\.searchResult, action: /Action.searchResult) {
+        .ifLet(\.searchResult, action: \.searchResult) {
             EmptyReducer()
                 .ifLet(\.value, action: .self) {
                     SearchResultReducer()
                 }
         }
-        .ifLet(\.searchResultDetail, action: /Action.searchResultDetail) {
+        .ifLet(\.searchResultDetail, action: \.searchResultDetail) {
             EmptyReducer()
                 .ifLet(\.value, action: .self) {
                     SearchResultDetailReducer()

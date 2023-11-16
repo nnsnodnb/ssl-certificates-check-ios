@@ -8,7 +8,8 @@
 import ComposableArchitecture
 import Foundation
 
-package struct LicenseListReducer: Reducer {
+@Reducer
+package struct LicenseListReducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
