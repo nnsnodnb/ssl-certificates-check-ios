@@ -79,7 +79,3 @@ line_length: 130
 
 disabled_rules:
   - nesting
-
-trailing_comma:
-  excluded:
-    - SSLCertificateCheckPackage/Package.swift
