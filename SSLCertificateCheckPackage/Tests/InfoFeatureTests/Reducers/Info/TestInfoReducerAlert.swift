@@ -85,6 +85,6 @@ final class TestInfoReducerAlert: XCTestCase {
         await store.send(.alert(.presented(.openURL(url)))) {
             $0.alert = nil
         }
-        await store.receive(.openForeignBrowser(url), timeout: 0)
+        await store.receive(\.openForeignBrowser, timeout: 0)
     }
 }
