@@ -9,7 +9,8 @@ import ComposableArchitecture
 import Foundation
 import LicenseFeature
 
-package struct InfoReducer: Reducer {
+@Reducer
+package struct InfoReducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
@@ -147,7 +148,7 @@ package struct InfoReducer: Reducer {
                 return .none
             }
         }
-        .ifLet(\.licenseList, action: /Action.licenseList) {
+        .ifLet(\.licenseList, action: \.licenseList) {
             LicenseListReducer()
         }
     }

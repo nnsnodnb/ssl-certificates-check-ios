@@ -120,7 +120,6 @@ package extension X509 {
 
 #if DEBUG
 // swiftlint:disable force_try
-// swiftlint:disable line_length
 package extension X509 {
     static var stub: Self {
         .init(
@@ -146,5 +145,4 @@ package extension X509 {
     }
 }
 // swiftlint:enable force_try
-// swiftlint:enable line_length
 #endif

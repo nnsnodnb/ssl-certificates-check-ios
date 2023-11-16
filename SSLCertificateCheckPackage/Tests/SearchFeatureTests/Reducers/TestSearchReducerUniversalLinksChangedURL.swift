@@ -20,7 +20,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
 
         let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
         await store.send(.universalLinksURLChanged(url))
-        await store.receive(.textChanged("example.com"), timeout: 0) {
+        await store.receive(\.textChanged, timeout: 0) {
             $0.text = "example.com"
             $0.searchButtonDisabled = false
             $0.searchableURL = URL(string: "https://example.com")
@@ -38,7 +38,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         await store.send(.universalLinksURLChanged(url)) {
             $0.info = nil
         }
-        await store.receive(.textChanged("example.com"), timeout: 0) {
+        await store.receive(\.textChanged, timeout: 0) {
             $0.text = "example.com"
             $0.searchButtonDisabled = false
             $0.searchableURL = URL(string: "https://example.com")
@@ -56,7 +56,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         await store.send(.universalLinksURLChanged(url)) {
             $0.destinations = []
         }
-        await store.receive(.textChanged("example.com"), timeout: 0) {
+        await store.receive(\.textChanged, timeout: 0) {
             $0.text = "example.com"
             $0.searchButtonDisabled = false
             $0.searchableURL = URL(string: "https://example.com")

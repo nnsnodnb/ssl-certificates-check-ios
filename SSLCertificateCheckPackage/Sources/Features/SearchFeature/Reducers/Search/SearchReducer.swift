@@ -5,13 +5,15 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import CasePaths
 import ComposableArchitecture
 import Foundation
 import InfoFeature
 import Logger
 import X509Parser
 
-package struct SearchReducer: Reducer {
+@Reducer
+package struct SearchReducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties
@@ -75,8 +77,8 @@ package struct SearchReducer: Reducer {
         case toggleIntroductionShareExtension
         case checkFirstExperience
         case displayedRequestReview
-        case searchResponse(TaskResult<[X509]>)
-        case checkFirstExperienceResponse(TaskResult<Bool>)
+        case searchResponse(Result<[X509], Error>)
+        case checkFirstExperienceResponse(Result<Bool, Error>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
         case searchResult(SearchResultReducer.Action)
@@ -85,6 +87,13 @@ package struct SearchReducer: Reducer {
 
         // MARK: - Alert
         package enum Alert: Equatable {
+        }
+
+        // MARK: - Error
+        @CasePathable
+        package enum Error: Swift.Error {
+            case search
+            case checkFirstExperience
         }
     }
 
@@ -164,7 +173,8 @@ package struct SearchReducer: Reducer {
                         await send(.searchResponse(.success(x509)))
                     },
                     catch: { error, send in
-                        await send(.searchResponse(.failure(error)))
+                        await send(.searchResponse(.failure(.search)))
+                        Logger.error("Failed searching: \(error)")
                     }
                 )
             case .toggleIntroductionShareExtension:
@@ -193,7 +203,7 @@ package struct SearchReducer: Reducer {
                 )
                 Logger.info("Open SearchResult")
                 return .none
-            case let .searchResponse(.failure(error)):
+            case .searchResponse(.failure):
                 state.isLoading = false
                 state.alert = AlertState(
                     title: {
@@ -210,7 +220,6 @@ package struct SearchReducer: Reducer {
                         TextState("Please check or re-run the URL.")
                     }
                 )
-                Logger.error("Failed searching: \(error)")
                 return .none
             case let .checkFirstExperienceResponse(.success(result)):
                 guard !result else { return .none }
@@ -246,16 +255,16 @@ package struct SearchReducer: Reducer {
                 return .none
             }
         }
-        .ifLet(\.info, action: /Action.info) {
+        .ifLet(\.info, action: \.info) {
             InfoReducer()
         }
-        .ifLet(\.searchResult, action: /Action.searchResult) {
+        .ifLet(\.searchResult, action: \.searchResult) {
             EmptyReducer()
                 .ifLet(\.value, action: .self) {
                     SearchResultReducer()
                 }
         }
-        .ifLet(\.searchResultDetail, action: /Action.searchResultDetail) {
+        .ifLet(\.searchResultDetail, action: \.searchResultDetail) {
             EmptyReducer()
                 .ifLet(\.value, action: .self) {
                     SearchResultDetailReducer()

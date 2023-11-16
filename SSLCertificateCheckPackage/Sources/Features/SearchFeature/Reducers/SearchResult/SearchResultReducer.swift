@@ -9,7 +9,8 @@ import ComposableArchitecture
 import Foundation
 import X509Parser
 
-package struct SearchResultReducer: Reducer {
+@Reducer
+package struct SearchResultReducer {
     // MARK: - State
     package struct State: Equatable {
         // MARK: - Properties

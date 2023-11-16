@@ -26,7 +26,7 @@ final class TestLicenseListReducerFetchLicensesResponse: XCTestCase { // swiftli
         )
 
         await store.send(.fetchLicenses)
-        await store.receive(.fetchLicensesResponse(.success(licenses)), timeout: 0) {
+        await store.receive(\.fetchLicensesResponse.success, timeout: 0) {
             $0.licenses = .init(uniqueElements: licenses)
         }
     }
