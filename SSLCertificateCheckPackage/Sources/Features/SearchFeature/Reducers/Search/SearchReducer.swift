@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import CasePaths
 import ComposableArchitecture
 import Foundation
 import InfoFeature
@@ -76,8 +77,8 @@ package struct SearchReducer {
         case toggleIntroductionShareExtension
         case checkFirstExperience
         case displayedRequestReview
-        case searchResponse(TaskResult<[X509]>)
-        case checkFirstExperienceResponse(TaskResult<Bool>)
+        case searchResponse(Result<[X509], Error>)
+        case checkFirstExperienceResponse(Result<Bool, Error>)
         case navigationPathChanged([State.Destination])
         case info(InfoReducer.Action)
         case searchResult(SearchResultReducer.Action)
@@ -86,6 +87,13 @@ package struct SearchReducer {
 
         // MARK: - Alert
         package enum Alert: Equatable {
+        }
+
+        // MARK: - Error
+        @CasePathable
+        package enum Error: Swift.Error {
+            case search
+            case checkFirstExperience
         }
     }
 
@@ -165,7 +173,8 @@ package struct SearchReducer {
                         await send(.searchResponse(.success(x509)))
                     },
                     catch: { error, send in
-                        await send(.searchResponse(.failure(error)))
+                        await send(.searchResponse(.failure(.search)))
+                        Logger.error("Failed searching: \(error)")
                     }
                 )
             case .toggleIntroductionShareExtension:
@@ -194,7 +203,7 @@ package struct SearchReducer {
                 )
                 Logger.info("Open SearchResult")
                 return .none
-            case let .searchResponse(.failure(error)):
+            case .searchResponse(.failure):
                 state.isLoading = false
                 state.alert = AlertState(
                     title: {
@@ -211,7 +220,6 @@ package struct SearchReducer {
                         TextState("Please check or re-run the URL.")
                     }
                 )
-                Logger.error("Failed searching: \(error)")
                 return .none
             case let .checkFirstExperienceResponse(.success(result)):
                 guard !result else { return .none }

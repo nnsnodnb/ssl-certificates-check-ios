@@ -138,6 +138,7 @@ let package = Package(
             dependencies: [
                 .composableArchitecture,
                 .firebaseAnalytics,
+                .logger,
             ],
             path: "Sources/Features/LicenseFeature",
             plugins: [

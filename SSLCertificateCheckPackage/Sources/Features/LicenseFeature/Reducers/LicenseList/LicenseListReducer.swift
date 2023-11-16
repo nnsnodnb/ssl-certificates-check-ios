@@ -5,8 +5,10 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
+import CasePaths
 import ComposableArchitecture
 import Foundation
+import Logger
 
 @Reducer
 package struct LicenseListReducer {
@@ -23,7 +25,13 @@ package struct LicenseListReducer {
     // MARK: - Action
     package enum Action: Equatable {
         case fetchLicenses
-        case fetchLicensesResponse(TaskResult<[License]>)
+        case fetchLicensesResponse(Result<[License], Error>)
+
+        // MARK: - Error
+        @CasePathable
+        package enum Error: Swift.Error {
+            case fetchLicenses
+        }
     }
 
     // MARK: - Properties
@@ -39,10 +47,16 @@ package struct LicenseListReducer {
         Reduce { state, action in
             switch action {
             case .fetchLicenses:
-                return .run { send in
-                    let licenses = try await license.fetchLicenses()
-                    await send(.fetchLicensesResponse(.success(licenses)))
-                }
+                return .run(
+                    operation: { send in
+                        let licenses = try await license.fetchLicenses()
+                        await send(.fetchLicensesResponse(.success(licenses)))
+                    },
+                    catch: { error, send in
+                        await send(.fetchLicensesResponse(.failure(.fetchLicenses)))
+                        Logger.error("\(error)")
+                    }
+                )
             case let .fetchLicensesResponse(.success(licenses)):
                 state.licenses = .init(uniqueElements: licenses)
                 return .none

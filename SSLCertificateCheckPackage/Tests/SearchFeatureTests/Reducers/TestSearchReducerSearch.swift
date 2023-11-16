@@ -84,7 +84,7 @@ final class TestSearchReducerSearch: XCTestCase {
         await store.send(.search) {
             $0.isLoading = true
         }
-        await store.receive(\.searchResponse.failure, timeout: 0) {
+        await store.receive(\.searchResponse.failure.search, timeout: 0) {
             $0.isLoading = false
             $0.alert = AlertState(
                 title: {
