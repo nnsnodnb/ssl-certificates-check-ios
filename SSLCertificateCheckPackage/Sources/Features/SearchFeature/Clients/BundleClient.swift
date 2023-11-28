@@ -6,12 +6,13 @@
 //
 
 import Dependencies
+import DependenciesMacros
 import Foundation
-import XCTestDynamicOverlay
 
+@DependencyClient
 package struct BundleClient {
     // MARK: - Properties
-    package var shortVersionString: @Sendable () -> String
+    package var shortVersionString: @Sendable () -> String = { "" }
 }
 
 // MARK: - DependencyKey
@@ -21,8 +22,5 @@ extension BundleClient: DependencyKey {
             Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         }
     )
-
-    package static var testValue: BundleClient = .init(
-        shortVersionString: unimplemented("\(Self.self).shortVersionString")
-    )
+    package static var testValue: BundleClient = .init()
 }

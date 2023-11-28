@@ -34,7 +34,7 @@ package struct InfoPage: View {
                 }
             )
             .interactiveDismissDisabled(viewStore.interactiveDismissDisabled)
-            .alert(store: store.scope(state: \.$alert, action: InfoReducer.Action.alert))
+            .alert(store: store.scope(state: \.$alert, action: \.alert))
         })
     }
 
@@ -172,7 +172,7 @@ private extension View {
             switch destination {
             case .licenseList:
                 IfLetStore(
-                    store.scope(state: \.licenseList, action: InfoReducer.Action.licenseList),
+                    store.scope(state: \.licenseList, action: \.licenseList),
                     then: { store in
                         LicenseListPage(store: store)
                     }

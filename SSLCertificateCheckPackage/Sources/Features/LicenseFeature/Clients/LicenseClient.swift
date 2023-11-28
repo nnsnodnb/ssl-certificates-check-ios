@@ -6,9 +6,10 @@
 //
 
 import Dependencies
+import DependenciesMacros
 import Foundation
-import XCTestDynamicOverlay
 
+@DependencyClient
 package struct LicenseClient {
     // MARK: - Properties
     package var fetchLicenses: @Sendable () async throws -> [License]
@@ -21,7 +22,5 @@ extension LicenseClient: DependencyKey {
             LicensesPlugin.licenses.map { License(id: $0.id, name: $0.name, licenseText: $0.licenseText) }
         }
     )
-    package static let testValue: LicenseClient = .init(
-        fetchLicenses: unimplemented("\(Self.self).fetchLicenses")
-    )
+    package static let testValue: LicenseClient = .init()
 }

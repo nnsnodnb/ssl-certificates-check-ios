@@ -6,13 +6,14 @@
 //
 
 import Dependencies
+import DependenciesMacros
 import Foundation
-import XCTestDynamicOverlay
 
+@DependencyClient
 package struct KeyValueStoreClient {
     // MARK: - Properties
-    var bool: @Sendable (Key) async -> Bool
-    var setBool: @Sendable (Bool, Key) async -> Void
+    var bool: @Sendable (Key) async throws -> Bool
+    var setBool: @Sendable (Bool, Key) async throws -> Void
 }
 
 // MARK: - Key
@@ -38,11 +39,7 @@ extension KeyValueStoreClient: DependencyKey {
         bool: { await UserDefaultsActor.shared.bool(forKey: $0) },
         setBool: { await UserDefaultsActor.shared.set(value: $0, forKey: $1) }
     )
-
-    package static let testValue: KeyValueStoreClient = .init(
-        bool: unimplemented("\(Self.self).bool"),
-        setBool: unimplemented("\(Self.self).set")
-    )
+    package static let testValue: KeyValueStoreClient = .init()
 }
 
 // MARK: - UserDefaultsActor

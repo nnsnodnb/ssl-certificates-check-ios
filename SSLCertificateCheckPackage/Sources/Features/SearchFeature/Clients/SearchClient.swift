@@ -6,10 +6,11 @@
 //
 
 import Dependencies
+import DependenciesMacros
 import Foundation
 import X509Parser
-import XCTestDynamicOverlay
 
+@DependencyClient
 package struct SearchClient: Sendable {
     // MARK: - Properties
     package var fetchCertificates: @Sendable (URL) async throws -> [X509]
@@ -20,10 +21,7 @@ extension SearchClient: DependencyKey {
     package static let liveValue: SearchClient = .init(
         fetchCertificates: { try await Implementation.fetchCertificates(fromURL: $0) }
     )
-
-    package static let testValue: SearchClient = .init(
-        fetchCertificates: unimplemented("\(Self.self).fetchCertificates")
-    )
+    package static let testValue: SearchClient = .init()
 }
 
 // MARK: - Implementation
@@ -43,22 +41,20 @@ private extension SearchClient {
             }
             return try X509Parser.parse(serverTrust: serverTrust)
         }
-    }
-}
-
-// MARK: - SessionDelegate
-private extension SearchClient.Implementation {
-    final class SessionDelegate: NSObject, URLSessionDelegate {
-        // MARK: - Properties
-        private(set) var serverTrust: SecTrust?
 
         // MARK: - URLSessionDelegate
-        func urlSession(
-            _ session: URLSession,
-            didReceive challenge: URLAuthenticationChallenge
-        ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-            self.serverTrust = challenge.protectionSpace.serverTrust
-            return (.performDefaultHandling, nil)
+        private final class SessionDelegate: NSObject, URLSessionDelegate {
+            // MARK: - Properties
+            private(set) var serverTrust: SecTrust?
+
+            // MARK: - URLSessionDelegate
+            func urlSession(
+                _ session: URLSession,
+                didReceive challenge: URLAuthenticationChallenge
+            ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+                self.serverTrust = challenge.protectionSpace.serverTrust
+                return (.performDefaultHandling, nil)
+            }
         }
     }
 }

@@ -45,7 +45,7 @@ package struct SearchPage: View {
                 }
             )
             .sheet(store: store, viewStore)
-            .alert(store: store.scope(state: \.$alert, action: SearchReducer.Action.alert))
+            .alert(store: store.scope(state: \.$alert, action: \.alert))
             .onOpenURL(perform: { url in
                 viewStore.send(.universalLinksURLChanged(url))
             })
@@ -207,7 +207,7 @@ private extension View {
                     IfLetStore(
                         store.scope(
                             state: \.searchResult?.value,
-                            action: SearchReducer.Action.searchResult
+                            action: \.searchResult
                         ),
                         then: { store in
                             SearchResultPage(store: store)
@@ -217,7 +217,7 @@ private extension View {
                     IfLetStore(
                         store.scope(
                             state: \.searchResultDetail?.value,
-                            action: SearchReducer.Action.searchResultDetail
+                            action: \.searchResultDetail
                         ),
                         then: { store in
                             SearchResultDetailPage(store: store)
@@ -235,7 +235,7 @@ private extension View {
                 send: { $0 ? .openInfo : .dismissInfo }
             ),
             content: {
-                IfLetStore(store.scope(state: \.info, action: SearchReducer.Action.info)) { store in
+                IfLetStore(store.scope(state: \.info, action: \.info)) { store in
                     InfoPage(store: store)
                 }
             }

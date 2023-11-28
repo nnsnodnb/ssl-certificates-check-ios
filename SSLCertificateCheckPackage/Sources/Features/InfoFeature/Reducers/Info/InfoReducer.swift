@@ -132,7 +132,7 @@ package struct InfoReducer {
                 return .none
             case let .openForeignBrowser(url):
                 return .run { _ in
-                    _ = await application.open(url)
+                    _ = try await application.open(url)
                 }
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
