@@ -16,13 +16,17 @@ jobs:
       pull-requests: read
 
     outputs:
-      files_changes: ${{ steps.files_changes.outputs.files }}
+      files_changes: ${{ steps.files_changes.outputs.modified_files }}
 
     steps:
     - uses: actions/checkout@v4
 
-    - uses: trilom/file-changes-action@v1.2.4
+    - uses: tj-actions/changed-files@v40
       id: files_changes
+      with:
+        json: "true"
+        quotepath: "false"
+        escape_json: "false"
 
   resolve-swift-packages:
     runs-on: macos-13
