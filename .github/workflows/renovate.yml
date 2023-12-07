@@ -9,7 +9,7 @@ on:
 jobs:
   precheck:
     runs-on: ubuntu-latest
-    # if: startsWith(github.head_ref, 'renovate/')
+    if: startsWith(github.head_ref, 'renovate/')
 
     permissions:
       contents: read
@@ -27,8 +27,6 @@ jobs:
         json: "true"
         quotepath: "false"
         escape_json: "false"
-
-    - run: echo "${{ steps.files_changes.outputs.modified_files }}"
 
   resolve-swift-packages:
     runs-on: macos-13
