@@ -90,3 +90,4 @@ jobs:
             test-results/Test-LicenseFeatureTests.xcresult
             test-results/Test-SearchFeatureTests.xcresult
             test-results/Test-X509ParserTests.xcresult
+          show-passed-tests: false
