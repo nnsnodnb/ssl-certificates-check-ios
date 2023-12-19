@@ -55,10 +55,10 @@ Gym for AdHoc
 
 Gym for AppStore
 
-### ios update_version
+### ios update_app_version
 
 ```sh
-[bundle exec] fastlane ios update_version
+[bundle exec] fastlane ios update_app_version
 ```
 
 Update MARKETING_VERSION & CURRENT_PROJECT_VERSION

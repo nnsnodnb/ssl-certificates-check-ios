@@ -75,7 +75,7 @@ platform :ios do
 
   # Utility
   desc "Update MARKETING_VERSION & CURRENT_PROJECT_VERSION"
-  lane :update_version do
+  lane :update_app_version do
     ["App/AdHoc/AdHoc.xcodeproj", "App/Production/Production.xcodeproj", "App/Develop/Develop.xcodeproj"].each do |xcodeproj|
       version = get_build_number(
         xcodeproj: xcodeproj,
