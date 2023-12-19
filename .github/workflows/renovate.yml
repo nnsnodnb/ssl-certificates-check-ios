@@ -42,13 +42,19 @@ jobs:
         url: https://github.com/nnsnodnb/github-apps-token-swift
         version: '*'
 
+    - uses: 1password/load-secrets-action@v1
+      with:
+        export-env: true
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        APP_PRIVATE_KEY: op://aoi-chan-bot/GitHubApp/aoi-chan-bot.private-key.pem
+
     - name: Configure Access Token for GitHub Apps
       id: get-github-app
       env:
         APP_ID: ${{ secrets.APP_ID }}
-        PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
       run: |
-        echo "${PRIVATE_KEY}" > /tmp/github-apps-private-key.pem
+        echo "${APP_PRIVATE_KEY}" > /tmp/github-apps-private-key.pem
         token=$(github-apps-token create \
                   -a "${APP_ID}" \
                   -p /tmp/github-apps-private-key.pem \
