@@ -55,6 +55,14 @@ Gym for AdHoc
 
 Gym for AppStore
 
+### ios update_app_version
+
+```sh
+[bundle exec] fastlane ios update_app_version
+```
+
+Update MARKETING_VERSION & CURRENT_PROJECT_VERSION
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
