@@ -33,6 +33,14 @@ $ xed .
 
 Then change scheme to `Develop` and build and run.
 
+## Bump version
+
+Please edit MARKETING_VERSION of `update_app_version` in `fastlane/Fastfile`.
+
+```bash
+$ bundle exec fastlane update_app_version
+```
+
 ## License
 
 This software is licensed under the MIT license (See [LICENSE](LICENSE)).
