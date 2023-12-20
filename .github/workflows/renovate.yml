@@ -34,7 +34,7 @@ jobs:
     if: contains(fromJson(needs.precheck.outputs.files_changes), 'SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') == false
 
     env:
-      DEVELOPER_DIR: /Applications/Xcode_15.0.1.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_15.1.app/Contents/Developer
 
     steps:
     - uses: Cyberbeni/install-swift-tool@v2
