@@ -84,7 +84,7 @@ platform :ios do
         xcodeproj: xcodeproj,
         options: {
           "CURRENT_PROJECT_VERSION": version.to_i + 1,
-          "MARKETING_VERSION": "1.0.3",
+          "MARKETING_VERSION": "1.1.0",
         }
       )
     end
