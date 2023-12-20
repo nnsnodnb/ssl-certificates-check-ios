@@ -126,6 +126,9 @@ let package = Package(
         // AppExtensions
         .target(
             name: .appClipExtension,
+            dependencies: [
+                .application,
+            ],
             path: "Sources/AppExtensions/AppClip"
         ),
         .target(
