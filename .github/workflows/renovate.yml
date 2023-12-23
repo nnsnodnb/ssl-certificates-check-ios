@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: tj-actions/changed-files@v40
+    - uses: tj-actions/changed-files@v41
       id: files_changes
       with:
         json: "true"
