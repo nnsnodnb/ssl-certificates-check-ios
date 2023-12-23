@@ -16,7 +16,7 @@ jobs:
       pull-requests: read
 
     outputs:
-      files_changes: ${{ steps.files_changes.outputs.modified_files }}
+      result: ${{ steps.parse.outputs.result }}
 
     steps:
     - uses: actions/checkout@v4
@@ -28,10 +28,31 @@ jobs:
         quotepath: "false"
         escape_json: "false"
 
+    - name: Parse
+      shell: python
+      id: parse
+      env:
+        MODIFIED_FILES: ${{ steps.files_changes.outputs.modified_files }}
+      run: |
+        import json
+        import os
+
+
+        plain = os.getenv("MODIFIED_FILES", "[]")
+        plain = plain.replace("\\\"", "\"")
+        modified_files = json.loads(plain)
+        resolved_files_path = "SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        result = "resolve" if resolved_files_path not in modified_files else "skip"
+
+        with open(os.getenv("GITHUB_OUTPUT"), "a") as f:
+            output = f"result={result}"
+            print(output, file=f)
+
+
   resolve-swift-packages:
     runs-on: macos-13
     needs: precheck
-    if: contains(fromJson(needs.precheck.outputs.files_changes), 'SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') == false
+    if: needs.precheck.outputs.result == 'resolve'
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_15.1.app/Contents/Developer
