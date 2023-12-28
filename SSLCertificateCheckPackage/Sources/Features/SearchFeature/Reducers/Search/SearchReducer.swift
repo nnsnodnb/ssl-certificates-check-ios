@@ -186,13 +186,13 @@ package struct SearchReducer {
                 }
                 state.isCheckFirstExperience = false
                 return .run { send in
-                    let result = try await keyValueStore.bool(.wasRequestReviewFinishFirstSearchExperience)
+                    let result = try await keyValueStore.getWasRequestReviewFinishFirstSearchExperience()
                     await send(.checkFirstExperienceResponse(.success(result)))
                 }
             case .displayedRequestReview:
                 state.isRequestReview = false
                 return .run { _ in
-                    try await keyValueStore.setBool(true, .wasRequestReviewFinishFirstSearchExperience)
+                    try await keyValueStore.setWasRequestReviewFinishFirstSearchExperience(true)
                 }
             case let .searchResponse(.success(certificates)):
                 state.isLoading = false

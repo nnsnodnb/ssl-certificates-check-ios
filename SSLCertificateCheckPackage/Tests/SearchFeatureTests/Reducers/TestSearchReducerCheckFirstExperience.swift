@@ -39,8 +39,8 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         }
 
         store.dependencies.keyValueStore = .init(
-            bool: { _ in false },
-            setBool: { _, _ in }
+            getWasRequestReviewFinishFirstSearchExperience: { false },
+            setWasRequestReviewFinishFirstSearchExperience: { _ in }
         )
 
         await store.send(.checkFirstExperience) {
@@ -68,8 +68,8 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         }
 
         store.dependencies.keyValueStore = .init(
-            bool: { _ in true },
-            setBool: { _, _ in }
+            getWasRequestReviewFinishFirstSearchExperience: { true },
+            setWasRequestReviewFinishFirstSearchExperience: { _ in }
         )
 
         await store.send(.checkFirstExperience) {
