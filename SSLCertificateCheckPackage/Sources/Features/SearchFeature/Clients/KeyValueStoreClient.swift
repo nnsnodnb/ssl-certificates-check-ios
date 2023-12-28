@@ -8,12 +8,15 @@
 import Dependencies
 import DependenciesMacros
 import Foundation
+import SwiftUI
 
 @DependencyClient
 package struct KeyValueStoreClient {
     // MARK: - Properties
-    var bool: @Sendable (Key) async throws -> Bool
-    var setBool: @Sendable (Bool, Key) async throws -> Void
+    // swiftlint:disable identifier_name
+    var getWasRequestReviewFinishFirstSearchExperience: @Sendable () async throws -> Bool
+    var setWasRequestReviewFinishFirstSearchExperience: @Sendable (Bool) async throws -> Void
+    // swiftlint:enable identifier_name
 }
 
 // MARK: - Key
@@ -36,32 +39,34 @@ package extension KeyValueStoreClient {
 // MARK: - DependencyKey
 extension KeyValueStoreClient: DependencyKey {
     package static let liveValue: KeyValueStoreClient = .init(
-        bool: { await UserDefaultsActor.shared.bool(forKey: $0) },
-        setBool: { await UserDefaultsActor.shared.set(value: $0, forKey: $1) }
+        getWasRequestReviewFinishFirstSearchExperience: {
+            await AppStorageActor.shared.getWasRequestReviewFinishFirstSearchExperience()
+        },
+        setWasRequestReviewFinishFirstSearchExperience: {
+            await AppStorageActor.shared.setWasRequestReviewFinishFirstSearchExperience(value: $0)
+        }
     )
     package static let testValue: KeyValueStoreClient = .init()
 }
 
 // MARK: - UserDefaultsActor
 private extension KeyValueStoreClient {
-    final actor UserDefaultsActor: GlobalActor {
+    final actor AppStorageActor: GlobalActor {
         // MARK: - Properties
-        static let shared: UserDefaultsActor = .init()
-        static let testValue: UserDefaultsActor = .init(userDefaults: .init(suiteName: UUID().uuidString)!)
+        static let shared: AppStorageActor = .init()
+        static let testValue: AppStorageActor = .init()
 
-        private let userDefaults: UserDefaults
+        // swiftlint:disable identifier_name
+        @AppStorage(Key.wasRequestReviewFinishFirstSearchExperience.rawValue)
+        private var wasRequestReviewFinishFirstSearchExperience = false
+        // swiftlint:enable identifier_name
 
-        // MARK: - Initialize
-        private init(userDefaults: UserDefaults = .standard) {
-            self.userDefaults = userDefaults
+        func getWasRequestReviewFinishFirstSearchExperience() -> Bool {
+            return wasRequestReviewFinishFirstSearchExperience
         }
 
-        func bool(forKey key: Key) -> Bool {
-            userDefaults.bool(forKey: key.rawValue)
-        }
-
-        func set(value: Bool, forKey key: Key) {
-            userDefaults.set(value, forKey: key.rawValue)
+        func setWasRequestReviewFinishFirstSearchExperience(value: Bool) {
+            wasRequestReviewFinishFirstSearchExperience = value
         }
     }
 }
