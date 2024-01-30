@@ -46,7 +46,7 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         await store.send(.checkFirstExperience) {
             $0.isCheckFirstExperience = false
         }
-        await store.receive(\.checkFirstExperienceResponse.success, timeout: 0) {
+        await store.receive(\.checkFirstExperienceResponse, .success(false), timeout: 0) {
             $0.isRequestReview = true
         }
     }
@@ -75,6 +75,6 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         await store.send(.checkFirstExperience) {
             $0.isCheckFirstExperience = false
         }
-        await store.receive(\.checkFirstExperienceResponse.success, timeout: 0)
+        await store.receive(\.checkFirstExperienceResponse, .success(true), timeout: 0)
     }
 }
