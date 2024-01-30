@@ -12,7 +12,7 @@ import Foundation
 @DependencyClient
 package struct BundleClient {
     // MARK: - Properties
-    package var shortVersionString: @Sendable () -> String = { "" }
+    var shortVersionString: @Sendable () -> String = { "" }
 }
 
 // MARK: - DependencyKey

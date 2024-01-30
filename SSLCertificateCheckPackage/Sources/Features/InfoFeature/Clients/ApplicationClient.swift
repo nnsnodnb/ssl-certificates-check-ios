@@ -13,7 +13,7 @@ import UIKit
 @DependencyClient
 package struct ApplicationClient: Sendable {
     // MARK: - Properties
-    package var open: @Sendable (URL) async throws -> Bool
+    var open: @Sendable (URL) async throws -> Bool
 }
 
 // MARK: - DependencyKey
