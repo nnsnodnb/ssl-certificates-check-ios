@@ -48,7 +48,7 @@ package struct SearchPage: View {
                     InfoPage(store: store)
                 }
             )
-            .alert(store: store.scope(state: \.$alert, action: \.alert))
+            .alert($store.scope(state: \.alert, action: \.alert))
             .onOpenURL(perform: { url in
                 store.send(.universalLinksURLChanged(url))
             })

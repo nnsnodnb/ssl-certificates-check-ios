@@ -32,7 +32,7 @@ package struct InfoPage: View {
                 }
             )
             .interactiveDismissDisabled(store.interactiveDismissDisabled)
-            .alert(store: store.scope(state: \.$alert, action: \.alert))
+            .alert($store.scope(state: \.alert, action: \.alert))
         }
     }
 
