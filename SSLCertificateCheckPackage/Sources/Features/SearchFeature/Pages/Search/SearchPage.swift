@@ -42,7 +42,12 @@ package struct SearchPage: View {
                         }
                 }
             )
-            .sheet(store: store)
+            .sheet(
+                item: $store.scope(state: \.info, action: \.info),
+                content: { store in
+                    InfoPage(store: store)
+                }
+            )
             .alert(store: store.scope(state: \.$alert, action: \.alert))
             .onOpenURL(perform: { url in
                 store.send(.universalLinksURLChanged(url))
@@ -206,20 +211,6 @@ private extension View {
                     if let store = store.scope(state: \.searchResultDetail?.value, action: \.searchResultDetail) {
                         SearchResultDetailPage(store: store)
                     }
-                }
-            }
-        )
-    }
-
-    func sheet(store: StoreOf<SearchReducer>) -> some View {
-        sheet(
-            isPresented: .init(
-                get: { store.info != nil },
-                set: { store.send($0 ? .openInfo : .dismissInfo) }
-            ),
-            content: {
-                if let store = store.scope(state: \.info, action: \.info) {
-                    InfoPage(store: store)
                 }
             }
         )

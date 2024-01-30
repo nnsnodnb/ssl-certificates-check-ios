@@ -155,7 +155,7 @@ private extension View {
             ToolbarItem(placement: .topBarLeading) {
                 Button(
                     action: {
-                        store.send(.dismiss)
+                        store.send(.close)
                     },
                     label: {
                         Image(systemSymbol: .xmark)
@@ -169,7 +169,7 @@ private extension View {
         navigationDestination(for: InfoReducer.State.Destination.self) { destination in
             switch destination {
             case .licenseList:
-                if let store = store.scope(state: \.licenseList, action: \.licenseList) {
+                if let store = store.scope(state: \.licenseList, action: \.licenseList.presented) {
                     LicenseListPage(store: store)
                 }
             }
