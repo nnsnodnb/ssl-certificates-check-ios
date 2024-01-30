@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import LicenseFeature
+import Perception
 import SafariUI
 import SFSafeSymbols
 import SwiftUI
@@ -15,27 +16,24 @@ import UIComponents
 @MainActor
 package struct InfoPage: View {
     // MARK: - Properties
-    private let store: StoreOf<InfoReducer>
+    @Perception.Bindable private var store: StoreOf<InfoReducer>
 
     // MARK: - Body
     package var body: some View {
-        WithViewStore(store, observe: { $0 }, content: { viewStore in
+        WithPerceptionTracking {
             NavigationStack(
-                path: viewStore.binding(
-                    get: \.destinations,
-                    send: InfoReducer.Action.navigationPathChanged
-                ),
+                path: $store.destinations.sending(\.navigationPathChanged),
                 root: {
-                    form(viewStore)
+                    form
                         .navigationTitle("App Information")
                         .navigationDestination(store: store)
-                        .toolbar(viewStore)
-                        .safari(viewStore)
+                        .toolbar(store: store)
+                        .safari(store: $store)
                 }
             )
-            .interactiveDismissDisabled(viewStore.interactiveDismissDisabled)
-            .alert(store: store.scope(state: \.$alert, action: \.alert))
-        })
+            .interactiveDismissDisabled(store.interactiveDismissDisabled)
+            .alert($store.scope(state: \.alert, action: \.alert))
+        }
     }
 
     // MARK: - Initialize
@@ -47,18 +45,18 @@ package struct InfoPage: View {
 // MARK: - Private method
 @MainActor
 private extension InfoPage {
-    func form(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+    var form: some View {
         Form {
-            firstSection(viewStore)
-            secondSection(viewStore)
+            firstSection
+            secondSection
         }
     }
 
-    func firstSection(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+    var firstSection: some View {
         Section {
             buttonRow(
                 action: {
-                    viewStore.send(.safari(.gitHub))
+                    store.send(.safari(.gitHub))
                 },
                 image: {
                     Image(.icGithub)
@@ -68,7 +66,7 @@ private extension InfoPage {
             )
             buttonRow(
                 action: {
-                    viewStore.send(.safari(.xTwitter))
+                    store.send(.safari(.xTwitter))
                 },
                 image: {
                     Image(.icXTwitetr)
@@ -79,11 +77,11 @@ private extension InfoPage {
         }
     }
 
-    func secondSection(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+    var secondSection: some View {
         Section {
             buttonRow(
                 action: {
-                    viewStore.send(.openAppReview)
+                    store.send(.openAppReview)
                 },
                 image: {
                     Image(systemSymbol: .starBubble)
@@ -94,7 +92,7 @@ private extension InfoPage {
             )
             buttonRow(
                 action: {
-                    viewStore.send(.pushLicenseList)
+                    store.send(.pushLicenseList)
                 },
                 image: {
                     Image(systemSymbol: .listBulletRectangleFill)
@@ -113,7 +111,7 @@ private extension InfoPage {
                         .foregroundStyle(.primary)
                 }
                 Spacer()
-                Text(viewStore.version)
+                Text(store.version)
                     .foregroundStyle(.secondary)
             }
             HStack(alignment: .center, spacing: 12) {
@@ -152,12 +150,12 @@ private extension InfoPage {
 
 @MainActor
 private extension View {
-    func toolbar(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+    func toolbar(store: StoreOf<InfoReducer>) -> some View {
         toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(
                     action: {
-                        viewStore.send(.dismiss)
+                        store.send(.close)
                     },
                     label: {
                         Image(systemSymbol: .xmark)
@@ -171,22 +169,16 @@ private extension View {
         navigationDestination(for: InfoReducer.State.Destination.self) { destination in
             switch destination {
             case .licenseList:
-                IfLetStore(
-                    store.scope(state: \.licenseList, action: \.licenseList),
-                    then: { store in
-                        LicenseListPage(store: store)
-                    }
-                )
+                if let store = store.scope(state: \.licenseList, action: \.licenseList.presented) {
+                    LicenseListPage(store: store)
+                }
             }
         }
     }
 
-    func safari(_ viewStore: ViewStoreOf<InfoReducer>) -> some View {
+    func safari(store: Perception.Bindable<StoreOf<InfoReducer>>) -> some View {
         safari(
-            url: viewStore.binding(
-                get: \.url,
-                send: InfoReducer.Action.url
-            ),
+            url: store.url.sending(\.url),
             safariView: { url in
                 SafariView(url: url)
             }

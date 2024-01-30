@@ -25,35 +25,35 @@ package struct SearchResultDetailPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithViewStore(store, observe: { $0 }, content: { viewStore in
-            form(viewStore)
-                .navigationTitle(viewStore.x509.subject.commonName ?? "")
+        WithPerceptionTracking {
+            form
+                .navigationTitle(store.x509.subject.commonName ?? "")
                 .navigationBarTitleDisplayMode(.inline)
                 .onAppear {
-                    viewStore.send(.appear)
+                    store.send(.appear)
                 }
-        })
+        }
     }
 }
 
 // MARK: - Private method
 @MainActor
 private extension SearchResultDetailPage {
-    func form(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
+    var form: some View {
         Form {
-            otherSection(viewStore)
-            contentSection(title: "Issued to", distinguishedNames: viewStore.x509.subject)
-            contentSection(title: "Issued by", distinguishedNames: viewStore.x509.issuer)
-            validityPeriodSection(viewStore)
-            sha256FingerprintSection(viewStore)
+            otherSection
+            contentSection(title: "Issued to", distinguishedNames: store.x509.subject)
+            contentSection(title: "Issued by", distinguishedNames: store.x509.issuer)
+            validityPeriodSection
+            sha256FingerprintSection
         }
         .formStyle(.grouped)
     }
 
-    func otherSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
+    var otherSection: some View {
         Section {
-            item(title: "Version", content: "Version \(viewStore.x509.version)")
-            item(title: "Serial Number", content: viewStore.x509.serialNumber)
+            item(title: "Version", content: "Version \(store.x509.version)")
+            item(title: "Serial Number", content: store.x509.serialNumber)
         }
     }
 
@@ -87,11 +87,11 @@ private extension SearchResultDetailPage {
         )
     }
 
-    func validityPeriodSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
+    var validityPeriodSection: some View {
         Section(
             content: {
-                item(title: "Issued", content: dateFormatter.string(from: viewStore.x509.notValidBefore))
-                item(title: "Expired", content: dateFormatter.string(from: viewStore.x509.notValidAfter))
+                item(title: "Issued", content: dateFormatter.string(from: store.x509.notValidBefore))
+                item(title: "Expired", content: dateFormatter.string(from: store.x509.notValidAfter))
             },
             header: {
                 Text("Validity Period")
@@ -100,11 +100,11 @@ private extension SearchResultDetailPage {
         )
     }
 
-    func sha256FingerprintSection(_ viewStore: ViewStoreOf<SearchResultDetailReducer>) -> some View {
+    var sha256FingerprintSection: some View {
         Section(
             content: {
-                item(title: "Certificate", content: viewStore.x509.sha256Fingerprint.certificate)
-                item(title: "Public key", content: viewStore.x509.sha256Fingerprint.publicKey)
+                item(title: "Certificate", content: store.x509.sha256Fingerprint.certificate)
+                item(title: "Public key", content: store.x509.sha256Fingerprint.publicKey)
             },
             header: {
                 Text("SHA256 Fingerprints")

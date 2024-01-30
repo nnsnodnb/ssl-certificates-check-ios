@@ -17,42 +17,38 @@ package struct SearchResultPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithViewStore(store, observe: { $0 }, content: { viewStore in
-            list(viewStore)
-        })
+        WithPerceptionTracking {
+            List {
+                ForEach(store.certificates) { certificate in
+                    if let commonName = certificate.subject.commonName {
+                        row(commonName: commonName) {
+                            store.send(.selectCertificate(certificate), animation: .default)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 // MARK: - Private method
+@MainActor
 private extension SearchResultPage {
-    func list(_ viewStore: ViewStoreOf<SearchResultReducer>) -> some View {
-        List {
-            ForEach(viewStore.certificates) { certificate in
-                row(viewStore, for: certificate)
-            }
-        }
-    }
-
-    @ViewBuilder
-    func row(_ viewStore: ViewStoreOf<SearchResultReducer>, for x509: X509) -> some View {
-        if let commonName = x509.subject.commonName {
-            HStack(alignment: .center, spacing: 0) {
-                Button(
-                    action: {
-                        viewStore.send(.selectCertificate(x509), animation: .default)
-                    },
-                    label: {
-                        HStack(alignment: .center, spacing: 0) {
-                            Text(commonName)
-                            Spacer()
-                            ListRowChevronRight()
-                        }
+    func row(commonName: String, action: @escaping () -> Void) -> some View {
+        HStack(alignment: .center, spacing: 0) {
+            Button(
+                action: action,
+                label: {
+                    HStack(alignment: .center, spacing: 0) {
+                        Text(commonName)
+                        Spacer()
+                        ListRowChevronRight()
                     }
-                )
-                .tint(.primary)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            )
+            .tint(.primary)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
