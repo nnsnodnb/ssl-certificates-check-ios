@@ -32,6 +32,13 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
+    static var dependencies: Self {
+        .product(
+            name: "Dependencies",
+            package: "swift-dependencies"
+        )
+    }
+
     static var firebaseAnalytics: Self {
         .product(
             name: "FirebaseAnalytics",
@@ -112,6 +119,7 @@ let package = Package(
         .package(url: "https://github.com/realm/SwiftLint.git", .upToNextMajor(from: "0.54.0")),
         .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.2.0")),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.6.0")),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", .upToNextMajor(from: "1.2.0")),
     ],
     targets: [
         // Application
@@ -140,6 +148,7 @@ let package = Package(
             name: "InfoFeature",
             dependencies: [
                 .composableArchitecture,
+                .dependencies,
                 .firebaseAnalytics,
                 .licenseFeature,
                 .safariUI,
@@ -151,6 +160,7 @@ let package = Package(
             name: "LicenseFeature",
             dependencies: [
                 .composableArchitecture,
+                .dependencies,
                 .firebaseAnalytics,
                 .logger,
             ],
@@ -163,6 +173,7 @@ let package = Package(
             name: "SearchFeature",
             dependencies: [
                 .composableArchitecture,
+                .dependencies,
                 .infoFeature,
                 .logger,
                 .sfSafeSymbols,
