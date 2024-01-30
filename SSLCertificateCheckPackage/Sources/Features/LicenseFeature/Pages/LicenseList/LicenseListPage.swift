@@ -16,7 +16,7 @@ package struct LicenseListPage: View {
     // MARK: - Body
     package var body: some View {
         WithPerceptionTracking {
-            list()
+            list
                 .navigationTitle("Licenses")
                 .task(priority: .high) {
                     guard store.licenses.isEmpty else { return }
@@ -34,7 +34,7 @@ package struct LicenseListPage: View {
 // MARK: - Private method
 @MainActor
 private extension LicenseListPage {
-    func list() -> some View {
+    var list: some View {
         List {
             ForEach(store.licenses) { license in
                 NavigationLink(
