@@ -169,12 +169,9 @@ private extension View {
         navigationDestination(for: InfoReducer.State.Destination.self) { destination in
             switch destination {
             case .licenseList:
-                IfLetStore(
-                    store.scope(state: \.licenseList, action: \.licenseList),
-                    then: { store in
-                        LicenseListPage(store: store)
-                    }
-                )
+                if let store = store.scope(state: \.licenseList, action: \.licenseList) {
+                    LicenseListPage(store: store)
+                }
             }
         }
     }

@@ -199,25 +199,13 @@ private extension View {
             destination: { destination in
                 switch destination {
                 case .searchResult:
-                    IfLetStore(
-                        store.scope(
-                            state: \.searchResult?.value,
-                            action: \.searchResult
-                        ),
-                        then: { store in
-                            SearchResultPage(store: store)
-                        }
-                    )
+                    if let store = store.scope(state: \.searchResult?.value, action: \.searchResult) {
+                        SearchResultPage(store: store)
+                    }
                 case .searchResultDetail:
-                    IfLetStore(
-                        store.scope(
-                            state: \.searchResultDetail?.value,
-                            action: \.searchResultDetail
-                        ),
-                        then: { store in
-                            SearchResultDetailPage(store: store)
-                        }
-                    )
+                    if let store = store.scope(state: \.searchResultDetail?.value, action: \.searchResultDetail) {
+                        SearchResultDetailPage(store: store)
+                    }
                 }
             }
         )
@@ -230,7 +218,7 @@ private extension View {
                 set: { store.send($0 ? .openInfo : .dismissInfo) }
             ),
             content: {
-                IfLetStore(store.scope(state: \.info, action: \.info)) { store in
+                if let store = store.scope(state: \.info, action: \.info) {
                     InfoPage(store: store)
                 }
             }
