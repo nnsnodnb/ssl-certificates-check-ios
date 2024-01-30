@@ -13,7 +13,7 @@ import X509Parser
 @DependencyClient
 package struct SearchClient: Sendable {
     // MARK: - Properties
-    package var fetchCertificates: @Sendable (URL) async throws -> [X509]
+    var fetchCertificates: @Sendable (URL) async throws -> [X509]
 }
 
 // MARK: - DependencyKey

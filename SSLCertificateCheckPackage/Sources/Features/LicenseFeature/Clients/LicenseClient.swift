@@ -12,7 +12,7 @@ import Foundation
 @DependencyClient
 package struct LicenseClient {
     // MARK: - Properties
-    package var fetchLicenses: @Sendable () async throws -> [License]
+    var fetchLicenses: @Sendable () async throws -> [License]
 }
 
 // MARK: - DependencyKey
