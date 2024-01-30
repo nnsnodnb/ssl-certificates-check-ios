@@ -12,14 +12,15 @@ import LicenseFeature
 @Reducer
 package struct InfoReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
         let version: String
-        var licenseList: LicenseListReducer.State?
+        @Presents var licenseList: LicenseListReducer.State?
         var destinations: [Destination] = []
         var interactiveDismissDisabled = false
         var url: URL?
-        @PresentationState var alert: AlertState<Action.Alert>?
+        @Presents var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
         package enum Destination {
@@ -62,7 +63,7 @@ package struct InfoReducer {
 
     // MARK: - Action
     package enum Action: Equatable {
-        case dismiss
+        case close
         case openAppReview
         case pushLicenseList
         case safari(State.Link?)
@@ -71,7 +72,7 @@ package struct InfoReducer {
         case openForeignBrowser(URL)
         case navigationPathChanged([State.Destination])
         case alert(PresentationAction<Alert>)
-        case licenseList(LicenseListReducer.Action)
+        case licenseList(PresentationAction<LicenseListReducer.Action>)
 
         // MARK: - Alert
         package enum Alert: Equatable {
@@ -91,7 +92,7 @@ package struct InfoReducer {
     package var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .dismiss:
+            case .close:
                 return .none
             case .openAppReview:
                 let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
@@ -148,7 +149,7 @@ package struct InfoReducer {
                 return .none
             }
         }
-        .ifLet(\.licenseList, action: \.licenseList) {
+        .ifLet(\.$licenseList, action: \.licenseList) {
             LicenseListReducer()
         }
     }

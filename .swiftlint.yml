@@ -79,3 +79,15 @@ line_length: 130
 
 disabled_rules:
   - nesting
+
+custom_rules:
+  deprecated_composable_architecture_view_store:
+    included:
+      - ".*\\.swift"
+    name: Deprecated ViewStore
+    regex: "((With)?ViewStore(Of)?)"
+    capture_group: 0
+    match_kinds:
+      - identifier
+    message: "ViewStore is deprecated. Please use `WithPerceptionTracking`."
+    severity: warning

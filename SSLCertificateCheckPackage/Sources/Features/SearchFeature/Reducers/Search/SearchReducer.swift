@@ -15,9 +15,10 @@ import X509Parser
 @Reducer
 package struct SearchReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
-        var info: InfoReducer.State?
+        @Presents var info: InfoReducer.State?
         var searchButtonDisabled = true
         var text: String = ""
         var isShareExtensionImageShow = false
@@ -28,7 +29,7 @@ package struct SearchReducer {
         var isRequestReview = false
         var isLoading = false
         var destinations: [Destination] = []
-        @PresentationState var alert: AlertState<Action.Alert>?
+        @Presents var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
         package enum Destination: Hashable {
@@ -72,7 +73,6 @@ package struct SearchReducer {
         case pasteURLChanged(URL)
         case universalLinksURLChanged(URL)
         case openInfo
-        case dismissInfo
         case search
         case toggleIntroductionShareExtension
         case checkFirstExperience
@@ -80,7 +80,7 @@ package struct SearchReducer {
         case searchResponse(Result<[X509], Error>)
         case checkFirstExperienceResponse(Result<Bool, Error>)
         case navigationPathChanged([State.Destination])
-        case info(InfoReducer.Action)
+        case info(PresentationAction<InfoReducer.Action>)
         case searchResult(SearchResultReducer.Action)
         case searchResultDetail(SearchResultDetailReducer.Action)
         case alert(PresentationAction<Alert>)
@@ -154,11 +154,6 @@ package struct SearchReducer {
                 let version = bundle.shortVersionString()
                 state.info = .init(version: "v\(version)")
                 Logger.info("Open Info")
-                return .none
-            case .dismissInfo,
-                    .info(.dismiss):
-                state.info = nil
-                Logger.info("Dismiss Info")
                 return .none
             case .search:
                 guard !state.searchButtonDisabled,
@@ -236,7 +231,11 @@ package struct SearchReducer {
                     state.searchResultDetail = nil
                 }
                 return .none
-            case .info:
+            case .info(.dismiss), .info(.presented(.close)):
+                state.info = nil
+                Logger.info("Dismiss Info")
+                return .none
+            case .info(.presented):
                 return .none
             case let .searchResult(.selectCertificate(x509)):
                 guard state.searchResult != nil else {
@@ -255,7 +254,7 @@ package struct SearchReducer {
                 return .none
             }
         }
-        .ifLet(\.info, action: \.info) {
+        .ifLet(\.$info, action: \.info) {
             InfoReducer()
         }
         .ifLet(\.searchResult, action: \.searchResult) {

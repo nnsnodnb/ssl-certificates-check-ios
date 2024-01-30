@@ -15,14 +15,14 @@ package struct LicenseListPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithViewStore(store, observe: { $0 }, content: { viewStore in
-            list(viewStore)
+        WithPerceptionTracking {
+            list
                 .navigationTitle("Licenses")
                 .task(priority: .high) {
-                    guard viewStore.licenses.isEmpty else { return }
-                    viewStore.send(.fetchLicenses)
+                    guard store.licenses.isEmpty else { return }
+                    store.send(.fetchLicenses)
                 }
-        })
+        }
     }
 
     // MARK: - Initialize
@@ -34,9 +34,9 @@ package struct LicenseListPage: View {
 // MARK: - Private method
 @MainActor
 private extension LicenseListPage {
-    func list(_ viewStore: ViewStoreOf<LicenseListReducer>) -> some View {
+    var list: some View {
         List {
-            ForEach(viewStore.licenses) { license in
+            ForEach(store.licenses) { license in
                 NavigationLink(
                     destination: {
                         LicenseDetailPage(license: license)

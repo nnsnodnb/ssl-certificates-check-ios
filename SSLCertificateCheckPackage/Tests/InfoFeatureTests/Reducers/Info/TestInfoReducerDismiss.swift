@@ -18,6 +18,6 @@ final class TestInfoReducerDismiss: XCTestCase {
             InfoReducer()
         }
 
-        await store.send(.dismiss)
+        await store.send(.close)
     }
 }

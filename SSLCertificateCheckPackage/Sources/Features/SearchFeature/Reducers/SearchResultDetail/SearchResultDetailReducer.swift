@@ -12,6 +12,7 @@ import X509Parser
 @Reducer
 package struct SearchResultDetailReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
         package let x509: X509

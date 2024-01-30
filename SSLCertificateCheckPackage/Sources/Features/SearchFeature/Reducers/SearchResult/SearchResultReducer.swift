@@ -12,6 +12,7 @@ import X509Parser
 @Reducer
 package struct SearchResultReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
         package let certificates: IdentifiedArrayOf<X509>
