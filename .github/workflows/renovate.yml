@@ -54,7 +54,7 @@ jobs:
 
 
   resolve-swift-packages:
-    runs-on: macos-13
+    runs-on: macos-14
     needs: precheck
     if: needs.precheck.outputs.result == 'resolve'
 
