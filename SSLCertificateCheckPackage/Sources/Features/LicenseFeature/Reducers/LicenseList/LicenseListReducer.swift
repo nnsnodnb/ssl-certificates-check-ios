@@ -13,6 +13,7 @@ import Logger
 @Reducer
 package struct LicenseListReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
         var licenses: IdentifiedArrayOf<License> = []

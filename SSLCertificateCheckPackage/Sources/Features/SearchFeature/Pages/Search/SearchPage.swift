@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import InfoFeature
+import Perception
 import SFSafeSymbols
 import StoreKit
 import SwiftUI
@@ -14,7 +15,7 @@ import SwiftUI
 @MainActor
 package struct SearchPage: View {
     // MARK: - Properties
-    private let store: StoreOf<SearchReducer>
+    @Perception.Bindable private var store: StoreOf<SearchReducer>
 
     @FocusState private var isFocused: Bool
     @Environment(\.requestReview)
@@ -22,39 +23,36 @@ package struct SearchPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithViewStore(store, observe: { $0 }, content: { viewStore in
+        WithPerceptionTracking {
             NavigationStack(
-                path: viewStore.binding(
-                    get: \.destinations,
-                    send: SearchReducer.Action.navigationPathChanged
-                ),
+                path: $store.destinations.sending(\.navigationPathChanged),
                 root: {
-                    form(viewStore)
+                    form
                         .navigationTitle("Check TLS/SSL Certificates")
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar(
-                            viewStore,
+                            store: store,
                             keyboardClose: {
                                 isFocused = false
                             }
                         )
                         .navigationDestination(store: store)
                         .onAppear {
-                            viewStore.send(.checkFirstExperience)
+                            store.send(.checkFirstExperience)
                         }
                 }
             )
-            .sheet(store: store, viewStore)
+            .sheet(store: store)
             .alert(store: store.scope(state: \.$alert, action: \.alert))
             .onOpenURL(perform: { url in
-                viewStore.send(.universalLinksURLChanged(url))
+                store.send(.universalLinksURLChanged(url))
             })
-            .onChange(of: viewStore.isRequestReview) {
+            .onChange(of: store.isRequestReview) {
                 guard $0 else { return }
                 requestReview()
-                viewStore.send(.displayedRequestReview)
+                store.send(.displayedRequestReview)
             }
-        })
+        }
     }
 
     // MARK: - Initialize
@@ -68,11 +66,11 @@ package struct SearchPage: View {
 // MARK: - Private method
 @MainActor
 private extension SearchPage {
-    func form(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+    var form: some View {
         Form {
             Section(
                 content: {
-                    input(viewStore)
+                    input
                 },
                 header: {
                     Text("Enter the host you want to check")
@@ -80,11 +78,11 @@ private extension SearchPage {
                 }
             )
             Section {
-                introductionShareExtension(viewStore)
+                introductionShareExtension
             }
         }
         .overlay {
-            if viewStore.isLoading {
+            if store.isLoading {
                 Color.gray.opacity(0.8)
                     .overlay {
                         ProgressView()
@@ -96,7 +94,7 @@ private extension SearchPage {
         }
     }
 
-    func input(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+    var input: some View {
         HStack(alignment: .center, spacing: 0) {
             Text("https://")
                 .padding(.horizontal, 8)
@@ -104,10 +102,7 @@ private extension SearchPage {
             HStack(alignment: .center, spacing: 0) {
                 TextField(
                     "example.com",
-                    text: viewStore.binding(
-                        get: \.text,
-                        send: SearchReducer.Action.textChanged
-                    )
+                    text: $store.text.sending(\.textChanged)
                 )
                 .keyboardType(.URL)
                 .textCase(.lowercase)
@@ -116,7 +111,7 @@ private extension SearchPage {
                 PasteButton(payloadType: URL.self) { urls in
                     guard let url = urls.first else { return }
                     Task { @MainActor in
-                        viewStore.send(.pasteURLChanged(url))
+                        store.send(.pasteURLChanged(url))
                     }
                 }
                 .buttonBorderShape(.capsule)
@@ -126,13 +121,13 @@ private extension SearchPage {
         }
     }
 
-    func introductionShareExtension(_ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+    var introductionShareExtension: some View {
         VStack(alignment: .leading, spacing: 18) {
             VStack(alignment: .center, spacing: 8) {
                 Text("App provides ShareExtension feature")
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Divider()
-                if viewStore.isShareExtensionImageShow {
+                if store.isShareExtensionImageShow {
                     VStack(alignment: .center, spacing: 12) {
                         Text("Open a https site and open share sheet in Safari. Then tap '**CertsCheck**' logo.")
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -144,10 +139,10 @@ private extension SearchPage {
                 }
                 Button(
                     action: {
-                        viewStore.send(.toggleIntroductionShareExtension)
+                        store.send(.toggleIntroductionShareExtension)
                     },
                     label: {
-                        Text(viewStore.isShareExtensionImageShow ? "Close" : "About more")
+                        Text(store.isShareExtensionImageShow ? "Close" : "About more")
                             .frame(maxWidth: .infinity)
                     }
                 )
@@ -162,12 +157,12 @@ private extension SearchPage {
 
 @MainActor
 private extension View {
-    func toolbar(_ viewStore: ViewStoreOf<SearchReducer>, keyboardClose: @escaping () -> Void) -> some View {
+    func toolbar(store: StoreOf<SearchReducer>, keyboardClose: @escaping () -> Void) -> some View {
         toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(
                     action: {
-                        viewStore.send(.openInfo)
+                        store.send(.openInfo)
                     },
                     label: {
                         Image(systemSymbol: .infoCircle)
@@ -178,12 +173,12 @@ private extension View {
                 Button(
                     action: {
                         keyboardClose()
-                        viewStore.send(.search)
+                        store.send(.search)
                     },
                     label: {
                         Image(systemSymbol: .magnifyingglassCircle)
                             .bold()
-                            .disabled(viewStore.searchButtonDisabled)
+                            .disabled(store.searchButtonDisabled)
                     }
                 )
             }
@@ -228,11 +223,11 @@ private extension View {
         )
     }
 
-    func sheet(store: StoreOf<SearchReducer>, _ viewStore: ViewStoreOf<SearchReducer>) -> some View {
+    func sheet(store: StoreOf<SearchReducer>) -> some View {
         sheet(
-            isPresented: viewStore.binding(
-                get: { $0.info != nil },
-                send: { $0 ? .openInfo : .dismissInfo }
+            isPresented: .init(
+                get: { store.info != nil },
+                set: { store.send($0 ? .openInfo : .dismissInfo) }
             ),
             content: {
                 IfLetStore(store.scope(state: \.info, action: \.info)) { store in

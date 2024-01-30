@@ -12,6 +12,7 @@ import LicenseFeature
 @Reducer
 package struct InfoReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
         let version: String
@@ -19,7 +20,7 @@ package struct InfoReducer {
         var destinations: [Destination] = []
         var interactiveDismissDisabled = false
         var url: URL?
-        @PresentationState var alert: AlertState<Action.Alert>?
+        @Presents var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
         package enum Destination {

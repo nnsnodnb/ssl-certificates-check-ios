@@ -15,6 +15,7 @@ import X509Parser
 @Reducer
 package struct SearchReducer {
     // MARK: - State
+    @ObservableState
     package struct State: Equatable {
         // MARK: - Properties
         var info: InfoReducer.State?
@@ -28,7 +29,7 @@ package struct SearchReducer {
         var isRequestReview = false
         var isLoading = false
         var destinations: [Destination] = []
-        @PresentationState var alert: AlertState<Action.Alert>?
+        @Presents var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
         package enum Destination: Hashable {
