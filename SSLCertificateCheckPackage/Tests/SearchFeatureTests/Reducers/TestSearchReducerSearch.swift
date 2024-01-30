@@ -55,7 +55,7 @@ final class TestSearchReducerSearch: XCTestCase {
         await store.send(.search) {
             $0.isLoading = true
         }
-        await store.receive(\.searchResponse.success, timeout: 0) {
+        await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
             $0.isLoading = false
             $0.destinations = [.searchResult]
             $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
@@ -84,7 +84,7 @@ final class TestSearchReducerSearch: XCTestCase {
         await store.send(.search) {
             $0.isLoading = true
         }
-        await store.receive(\.searchResponse.failure.search, timeout: 0) {
+        await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
             $0.isLoading = false
             $0.alert = AlertState(
                 title: {
