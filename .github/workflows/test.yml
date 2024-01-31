@@ -22,11 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Ruby versions
-        run: |
-          ruby -v
-          which -a ruby
-
       - name: Cache Swift Packages
         uses: actions/cache@v4
         id: cache-swiftpm
