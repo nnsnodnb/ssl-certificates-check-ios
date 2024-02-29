@@ -81,7 +81,7 @@ package struct InfoReducer {
     }
 
     // MARK: - Properties
-    @Dependency(\.application)
+    @Dependency(ApplicationClient.self)
     private var application
 
     // MARK: - Initialize

@@ -98,11 +98,11 @@ package struct SearchReducer {
     }
 
     // MARK: - Properties
-    @Dependency(\.bundle)
+    @Dependency(BundleClient.self)
     private var bundle
-    @Dependency(\.search)
+    @Dependency(SearchClient.self)
     private var search
-    @Dependency(\.keyValueStore)
+    @Dependency(KeyValueStoreClient.self)
     private var keyValueStore
 
     // MARK: - Body

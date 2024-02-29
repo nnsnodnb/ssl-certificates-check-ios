@@ -36,7 +36,7 @@ package struct LicenseListReducer {
     }
 
     // MARK: - Properties
-    @Dependency(\.license)
+    @Dependency(LicenseClient.self)
     private var license
 
     // MARK: - Initialize
