@@ -12,15 +12,15 @@ import XCTest
 @MainActor
 final class TestInfoReducerOpenForeignBrowser: XCTestCase {
     func testNoneEffect() async throws {
+        let application = ApplicationClient(
+            open: { _ in true }
+        )
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
         ) {
             InfoReducer()
+                .dependency(application)
         }
-
-        store.dependencies.application = .init(
-            open: { _ in true }
-        )
 
         let url = URL(string: "https://example.com")!
         await store.send(.openForeignBrowser(url))
