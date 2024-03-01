@@ -11,6 +11,21 @@ import XCTest
 
 @MainActor
 final class TestInfoReducerAlert: XCTestCase {
+    // MARK: - Properties
+    private var application: ApplicationClient!
+
+    override func setUp() {
+        super.setUp()
+        application = .init(
+            open: { _ in true }
+        )
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        application = nil
+    }
+
     func testAlertDismiss() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(
@@ -37,11 +52,8 @@ final class TestInfoReducerAlert: XCTestCase {
             )
         ) {
             InfoReducer()
+                .dependency(application)
         }
-
-        store.dependencies.application = .init(
-            open: { _ in true }
-        )
 
         await store.send(.alert(.dismiss)) {
             $0.alert = nil
@@ -76,11 +88,8 @@ final class TestInfoReducerAlert: XCTestCase {
             )
         ) {
             InfoReducer()
+                .dependency(application)
         }
-
-        store.dependencies.application = .init(
-            open: { _ in true }
-        )
 
         await store.send(.alert(.presented(.openURL(url)))) {
             $0.alert = nil

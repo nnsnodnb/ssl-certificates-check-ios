@@ -24,6 +24,10 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
 
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
         let x509 = X509.stub
+        let keyValueStore = KeyValueStoreClient(
+            getWasRequestReviewFinishFirstSearchExperience: { false },
+            setWasRequestReviewFinishFirstSearchExperience: { _ in }
+        )
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
@@ -36,12 +40,8 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
             )
         ) {
             SearchReducer()
+                .dependency(keyValueStore)
         }
-
-        store.dependencies.keyValueStore = .init(
-            getWasRequestReviewFinishFirstSearchExperience: { false },
-            setWasRequestReviewFinishFirstSearchExperience: { _ in }
-        )
 
         await store.send(.checkFirstExperience) {
             $0.isCheckFirstExperience = false
@@ -53,6 +53,10 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
 
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
         let x509 = X509.stub
+        let keyValueStore = KeyValueStoreClient(
+            getWasRequestReviewFinishFirstSearchExperience: { true },
+            setWasRequestReviewFinishFirstSearchExperience: { _ in }
+        )
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
@@ -65,12 +69,8 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
             )
         ) {
             SearchReducer()
+                .dependency(keyValueStore)
         }
-
-        store.dependencies.keyValueStore = .init(
-            getWasRequestReviewFinishFirstSearchExperience: { true },
-            setWasRequestReviewFinishFirstSearchExperience: { _ in }
-        )
 
         await store.send(.checkFirstExperience) {
             $0.isCheckFirstExperience = false

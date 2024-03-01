@@ -12,15 +12,15 @@ import XCTest
 @MainActor
 final class TestSearchReducerOpenInfo: XCTestCase {
     func testPrepareShowInfo() async throws {
+        let bundle = BundleClient(
+            shortVersionString: { "1.0.0-test" }
+        )
         let store = TestStore(
             initialState: SearchReducer.State()
         ) {
             SearchReducer()
+                .dependency(bundle)
         }
-
-        store.dependencies.bundle = .init(
-            shortVersionString: { "1.0.0-test" }
-        )
 
         await store.send(.openInfo) {
             $0.info = .init(version: "v1.0.0-test")

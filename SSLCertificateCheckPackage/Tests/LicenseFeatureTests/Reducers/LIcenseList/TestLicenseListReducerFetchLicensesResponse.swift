@@ -12,18 +12,18 @@ import XCTest
 @MainActor
 final class TestLicenseListReducerFetchLicensesResponse: XCTestCase { // swiftlint:disable:this type_name
     func testSuccess() async throws {
+        let licenses: [License] = [
+            .init(id: "dummy", name: "Dummy OSS", licenseText: "Dummy Text")
+        ]
+        let licence = LicenseClient(
+            fetchLicenses: { licenses }
+        )
         let store = TestStore(
             initialState: LicenseListReducer.State()
         ) {
             LicenseListReducer()
+                .dependency(licence)
         }
-
-        let licenses: [License] = [
-            .init(id: "dummy", name: "Dummy OSS", licenseText: "Dummy Text")
-        ]
-        store.dependencies.license = .init(
-            fetchLicenses: { licenses }
-        )
 
         await store.send(.fetchLicenses)
         await store.receive(\.fetchLicensesResponse.success, licenses, timeout: 0) {

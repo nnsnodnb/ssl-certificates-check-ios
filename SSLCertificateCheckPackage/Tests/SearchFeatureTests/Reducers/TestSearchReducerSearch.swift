@@ -37,6 +37,10 @@ final class TestSearchReducerSearch: XCTestCase {
     }
 
     func testValidTextSuccessResponse() async throws {
+        let x509 = X509.stub
+        let search = SearchClient(
+            fetchCertificates: { _ in [x509] }
+        )
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
@@ -45,12 +49,8 @@ final class TestSearchReducerSearch: XCTestCase {
             )
         ) {
             SearchReducer()
+                .dependency(search)
         }
-
-        let x509 = X509.stub
-        store.dependencies.search = .init(
-            fetchCertificates: { _ in [x509] }
-        )
 
         await store.send(.search) {
             $0.isLoading = true
@@ -63,6 +63,13 @@ final class TestSearchReducerSearch: XCTestCase {
     }
 
     func testValidTextFailureResponse() async throws {
+        enum Error: Swift.Error {
+            case testError
+        }
+
+        let search = SearchClient(
+            fetchCertificates: { _ in throw Error.testError }
+        )
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
@@ -71,15 +78,8 @@ final class TestSearchReducerSearch: XCTestCase {
             )
         ) {
             SearchReducer()
+                .dependency(search)
         }
-
-        enum Error: Swift.Error {
-            case testError
-        }
-
-        store.dependencies.search = .init(
-            fetchCertificates: { _ in throw Error.testError }
-        )
 
         await store.send(.search) {
             $0.isLoading = true
