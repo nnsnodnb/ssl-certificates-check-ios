@@ -299,16 +299,16 @@ let upcomingFeatures: [PackageDescription.SwiftSetting] = [
     .globalConcurrency,
 ]
 
-for package in package.targets {
+for target in package.targets {
     // swiftSettings
-    package.swiftSettings = [
+    target.swiftSettings = [
         .unsafeFlags(debugOtherSwiftFlags, .when(configuration: .debug)),
     ] + upcomingFeatures
     // plugins
-    if let plugins = package.plugins {
-        package.plugins = plugins + [.swiftLintPlugin]
+    if let plugins = target.plugins {
+        target.plugins = plugins + [.swiftLintPlugin]
     } else {
-        package.plugins = [.swiftLintPlugin]
+        target.plugins = [.swiftLintPlugin]
     }
 }
 
