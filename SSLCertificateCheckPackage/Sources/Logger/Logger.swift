@@ -7,7 +7,7 @@
 
 import os
 
-package struct Logger {
+package actor Logger {
     // MARK: - Properties
     private static let _logger = os.Logger(subsystem: "moe.nnsnodnb.SSLCertificateCheck", category: "Package")
 
