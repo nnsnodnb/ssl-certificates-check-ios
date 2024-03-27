@@ -114,7 +114,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.23.0")),
         .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.1.6")),
-        .package(url: "https://github.com/vsanthanam/SafariUI.git", .upToNextMajor(from: "3.0.2")),
+        .package(url: "https://github.com/vsanthanam/SafariUI.git", .upToNextMajor(from: "3.1.0")),
         .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "5.2.0")),
         .package(url: "https://github.com/realm/SwiftLint.git", .upToNextMajor(from: "0.54.0")),
         .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.2.0")),
