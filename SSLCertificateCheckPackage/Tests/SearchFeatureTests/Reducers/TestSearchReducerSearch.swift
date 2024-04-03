@@ -10,8 +10,8 @@ import ComposableArchitecture
 import X509Parser
 import XCTest
 
-@MainActor
 final class TestSearchReducerSearch: XCTestCase {
+    @MainActor
     func testEmptyText() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -22,6 +22,7 @@ final class TestSearchReducerSearch: XCTestCase {
         await store.send(.search)
     }
 
+    @MainActor
     func testInvalidText() async throws {
         let store = TestStore(
             initialState: SearchReducer.State(
@@ -36,6 +37,7 @@ final class TestSearchReducerSearch: XCTestCase {
         await store.send(.search)
     }
 
+    @MainActor
     func testValidTextSuccessResponse() async throws {
         let x509 = X509.stub
         let search = SearchClient(
@@ -62,6 +64,7 @@ final class TestSearchReducerSearch: XCTestCase {
         }
     }
 
+    @MainActor
     func testValidTextFailureResponse() async throws {
         enum Error: Swift.Error {
             case testError

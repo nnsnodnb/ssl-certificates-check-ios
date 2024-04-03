@@ -10,8 +10,8 @@ import ComposableArchitecture
 import X509Parser
 import XCTest
 
-@MainActor
 final class TestSearchReducerNavigationPathChanged: XCTestCase {
+    @MainActor
     func testResetDestinations() async throws {
         let x509 = X509.stub
         let store = TestStore(
@@ -32,6 +32,7 @@ final class TestSearchReducerNavigationPathChanged: XCTestCase {
         }
     }
 
+    @MainActor
     func testRemoveSearchResultDetail() async throws {
         let x509 = X509.stub
         let store = TestStore(

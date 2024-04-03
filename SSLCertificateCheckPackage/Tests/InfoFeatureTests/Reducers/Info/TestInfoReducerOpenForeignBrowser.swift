@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerOpenForeignBrowser: XCTestCase {
+    @MainActor
     func testNoneEffect() async throws {
         let application = ApplicationClient(
             open: { _ in true }

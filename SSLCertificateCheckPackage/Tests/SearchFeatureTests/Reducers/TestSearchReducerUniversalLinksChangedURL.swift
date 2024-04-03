@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import SearchFeature
 import XCTest
 
-@MainActor
 final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint:disable:this type_name
+    @MainActor
     func testValidURL() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -27,6 +27,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         }
     }
 
+    @MainActor
     func testValidURLWhenOpenedInfo() async throws {
         let store = TestStore(
             initialState: SearchReducer.State(info: .init(version: "v1.0.0-test"))
@@ -45,6 +46,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         }
     }
 
+    @MainActor
     func testValidURLWhenOpenedSearchResult() async throws {
         let store = TestStore(
             initialState: SearchReducer.State(destinations: [.searchResult])
@@ -63,6 +65,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         }
     }
 
+    @MainActor
     func testNotIncludeEncodedURLQuery() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -74,6 +77,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         await store.send(.universalLinksURLChanged(url))
     }
 
+    @MainActor
     func testNotBase64Encoded() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -85,6 +89,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         await store.send(.universalLinksURLChanged(url))
     }
 
+    @MainActor
     func testInvalidScheme() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -96,6 +101,7 @@ final class TestSearchReducerUniversalLinksChangedURL: XCTestCase { // swiftlint
         await store.send(.universalLinksURLChanged(url))
     }
 
+    @MainActor
     func testHostIsNone() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()

@@ -10,8 +10,8 @@ import Foundation
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerURL: XCTestCase {
+    @MainActor
     func testCaseURL() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -22,6 +22,7 @@ final class TestInfoReducerURL: XCTestCase {
         await store.send(.url(URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")))
     }
 
+    @MainActor
     func testCaseSafari() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -34,6 +35,7 @@ final class TestInfoReducerURL: XCTestCase {
         }
     }
 
+    @MainActor
     func testReset() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(
@@ -49,6 +51,7 @@ final class TestInfoReducerURL: XCTestCase {
         }
     }
 
+    @MainActor
     func testNoneEffect() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")

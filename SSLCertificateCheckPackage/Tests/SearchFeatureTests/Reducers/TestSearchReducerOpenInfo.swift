@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import SearchFeature
 import XCTest
 
-@MainActor
 final class TestSearchReducerOpenInfo: XCTestCase {
+    @MainActor
     func testPrepareShowInfo() async throws {
         let bundle = BundleClient(
             shortVersionString: { "1.0.0-test" }

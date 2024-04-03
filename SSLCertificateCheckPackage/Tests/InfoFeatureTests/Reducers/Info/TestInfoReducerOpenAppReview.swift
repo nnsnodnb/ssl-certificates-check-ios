@@ -10,8 +10,8 @@ import Foundation
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerOpenAppReview: XCTestCase {
+    @MainActor
     func testReceiveConfirmOpenForeignBrowserAlert() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
