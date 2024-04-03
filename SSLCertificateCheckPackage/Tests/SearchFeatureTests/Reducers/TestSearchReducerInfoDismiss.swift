@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import SearchFeature
 import XCTest
 
-@MainActor
 final class TestSearchReducerInfoDismiss: XCTestCase {
+    @MainActor
     func testResetInfo() async throws {
         let store = TestStore(
             initialState: SearchReducer.State(info: .init(version: "v1.0.0-test"))

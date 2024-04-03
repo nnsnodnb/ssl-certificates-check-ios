@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerDismiss: XCTestCase {
+    @MainActor
     func testNoneEffect() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")

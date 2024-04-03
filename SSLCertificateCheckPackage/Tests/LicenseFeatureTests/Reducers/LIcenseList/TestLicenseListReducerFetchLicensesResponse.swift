@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import LicenseFeature
 import XCTest
 
-@MainActor
 final class TestLicenseListReducerFetchLicensesResponse: XCTestCase { // swiftlint:disable:this type_name
+    @MainActor
     func testSuccess() async throws {
         let licenses: [License] = [
             .init(id: "dummy", name: "Dummy OSS", licenseText: "Dummy Text")

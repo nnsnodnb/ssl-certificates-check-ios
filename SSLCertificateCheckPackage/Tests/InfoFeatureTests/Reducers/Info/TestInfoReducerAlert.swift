@@ -9,7 +9,6 @@ import ComposableArchitecture
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerAlert: XCTestCase {
     // MARK: - Properties
     private var application: ApplicationClient!
@@ -26,6 +25,7 @@ final class TestInfoReducerAlert: XCTestCase {
         application = nil
     }
 
+    @MainActor
     func testAlertDismiss() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(
@@ -60,6 +60,7 @@ final class TestInfoReducerAlert: XCTestCase {
         }
     }
 
+    @MainActor
     func testAlertPresented() async throws {
         let url = URL(string: "https://example.com")!
         let store = TestStore(

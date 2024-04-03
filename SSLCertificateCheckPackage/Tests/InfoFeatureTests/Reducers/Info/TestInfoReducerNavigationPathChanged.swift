@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerNavigationPathChanged: XCTestCase {
+    @MainActor
     func testAppendLicenseList() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -24,6 +24,7 @@ final class TestInfoReducerNavigationPathChanged: XCTestCase {
         }
     }
 
+    @MainActor
     func testResetDestinations() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(
@@ -40,6 +41,7 @@ final class TestInfoReducerNavigationPathChanged: XCTestCase {
         }
     }
 
+    @MainActor
     func testNoneEffect() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")

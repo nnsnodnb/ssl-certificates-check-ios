@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import SearchFeature
 import XCTest
 
-@MainActor
 final class TestSearchReducerTextChanged: XCTestCase {
+    @MainActor
     func testValid() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -30,6 +30,7 @@ final class TestSearchReducerTextChanged: XCTestCase {
         }
     }
 
+    @MainActor
     func testInvalid() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()

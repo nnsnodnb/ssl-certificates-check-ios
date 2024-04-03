@@ -22,5 +22,5 @@ extension BundleClient: DependencyKey {
             Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         }
     )
-    package static var testValue: BundleClient = .init()
+    package static let testValue: BundleClient = .init()
 }

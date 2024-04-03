@@ -10,8 +10,8 @@ import ComposableArchitecture
 import X509Parser
 import XCTest
 
-@MainActor
 final class TestSearchReducerCheckFirstExperience: XCTestCase {
+    @MainActor
     func testIsCheckFirstExperienceIsFalse() async throws {
         let store = TestStore(
             initialState: SearchReducer.State(isCheckFirstExperience: false)
@@ -22,6 +22,7 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         await store.send(.checkFirstExperience)
     }
 
+    @MainActor
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
         let x509 = X509.stub
         let keyValueStore = KeyValueStoreClient(
@@ -51,6 +52,7 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         }
     }
 
+    @MainActor
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
         let x509 = X509.stub
         let keyValueStore = KeyValueStoreClient(

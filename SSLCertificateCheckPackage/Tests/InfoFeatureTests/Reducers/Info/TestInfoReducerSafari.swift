@@ -10,8 +10,8 @@ import Foundation
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerSafari: XCTestCase {
+    @MainActor
     func testGitHubURL() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -24,6 +24,7 @@ final class TestInfoReducerSafari: XCTestCase {
         }
     }
 
+    @MainActor
     func testXTwitterURL() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -36,6 +37,7 @@ final class TestInfoReducerSafari: XCTestCase {
         }
     }
 
+    @MainActor
     func testResetGitHubURL() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -51,6 +53,7 @@ final class TestInfoReducerSafari: XCTestCase {
         }
     }
 
+    @MainActor
     func testResetXTwitterURL() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")
@@ -66,6 +69,7 @@ final class TestInfoReducerSafari: XCTestCase {
         }
     }
 
+    @MainActor
     func testNoneEffect() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")

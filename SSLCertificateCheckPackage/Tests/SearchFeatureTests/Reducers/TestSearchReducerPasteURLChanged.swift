@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import SearchFeature
 import XCTest
 
-@MainActor
 final class TestSearchReducerPasteURLChanged: XCTestCase {
+    @MainActor
     func testValidScheme() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -27,6 +27,7 @@ final class TestSearchReducerPasteURLChanged: XCTestCase {
         }
     }
 
+    @MainActor
     func testValidSchemeWithPath() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -43,6 +44,7 @@ final class TestSearchReducerPasteURLChanged: XCTestCase {
         }
     }
 
+    @MainActor
     func testValidSchemeWithoutHost() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()
@@ -54,6 +56,7 @@ final class TestSearchReducerPasteURLChanged: XCTestCase {
         await store.send(.pasteURLChanged(url))
     }
 
+    @MainActor
     func testInvalidScheme() async throws {
         let store = TestStore(
             initialState: SearchReducer.State()

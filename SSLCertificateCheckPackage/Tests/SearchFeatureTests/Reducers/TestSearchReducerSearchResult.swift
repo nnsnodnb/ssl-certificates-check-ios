@@ -10,8 +10,8 @@ import ComposableArchitecture
 import X509Parser
 import XCTest
 
-@MainActor
 final class TestSearchReducerSearchResult: XCTestCase {
+    @MainActor
     func testPreapreSearchResultDetail() async throws {
         let x509 = X509.stub
         let store = TestStore(

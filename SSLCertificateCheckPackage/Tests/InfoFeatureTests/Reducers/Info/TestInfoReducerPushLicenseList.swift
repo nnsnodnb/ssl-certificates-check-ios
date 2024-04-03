@@ -9,8 +9,8 @@ import ComposableArchitecture
 @testable import InfoFeature
 import XCTest
 
-@MainActor
 final class TestInfoReducerPushLicenseList: XCTestCase {
+    @MainActor
     func testPrepareShowLicenseList() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(version: "v1.0.0-test")

@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/16.
 //
 
+@preconcurrency import Foundation
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
