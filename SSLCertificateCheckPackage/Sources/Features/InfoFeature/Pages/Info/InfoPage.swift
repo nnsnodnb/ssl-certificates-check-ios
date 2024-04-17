@@ -177,12 +177,7 @@ private extension View {
     }
 
     func safari(store: Perception.Bindable<StoreOf<InfoReducer>>) -> some View {
-        safari(
-            url: store.url.sending(\.url),
-            safariView: { url in
-                SafariView(url: url)
-            }
-        )
+        safari(url: store.url.sending(\.url))
     }
 }
 
