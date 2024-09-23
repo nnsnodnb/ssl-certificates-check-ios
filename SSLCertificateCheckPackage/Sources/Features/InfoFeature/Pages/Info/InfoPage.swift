@@ -13,7 +13,6 @@ import SFSafeSymbols
 import SwiftUI
 import UIComponents
 
-@MainActor
 package struct InfoPage: View {
     // MARK: - Properties
     @Perception.Bindable private var store: StoreOf<InfoReducer>
@@ -43,7 +42,6 @@ package struct InfoPage: View {
 }
 
 // MARK: - Private method
-@MainActor
 private extension InfoPage {
     var form: some View {
         Form {
@@ -148,7 +146,6 @@ private extension InfoPage {
     }
 }
 
-@MainActor
 private extension View {
     func toolbar(store: StoreOf<InfoReducer>) -> some View {
         toolbar {
