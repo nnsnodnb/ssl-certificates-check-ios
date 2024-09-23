@@ -86,12 +86,12 @@ jobs:
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
 
-      - uses: kishikawakatsumi/xcresulttool@v1
-        if: success() || failure()
-        with:
-          path: |
-            test-results/Test-InfoFeatureTests.xcresult
-            test-results/Test-LicenseFeatureTests.xcresult
-            test-results/Test-SearchFeatureTests.xcresult
-            test-results/Test-X509ParserTests.xcresult
-          show-passed-tests: false
+      #- uses: kishikawakatsumi/xcresulttool@v1
+      #  if: success() || failure()
+      #  with:
+      #    path: |
+      #      test-results/Test-InfoFeatureTests.xcresult
+      #      test-results/Test-LicenseFeatureTests.xcresult
+      #      test-results/Test-SearchFeatureTests.xcresult
+      #      test-results/Test-X509ParserTests.xcresult
+      #    show-passed-tests: false
