@@ -12,7 +12,6 @@ import SFSafeSymbols
 import StoreKit
 import SwiftUI
 
-@MainActor
 package struct SearchPage: View {
     // MARK: - Properties
     @Perception.Bindable private var store: StoreOf<SearchReducer>
@@ -69,7 +68,6 @@ package struct SearchPage: View {
 }
 
 // MARK: - Private method
-@MainActor
 private extension SearchPage {
     var form: some View {
         Form {
@@ -160,7 +158,6 @@ private extension SearchPage {
     }
 }
 
-@MainActor
 private extension View {
     func toolbar(store: StoreOf<SearchReducer>, keyboardClose: @escaping () -> Void) -> some View {
         toolbar {

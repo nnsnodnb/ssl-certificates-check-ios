@@ -139,6 +139,8 @@ extension PackageDescription.SwiftSetting {
     /// - Since: SwiftPM 5.10
     /// - SeeAlso: [SE-0412: Strict concurrency for global variables](https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md)
     static let globalConcurrency: Self = .enableUpcomingFeature("GlobalConcurrency")
+
+    static let inferSendableFromCaptures: Self = .enableUpcomingFeature("InferSendableFromCaptures")
 }
 
 let package = Package(
@@ -297,6 +299,7 @@ let upcomingFeatures: [PackageDescription.SwiftSetting] = [
     .deprecateApplicationMain,
     .isolatedDefaultValues,
     .globalConcurrency,
+    .inferSendableFromCaptures,
 ]
 
 for target in package.targets {

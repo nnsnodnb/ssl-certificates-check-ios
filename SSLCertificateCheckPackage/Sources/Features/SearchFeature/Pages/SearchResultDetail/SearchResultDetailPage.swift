@@ -9,7 +9,6 @@ import ComposableArchitecture
 import SwiftUI
 import X509Parser
 
-@MainActor
 package struct SearchResultDetailPage: View {
     // MARK: - Properties
     package let store: StoreOf<SearchResultDetailReducer>
@@ -37,7 +36,6 @@ package struct SearchResultDetailPage: View {
 }
 
 // MARK: - Private method
-@MainActor
 private extension SearchResultDetailPage {
     var form: some View {
         Form {

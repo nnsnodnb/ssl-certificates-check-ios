@@ -259,13 +259,13 @@ package struct SearchReducer {
         }
         .ifLet(\.searchResult, action: \.searchResult) {
             EmptyReducer()
-                .ifLet(\.value, action: .self) {
+                .ifLet(\.value, action: \.self) {
                     SearchResultReducer()
                 }
         }
         .ifLet(\.searchResultDetail, action: \.searchResultDetail) {
             EmptyReducer()
-                .ifLet(\.value, action: .self) {
+                .ifLet(\.value, action: \.self) {
                     SearchResultDetailReducer()
                 }
         }

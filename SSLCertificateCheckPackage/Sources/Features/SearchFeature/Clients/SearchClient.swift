@@ -33,26 +33,43 @@ private extension SearchClient {
         }
 
         static func fetchCertificates(fromURL url: URL) async throws -> [X509] {
-            let sessionDelegate = SessionDelegate()
-            let session = URLSession(configuration: .ephemeral, delegate: sessionDelegate, delegateQueue: nil)
-            _ = try await session.data(from: url)
-            guard let serverTrust = sessionDelegate.serverTrust else {
-                throw Error.unknown
+            return try await withCheckedThrowingContinuation { continuation in
+                let sessionDelegate = SessionDelegate { serverTrust in
+                    guard let serverTrust else {
+                        continuation.resume(throwing: Error.unknown)
+                        return
+                    }
+                    do {
+                        let x509s = try X509Parser.parse(serverTrust: serverTrust)
+                        continuation.resume(returning: x509s)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
+                let session = URLSession(configuration: .ephemeral, delegate: sessionDelegate, delegateQueue: nil)
+                Task {
+                    _ = try await session.data(from: url)
+                }
             }
-            return try X509Parser.parse(serverTrust: serverTrust)
         }
 
         // MARK: - URLSessionDelegate
         private final class SessionDelegate: NSObject, URLSessionDelegate {
             // MARK: - Properties
-            private(set) var serverTrust: SecTrust?
+            private let serverTrustCompletion: @Sendable (SecTrust?) -> Void
+
+            // MARK: - Initialize
+            init(serverTrustCompletion: @Sendable @escaping (SecTrust?) -> Void) {
+                self.serverTrustCompletion = serverTrustCompletion
+            }
 
             // MARK: - URLSessionDelegate
             func urlSession(
                 _ session: URLSession,
                 didReceive challenge: URLAuthenticationChallenge
             ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
-                self.serverTrust = challenge.protectionSpace.serverTrust
+                let serverTrust = challenge.protectionSpace.serverTrust
+                serverTrustCompletion(serverTrust)
                 return (.performDefaultHandling, nil)
             }
         }

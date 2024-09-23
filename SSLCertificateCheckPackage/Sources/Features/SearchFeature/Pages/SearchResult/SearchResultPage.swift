@@ -10,7 +10,6 @@ import SwiftUI
 import UIComponents
 import X509Parser
 
-@MainActor
 package struct SearchResultPage: View {
     // MARK: - Properties
     package let store: StoreOf<SearchResultReducer>
@@ -32,7 +31,6 @@ package struct SearchResultPage: View {
 }
 
 // MARK: - Private method
-@MainActor
 private extension SearchResultPage {
     func row(commonName: String, action: @escaping () -> Void) -> some View {
         HStack(alignment: .center, spacing: 0) {
