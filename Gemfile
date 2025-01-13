@@ -3,5 +3,5 @@
 source "https://rubygems.org"
 
 gem "fastlane", "~> 2.226.0"
-gem "fastlane-plugin-firebase_app_distribution", "~> 0.9.0"
+gem "fastlane-plugin-firebase_app_distribution", "~> 0.10.0"
 gem "fastlane-plugin-update_xcodeproj", "~> 1.0.1"
