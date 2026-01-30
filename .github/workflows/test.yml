@@ -14,10 +14,10 @@ concurrency:
 
 jobs:
   test:
-    runs-on: macos-14
+    runs-on: macos-15
 
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
 
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
               -scheme InfoFeatureTests \
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
-              -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+              -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
               -resultBundlePath "test-results/Test-InfoFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
@@ -57,7 +57,7 @@ jobs:
               -scheme LicenseFeatureTests \
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
-              -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+              -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
               -resultBundlePath "test-results/Test-LicenseFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
@@ -69,7 +69,7 @@ jobs:
             -scheme SearchFeatureTests \
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
-            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+            -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
             -resultBundlePath "test-results/Test-SearchFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
@@ -81,7 +81,7 @@ jobs:
             -scheme X509ParserTests \
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
-            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+            -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
             -resultBundlePath "test-results/Test-X509ParserTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
