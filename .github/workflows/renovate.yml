@@ -67,7 +67,7 @@ jobs:
         url: https://github.com/nnsnodnb/github-apps-token-swift
         version: '*'
 
-    - uses: 1password/load-secrets-action@v2
+    - uses: 1password/load-secrets-action@v3
       with:
         export-env: true
       env:
