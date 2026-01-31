@@ -5,10 +5,10 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import BetterSafariView
 import ComposableArchitecture
 import LicenseFeature
 import Perception
-import SafariUI
 import SFSafeSymbols
 import SwiftUI
 import UIComponents
@@ -174,7 +174,10 @@ private extension View {
     }
 
     func safari(store: Perception.Bindable<StoreOf<InfoReducer>>) -> some View {
-        safari(url: store.url.sending(\.url))
+        safariView(item: store.url.sending(\.url)) { url in
+            SafariView(url: url)
+                .dismissButtonStyle(.close)
+        }
     }
 }
 
