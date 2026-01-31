@@ -95,7 +95,7 @@ jobs:
         token: ${{ steps.get-github-app.outputs.token }}
 
     - name: Cache Swift Packages
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .swiftpm
         key: ${{ runner.os }}-swiftpm-${{ hashFiles('SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
