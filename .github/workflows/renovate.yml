@@ -23,7 +23,7 @@ jobs:
       result: ${{ steps.parse.outputs.result }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - uses: tj-actions/changed-files@v47
       id: files_changes
@@ -89,7 +89,7 @@ jobs:
         echo "token=${token}" >> "${GITHUB_OUTPUT}"
         rm /tmp/github-apps-private-key.pem
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
         token: ${{ steps.get-github-app.outputs.token }}
