@@ -54,12 +54,12 @@ jobs:
 
 
   resolve-swift-packages:
-    runs-on: macos-14
+    runs-on: macos-15
     needs: precheck
     if: needs.precheck.outputs.result == 'resolve'
 
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
 
     steps:
     - uses: Cyberbeni/install-swift-tool@v2
