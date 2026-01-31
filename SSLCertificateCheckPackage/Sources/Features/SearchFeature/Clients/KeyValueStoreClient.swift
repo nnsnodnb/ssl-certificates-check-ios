@@ -40,10 +40,10 @@ package extension KeyValueStoreClient {
 extension KeyValueStoreClient: DependencyKey {
     package static let liveValue: KeyValueStoreClient = .init(
         getWasRequestReviewFinishFirstSearchExperience: {
-            AppStorageActor.shared.getWasRequestReviewFinishFirstSearchExperience()
+            await AppStorageActor.shared.getWasRequestReviewFinishFirstSearchExperience()
         },
         setWasRequestReviewFinishFirstSearchExperience: {
-            AppStorageActor.shared.setWasRequestReviewFinishFirstSearchExperience(value: $0)
+            await AppStorageActor.shared.setWasRequestReviewFinishFirstSearchExperience(value: $0)
         }
     )
     package static let testValue: KeyValueStoreClient = .init()
