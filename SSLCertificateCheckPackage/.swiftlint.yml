@@ -1,7 +1,6 @@
 included:
-  - SSLCertificateCheckPackage/Sources
-  - SSLCertificateCheckPackage/Tests
-  - App
+  - Sources
+  - Tests
 
 opt_in_rules:
   - array_init
