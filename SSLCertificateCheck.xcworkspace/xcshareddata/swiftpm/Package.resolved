@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "bettersafariview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stleamist/BetterSafariView.git",
+      "state" : {
+        "revision" : "884533749e55949b2566030948c6fdbe2873ed0c",
+        "version" : "2.4.2"
+      }
+    },
+    {
       "identity" : "combine-schedulers",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/combine-schedulers",
@@ -133,15 +142,6 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
-      }
-    },
-    {
-      "identity" : "safariui",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vsanthanam/SafariUI.git",
-      "state" : {
-        "revision" : "4ed48177b580e0a8d9e4a59631f04dcb988d3879",
-        "version" : "4.0.0"
       }
     },
     {

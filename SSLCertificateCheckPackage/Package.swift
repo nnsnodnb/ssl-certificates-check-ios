@@ -25,6 +25,13 @@ extension PackageDescription.Target.Dependency {
     static let uiComponents: Self = .target(name: "UIComponents")
     static let x509Parser: Self = .target(name: "X509Parser")
 
+    static var betterSafariView: Self {
+        .product(
+            name: "BetterSafariView",
+            package: "BetterSafariView"
+        )
+    }
+
     static var composableArchitecture: Self {
         .product(
             name: "ComposableArchitecture",
@@ -50,13 +57,6 @@ extension PackageDescription.Target.Dependency {
         .product(
             name: "FirebaseCrashlytics",
             package: "firebase-ios-sdk"
-        )
-    }
-
-    static var safariUI: Self {
-        .product(
-            name: "SafariUI",
-            package: "SafariUI"
         )
     }
 
@@ -165,7 +165,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.8.0")),
         .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.2.0")),
-        .package(url: "https://github.com/vsanthanam/SafariUI.git", .upToNextMajor(from: "5.0.0")),
+        .package(url: "https://github.com/stleamist/BetterSafariView.git", .upToNextMajor(from: "2.4.2")),
         .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "5.3.0")),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", .upToNextMajor(from: "0.63.2")),
         .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.17.1")),
@@ -198,11 +198,11 @@ let package = Package(
         .target(
             name: "InfoFeature",
             dependencies: [
+                .betterSafariView,
                 .composableArchitecture,
                 .dependencies,
                 .firebaseAnalytics,
                 .licenseFeature,
-                .safariUI,
                 .uiComponents,
             ],
             path: "Sources/Features/InfoFeature"
