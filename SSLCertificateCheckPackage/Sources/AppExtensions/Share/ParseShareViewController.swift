@@ -61,8 +61,7 @@ private extension ParseShareViewController {
         var responder: UIResponder? = self
         while responder != nil {
             if let application = responder as? UIApplication {
-                let selector = sel_registerName("openURL:")
-                application.perform(selector, with: url)
+                application.open(url)
                 break
             }
             responder = responder?.next
