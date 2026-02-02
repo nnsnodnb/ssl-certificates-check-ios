@@ -7,14 +7,13 @@
 
 import ComposableArchitecture
 import InfoFeature
-import Perception
 import SFSafeSymbols
 import StoreKit
 import SwiftUI
 
 package struct SearchPage: View {
     // MARK: - Properties
-    @Perception.Bindable private var store: StoreOf<SearchReducer>
+    @Bindable private var store: StoreOf<SearchReducer>
 
     @FocusState private var isFocused: Bool
     @Environment(\.requestReview)
@@ -22,41 +21,39 @@ package struct SearchPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithPerceptionTracking {
-            NavigationStack(
-                path: $store.destinations.sending(\.navigationPathChanged),
-                root: {
-                    form
-                        .navigationTitle("Check TLS/SSL Certificates")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar(
-                            store: store,
-                            keyboardClose: {
-                                isFocused = false
-                            }
-                        )
-                        .navigationDestination(store: store)
-                        .onAppear {
-                            store.send(.checkFirstExperience)
+        NavigationStack(
+            path: $store.destinations.sending(\.navigationPathChanged),
+            root: {
+                form
+                    .navigationTitle("Check TLS/SSL Certificates")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar(
+                        store: store,
+                        keyboardClose: {
+                            isFocused = false
                         }
-                }
-            )
-            .sheet(
-                item: $store.scope(state: \.info, action: \.info),
-                content: { store in
-                    InfoPage(store: store)
-                }
-            )
-            .alert($store.scope(state: \.alert, action: \.alert))
-            .onOpenURL(perform: { url in
-                store.send(.universalLinksURLChanged(url))
-            })
-            .onChange(of: store.isRequestReview) {
-                guard $0 else { return }
-                requestReview()
-                store.send(.displayedRequestReview)
+                    )
+                    .navigationDestination(store: store)
+                    .onAppear {
+                        store.send(.checkFirstExperience)
+                    }
             }
-        }
+        )
+        .sheet(
+            item: $store.scope(state: \.info, action: \.info),
+            content: { store in
+                InfoPage(store: store)
+            }
+        )
+        .alert($store.scope(state: \.alert, action: \.alert))
+        .onOpenURL(perform: { url in
+            store.send(.universalLinksURLChanged(url))
+        })
+        .onChange(of: store.isRequestReview, initial: false, { _, newValue in
+            guard newValue else { return }
+            requestReview()
+            store.send(.displayedRequestReview)
+        })
     }
 
     // MARK: - Initialize

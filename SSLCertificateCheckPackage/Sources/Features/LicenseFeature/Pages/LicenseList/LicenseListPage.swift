@@ -14,14 +14,12 @@ package struct LicenseListPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithPerceptionTracking {
-            list
-                .navigationTitle("Licenses")
-                .task(priority: .high) {
-                    guard store.licenses.isEmpty else { return }
-                    store.send(.fetchLicenses)
-                }
-        }
+        list
+            .navigationTitle("Licenses")
+            .task(priority: .high) {
+                guard store.licenses.isEmpty else { return }
+                store.send(.fetchLicenses)
+            }
     }
 
     // MARK: - Initialize

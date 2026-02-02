@@ -16,13 +16,11 @@ package struct SearchResultPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithPerceptionTracking {
-            List {
-                ForEach(store.certificates) { certificate in
-                    if let commonName = certificate.subject.commonName {
-                        row(commonName: commonName) {
-                            store.send(.selectCertificate(certificate), animation: .default)
-                        }
+        List {
+            ForEach(store.certificates) { certificate in
+                if let commonName = certificate.subject.commonName {
+                    row(commonName: commonName) {
+                        store.send(.selectCertificate(certificate), animation: .default)
                     }
                 }
             }

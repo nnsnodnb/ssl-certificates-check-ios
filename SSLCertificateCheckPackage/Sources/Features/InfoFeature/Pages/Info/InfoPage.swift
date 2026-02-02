@@ -8,31 +8,28 @@
 import BetterSafariView
 import ComposableArchitecture
 import LicenseFeature
-import Perception
 import SFSafeSymbols
 import SwiftUI
 import UIComponents
 
 package struct InfoPage: View {
     // MARK: - Properties
-    @Perception.Bindable private var store: StoreOf<InfoReducer>
+    @Bindable private var store: StoreOf<InfoReducer>
 
     // MARK: - Body
     package var body: some View {
-        WithPerceptionTracking {
-            NavigationStack(
-                path: $store.destinations.sending(\.navigationPathChanged),
-                root: {
-                    form
-                        .navigationTitle("App Information")
-                        .navigationDestination(store: store)
-                        .toolbar(store: store)
-                        .safari(store: $store)
-                }
-            )
-            .interactiveDismissDisabled(store.interactiveDismissDisabled)
-            .alert($store.scope(state: \.alert, action: \.alert))
-        }
+        NavigationStack(
+            path: $store.destinations.sending(\.navigationPathChanged),
+            root: {
+                form
+                    .navigationTitle("App Information")
+                    .navigationDestination(store: store)
+                    .toolbar(store: store)
+                    .safari(store: $store)
+            }
+        )
+        .interactiveDismissDisabled(store.interactiveDismissDisabled)
+        .alert($store.scope(state: \.alert, action: \.alert))
     }
 
     // MARK: - Initialize
@@ -173,7 +170,7 @@ private extension View {
         }
     }
 
-    func safari(store: Perception.Bindable<StoreOf<InfoReducer>>) -> some View {
+    func safari(store: Bindable<StoreOf<InfoReducer>>) -> some View {
         safariView(item: store.url.sending(\.url)) { url in
             SafariView(url: url)
                 .dismissButtonStyle(.close)

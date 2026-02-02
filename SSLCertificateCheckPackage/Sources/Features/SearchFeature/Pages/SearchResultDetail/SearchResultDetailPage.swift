@@ -24,14 +24,12 @@ package struct SearchResultDetailPage: View {
 
     // MARK: - Body
     package var body: some View {
-        WithPerceptionTracking {
-            form
-                .navigationTitle(store.x509.subject.commonName ?? "")
-                .navigationBarTitleDisplayMode(.inline)
-                .onAppear {
-                    store.send(.appear)
-                }
-        }
+        form
+            .navigationTitle(store.x509.subject.commonName ?? "")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                store.send(.appear)
+            }
     }
 }
 
