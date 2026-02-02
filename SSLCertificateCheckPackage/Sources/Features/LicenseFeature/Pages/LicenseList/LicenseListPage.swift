@@ -41,7 +41,7 @@ private extension LicenseListPage {
                     },
                     label: {
                         Text(license.name)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color(.label))
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 )
