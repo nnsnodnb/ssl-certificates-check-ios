@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
+import ConcurrencyExtras
 import Dependencies
 import DependenciesMacros
 import Foundation
@@ -34,16 +35,27 @@ private extension SearchClient {
 
         static func fetchCertificates(fromURL url: URL) async throws -> [X509] {
             return try await withCheckedThrowingContinuation { continuation in
+                let resumed: LockIsolated<Bool> = .init(false)
+
+                @Sendable
+                func safeResume<T>(_ action: () -> T) {
+                    guard !resumed.value else { return }
+                    resumed.setValue(true)
+                    _ = action()
+                }
+
                 let sessionDelegate = SessionDelegate { serverTrust in
-                    guard let serverTrust else {
-                        continuation.resume(throwing: Error.unknown)
-                        return
-                    }
-                    do {
-                        let x509s = try X509Parser.parse(serverTrust: serverTrust)
-                        continuation.resume(returning: x509s)
-                    } catch {
-                        continuation.resume(throwing: error)
+                    safeResume {
+                        guard let serverTrust else {
+                            continuation.resume(throwing: Error.unknown)
+                            return
+                        }
+                        do {
+                            let x509s = try X509Parser.parse(serverTrust: serverTrust)
+                            continuation.resume(returning: x509s)
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 }
                 let session = URLSession(configuration: .ephemeral, delegate: sessionDelegate, delegateQueue: nil)
