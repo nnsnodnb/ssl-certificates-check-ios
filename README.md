@@ -12,8 +12,8 @@ TLS/SSL Certificates check for iOS
 
 ```bash
 $ xcodebuild -version
-Xcode 16.4
-Build version 16F6
+Xcode 26.2
+Build version 17C52
 ```
 
 ### Ruby
