@@ -7,11 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CF394FF32B32E9C00031D75A /* AppClipExtensionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF394FF22B32E9C00031D75A /* AppClipExtensionApp.swift */; };
-		CF394FF72B32E9C10031D75A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF394FF62B32E9C10031D75A /* Assets.xcassets */; };
-		CF394FFA2B32E9C10031D75A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF394FF92B32E9C10031D75A /* Preview Assets.xcassets */; };
-		CF394FFF2B32E9C10031D75A /* AppClipExtension.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = CF394FF02B32E9C00031D75A /* AppClipExtension.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		CF3950052B32E9E10031D75A /* AppClip in Frameworks */ = {isa = PBXBuildFile; productRef = CF3950042B32E9E10031D75A /* AppClip */; };
 		CF45F2D02AD85E97004CAE8D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF45F2CF2AD85E97004CAE8D /* GoogleService-Info.plist */; };
 		CF45F2D62AD86074004CAE8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45F2D52AD86074004CAE8D /* AppDelegate.swift */; };
 		CF7E0EF32AD84686003244D1 /* AdHocApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7E0EF22AD84686003244D1 /* AdHocApp.swift */; };
@@ -25,13 +20,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CF394FFD2B32E9C10031D75A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CF7E0EE72AD84686003244D1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CF394FEF2B32E9C00031D75A;
-			remoteInfo = AppClipExtension;
-		};
 		CFECF1BF2ADD5E5100E86AC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CF7E0EE72AD84686003244D1 /* Project object */;
@@ -48,7 +36,6 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
 			dstSubfolderSpec = 16;
 			files = (
-				CF394FFF2B32E9C10031D75A /* AppClipExtension.app in Embed App Clips */,
 			);
 			name = "Embed App Clips";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,12 +54,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CF394FF02B32E9C00031D75A /* AppClipExtension.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClipExtension.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CF394FF22B32E9C00031D75A /* AppClipExtensionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipExtensionApp.swift; sourceTree = "<group>"; };
-		CF394FF62B32E9C10031D75A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CF394FF92B32E9C10031D75A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		CF394FFB2B32E9C10031D75A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CF394FFC2B32E9C10031D75A /* AppClipExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppClipExtension.entitlements; sourceTree = "<group>"; };
 		CF45F2CF2AD85E97004CAE8D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF45F2D52AD86074004CAE8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CF4E2F362ADEE41500ECB5A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -89,14 +70,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		CF394FED2B32E9C00031D75A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CF3950052B32E9E10031D75A /* AppClip in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CF7E0EEC2AD84686003244D1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -116,32 +89,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CF394FF12B32E9C00031D75A /* AppClipExtension */ = {
-			isa = PBXGroup;
-			children = (
-				CF394FF22B32E9C00031D75A /* AppClipExtensionApp.swift */,
-				CF394FF62B32E9C10031D75A /* Assets.xcassets */,
-				CF394FFB2B32E9C10031D75A /* Info.plist */,
-				CF394FFC2B32E9C10031D75A /* AppClipExtension.entitlements */,
-				CF394FF82B32E9C10031D75A /* Preview Content */,
-			);
-			path = AppClipExtension;
-			sourceTree = "<group>";
-		};
-		CF394FF82B32E9C10031D75A /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				CF394FF92B32E9C10031D75A /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
 		CF7E0EE62AD84686003244D1 = {
 			isa = PBXGroup;
 			children = (
 				CF7E0EF12AD84686003244D1 /* AdHoc */,
 				CFECF1B82ADD5E5100E86AC0 /* ShareExtensionAdHoc */,
-				CF394FF12B32E9C00031D75A /* AppClipExtension */,
 				CF7E0EF02AD84686003244D1 /* Products */,
 				CF7E0F002AD846A3003244D1 /* Frameworks */,
 			);
@@ -152,7 +104,6 @@
 			children = (
 				CF7E0EEF2AD84686003244D1 /* AdHoc.app */,
 				CFECF1B72ADD5E5100E86AC0 /* ShareExtensionAdHoc.appex */,
-				CF394FF02B32E9C00031D75A /* AppClipExtension.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -200,26 +151,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CF394FEF2B32E9C00031D75A /* AppClipExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CF3950032B32E9C10031D75A /* Build configuration list for PBXNativeTarget "AppClipExtension" */;
-			buildPhases = (
-				CF394FEC2B32E9C00031D75A /* Sources */,
-				CF394FED2B32E9C00031D75A /* Frameworks */,
-				CF394FEE2B32E9C00031D75A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = AppClipExtension;
-			packageProductDependencies = (
-				CF3950042B32E9E10031D75A /* AppClip */,
-			);
-			productName = AppClipExtension;
-			productReference = CF394FF02B32E9C00031D75A /* AppClipExtension.app */;
-			productType = "com.apple.product-type.application.on-demand-install-capable";
-		};
 		CF7E0EEE2AD84686003244D1 /* AdHoc */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CF7E0EFD2AD84688003244D1 /* Build configuration list for PBXNativeTarget "AdHoc" */;
@@ -234,7 +165,6 @@
 			);
 			dependencies = (
 				CFECF1C02ADD5E5100E86AC0 /* PBXTargetDependency */,
-				CF394FFE2B32E9C10031D75A /* PBXTargetDependency */,
 			);
 			name = AdHoc;
 			packageProductDependencies = (
@@ -274,9 +204,6 @@
 				LastSwiftUpdateCheck = 1510;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
-					CF394FEF2B32E9C00031D75A = {
-						CreatedOnToolsVersion = 15.1;
-					};
 					CF7E0EEE2AD84686003244D1 = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -301,21 +228,11 @@
 			targets = (
 				CF7E0EEE2AD84686003244D1 /* AdHoc */,
 				CFECF1B62ADD5E5100E86AC0 /* ShareExtensionAdHoc */,
-				CF394FEF2B32E9C00031D75A /* AppClipExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		CF394FEE2B32E9C00031D75A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CF394FFA2B32E9C10031D75A /* Preview Assets.xcassets in Resources */,
-				CF394FF72B32E9C10031D75A /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CF7E0EED2AD84686003244D1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -337,14 +254,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		CF394FEC2B32E9C00031D75A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CF394FF32B32E9C00031D75A /* AppClipExtensionApp.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CF7E0EEB2AD84686003244D1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -365,11 +274,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CF394FFE2B32E9C10031D75A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CF394FEF2B32E9C00031D75A /* AppClipExtension */;
-			targetProxy = CF394FFD2B32E9C10031D75A /* PBXContainerItemProxy */;
-		};
 		CFECF1C02ADD5E5100E86AC0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CFECF1B62ADD5E5100E86AC0 /* ShareExtensionAdHoc */;
@@ -389,82 +293,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		CF3950012B32E9C10031D75A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = AppClipExtension/AppClipExtension.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_ASSET_PATHS = "\"AppClipExtension/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AppClipExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = moe.nnsnodnb.SSLCertificateCheck.AppClip;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AdHoc moe.nnsnodnb.SSLCertificateCheck.AppClip";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Debug;
-		};
-		CF3950022B32E9C10031D75A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = AppClipExtension/AppClipExtension.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_ASSET_PATHS = "\"AppClipExtension/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AppClipExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = moe.nnsnodnb.SSLCertificateCheck.AppClip;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AdHoc moe.nnsnodnb.SSLCertificateCheck.AppClip";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
 		CF7E0EFB2AD84688003244D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -725,15 +553,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CF3950032B32E9C10031D75A /* Build configuration list for PBXNativeTarget "AppClipExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CF3950012B32E9C10031D75A /* Debug */,
-				CF3950022B32E9C10031D75A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		CF7E0EEA2AD84686003244D1 /* Build configuration list for PBXProject "AdHoc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -764,10 +583,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CF3950042B32E9E10031D75A /* AppClip */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AppClip;
-		};
 		CF7E0F012AD846A3003244D1 /* SSLCertificateCheckPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SSLCertificateCheckPackage;
