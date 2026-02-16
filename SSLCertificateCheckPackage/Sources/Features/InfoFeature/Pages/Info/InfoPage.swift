@@ -147,14 +147,20 @@ private extension View {
     func toolbar(store: StoreOf<InfoReducer>) -> some View {
         toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button(
-                    action: {
+                if #available(iOS 26.0, *) {
+                    Button(role: .cancel) {
                         store.send(.close)
-                    },
-                    label: {
-                        Image(systemSymbol: .xmark)
                     }
-                )
+                } else {
+                    Button(
+                        action: {
+                            store.send(.close)
+                        },
+                        label: {
+                            Image(systemSymbol: .xmark)
+                        }
+                    )
+                }
             }
         }
     }
