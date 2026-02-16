@@ -164,7 +164,11 @@ private extension View {
                         store.send(.openInfo)
                     },
                     label: {
-                        Image(systemSymbol: .infoCircle)
+                        if #available(iOS 26.0, *) {
+                            Image(systemSymbol: .info)
+                        } else {
+                            Image(systemSymbol: .infoCircle)
+                        }
                     }
                 )
             }
@@ -175,9 +179,15 @@ private extension View {
                         store.send(.search)
                     },
                     label: {
-                        Image(systemSymbol: .magnifyingglassCircle)
-                            .bold()
-                            .disabled(store.searchButtonDisabled)
+                        Group {
+                            if #available(iOS 26.0, *) {
+                                Image(systemSymbol: .magnifyingglass)
+                            } else {
+                                Image(systemSymbol: .magnifyingglassCircle)
+                            }
+                        }
+                        .bold()
+                        .disabled(store.searchButtonDisabled)
                     }
                 )
             }
