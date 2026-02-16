@@ -8,7 +8,6 @@ import PackageDescription
 extension String {
     static let packageName = "SSLCertificateCheckPackage"
     static let application = "Application"
-    static let appClipExtension = "AppClip"
     static let shareExtension = "Share"
 }
 
@@ -103,10 +102,6 @@ let package = Package(
             targets: [.application]
         ),
         .library(
-            name: .appClipExtension,
-            targets: [.appClipExtension]
-        ),
-        .library(
             name: .shareExtension,
             targets: [.shareExtension]
         ),
@@ -132,13 +127,6 @@ let package = Package(
             ]
         ),
         // AppExtensions
-        .target(
-            name: .appClipExtension,
-            dependencies: [
-                .application,
-            ],
-            path: "Sources/AppExtensions/AppClip"
-        ),
         .target(
             name: .shareExtension,
             path: "Sources/AppExtensions/Share"
