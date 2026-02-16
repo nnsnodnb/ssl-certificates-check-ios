@@ -94,11 +94,19 @@ jobs:
         fetch-depth: 0
         token: ${{ steps.get-github-app.outputs.token }}
 
+    - name: Get SwiftPM originHash
+      id: get-swiftpm-origin-hash
+      run: |
+        ORIGIN_HASH="$(jq -c -r '.originHash' SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved)"
+        echo "ORIGIN_HASH=${ORIGIN_HASH}" >> "${GITHUB_OUTPUT}"
+
     - name: Cache Swift Packages
-      uses: actions/cache@v5
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      id: cache-swiftpm
+      timeout-minutes: 20
       with:
         path: .swiftpm
-        key: ${{ runner.os }}-swiftpm-${{ hashFiles('SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+        key: ${{ runner.os }}-swiftpm-${{ steps.get-swiftpm-origin-hash.outputs.ORIGIN_HASH }}
 
     - name: Resolve Swift Packages
       run: xcodebuild -resolvePackageDependencies -scheme SSLCertificateCheckPackage -workspace SSLCertificateCheck.xcworkspace -clonedSourcePackagesDirPath .swiftpm
