@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/12.
 //
 
+@_exported import GoogleMobileAds
 import SearchFeature
 import SwiftUI
 import XCTestDynamicOverlay

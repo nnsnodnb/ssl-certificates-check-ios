@@ -6,6 +6,7 @@
 //
 
 import class FirebaseCore.FirebaseApp
+import class GoogleMobileAds.MobileAds
 import UIKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
@@ -14,6 +15,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FirebaseApp.configure()
+        Task {
+            _ = await MobileAds.shared.start()
+        }
         return true
     }
 }
