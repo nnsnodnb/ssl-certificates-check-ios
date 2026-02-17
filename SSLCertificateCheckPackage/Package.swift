@@ -14,9 +14,9 @@ extension String {
 // MARK: - Target.Dependency extension
 extension PackageDescription.Target.Dependency {
     // MARK: - Aliases
-    static let adsertisementFeature: Self = .target(name: "AdsertisementFeature")
     static let appClip: Self = .target(name: "AppClip")
     static let application: Self = .target(name: "Application")
+    static let clientDependencies: Self = .target(name: "ClientDependencies")
     static let infoFeature: Self = .target(name: "InfoFeature")
     static let licenseFeature: Self = .target(name: "LicenseFeature")
     static let logger: Self = .target(name: "Logger")
@@ -150,15 +150,6 @@ let package = Package(
         ),
         // Features
         .target(
-            name: "AdsertisementFeature",
-            dependencies: [
-                .dependencies,
-                .dependenciesMacros,
-                .googleMobileAds,
-            ],
-            path: "Sources/Features/AdsertisementFeature"
-        ),
-        .target(
             name: "InfoFeature",
             dependencies: [
                 .betterSafariView,
@@ -173,19 +164,18 @@ let package = Package(
         .target(
             name: "LicenseFeature",
             dependencies: [
+                .clientDependencies,
                 .composableArchitecture,
                 .dependencies,
                 .firebaseAnalytics,
                 .logger,
             ],
             path: "Sources/Features/LicenseFeature",
-            plugins: [
-                .licensesPlugin,
-            ]
         ),
         .target(
             name: "SearchFeature",
             dependencies: [
+                .clientDependencies,
                 .composableArchitecture,
                 .dependencies,
                 .infoFeature,
@@ -197,6 +187,19 @@ let package = Package(
             path: "Sources/Features/SearchFeature"
         ),
         // Misc
+        .target(
+            name: "ClientDependencies",
+            dependencies: [
+                .composableArchitecture,
+                .dependencies,
+                .dependenciesMacros,
+                .googleMobileAds,
+                .x509Parser,
+            ],
+            plugins: [
+                .licensesPlugin,
+            ]
+        ),
         .target(
             name: "Logger",
             dependencies: [

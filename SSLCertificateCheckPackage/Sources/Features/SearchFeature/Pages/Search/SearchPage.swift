@@ -176,7 +176,7 @@ private extension View {
                 Button(
                     action: {
                         keyboardClose()
-                        store.send(.search)
+                        store.send(.openAds)
                     },
                     label: {
                         Group {

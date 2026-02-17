@@ -17,7 +17,11 @@ struct AdHocApp: App {
     // MARK: - Body
     var body: some Scene {
         WindowGroup {
-            RootPage()
+            RootPage(
+                rootDependency: .init(
+                    requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/1712485313",
+                )
+            )
         }
     }
 }

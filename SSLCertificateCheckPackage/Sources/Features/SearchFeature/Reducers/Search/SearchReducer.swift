@@ -6,6 +6,7 @@
 //
 
 import CasePaths
+import ClientDependencies
 import ComposableArchitecture
 import Foundation
 import InfoFeature
@@ -73,7 +74,8 @@ package struct SearchReducer {
         case pasteURLChanged(URL)
         case universalLinksURLChanged(URL)
         case openInfo
-        case search
+        case openAds
+        case search(URL)
         case toggleIntroductionShareExtension
         case checkFirstExperience
         case displayedRequestReview
@@ -98,12 +100,14 @@ package struct SearchReducer {
     }
 
     // MARK: - Properties
-    @Dependency(BundleClient.self)
+    @Dependency(\.bundle)
     private var bundle
-    @Dependency(SearchClient.self)
+    @Dependency(\.search)
     private var search
-    @Dependency(KeyValueStoreClient.self)
+    @Dependency(\.keyValueStore)
     private var keyValueStore
+    @Dependency(\.rewardedAd)
+    private var rewardedAd
 
     // MARK: - Body
     package var body: some ReducerOf<Self> {
@@ -155,12 +159,25 @@ package struct SearchReducer {
                 state.info = .init(version: "v\(version)")
                 Logger.info("Open Info")
                 return .none
-            case .search:
+            case .openAds:
                 guard !state.searchButtonDisabled,
                       let url = state.searchableURL else {
                     return .none
                 }
                 state.isLoading = true
+                Logger.info("Start load Ads")
+                return .run(
+                    operation: { send in
+                        let result = try await rewardedAd.show()
+                        guard result > 0 else { return }
+                        await send(.search(url))
+                    },
+                    catch: { error, send in
+                        await send(.searchResponse(.failure(.search)))
+                        Logger.error("Failed fetch Ads: \(error)")
+                    }
+                )
+            case let .search(url):
                 Logger.info("Start searching")
                 return .run(
                     operation: { send in

@@ -6,6 +6,7 @@
 //
 
 import CasePaths
+import ClientDependencies
 import ComposableArchitecture
 import Foundation
 import Logger
@@ -36,7 +37,7 @@ package struct LicenseListReducer {
     }
 
     // MARK: - Properties
-    @Dependency(LicenseClient.self)
+    @Dependency(\.license)
     private var license
 
     // MARK: - Initialize

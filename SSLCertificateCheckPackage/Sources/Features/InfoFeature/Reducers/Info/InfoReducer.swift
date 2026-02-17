@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
+import ClientDependencies
 import ComposableArchitecture
 import Foundation
 import LicenseFeature
@@ -81,7 +82,7 @@ package struct InfoReducer {
     }
 
     // MARK: - Properties
-    @Dependency(ApplicationClient.self)
+    @Dependency(\.application)
     private var application
 
     // MARK: - Initialize
