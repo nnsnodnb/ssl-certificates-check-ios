@@ -14,6 +14,7 @@ extension String {
 // MARK: - Target.Dependency extension
 extension PackageDescription.Target.Dependency {
     // MARK: - Aliases
+    static let adsertisementFeature: Self = .target(name: "AdsertisementFeature")
     static let appClip: Self = .target(name: "AppClip")
     static let application: Self = .target(name: "Application")
     static let infoFeature: Self = .target(name: "InfoFeature")
@@ -41,6 +42,13 @@ extension PackageDescription.Target.Dependency {
     static var dependencies: Self {
         .product(
             name: "Dependencies",
+            package: "swift-dependencies"
+        )
+    }
+
+    static var dependenciesMacros: Self {
+        .product(
+            name: "DependenciesMacros",
             package: "swift-dependencies"
         )
     }
@@ -131,6 +139,7 @@ let package = Package(
             dependencies: [
                 .firebaseAnalytics,
                 .firebaseCrashlytics,
+                .googleMobileAds,
                 .searchFeature,
             ]
         ),
@@ -140,6 +149,15 @@ let package = Package(
             path: "Sources/AppExtensions/Share"
         ),
         // Features
+        .target(
+            name: "AdsertisementFeature",
+            dependencies: [
+                .dependencies,
+                .dependenciesMacros,
+                .googleMobileAds,
+            ],
+            path: "Sources/Features/AdsertisementFeature"
+        ),
         .target(
             name: "InfoFeature",
             dependencies: [
