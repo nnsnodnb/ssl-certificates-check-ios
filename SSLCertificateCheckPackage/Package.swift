@@ -74,6 +74,13 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
+    static var googleUserMessagingPlatform: Self {
+        .product(
+            name: "GoogleUserMessagingPlatform",
+            package: "swift-package-manager-google-user-messaging-platform",
+        )
+    }
+
     static var sfSafeSymbols: Self {
         .product(
             name: "SFSafeSymbols",
@@ -131,6 +138,7 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.23.1")),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", .upToNextMajor(from: "1.10.1")),
         .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", .upToNextMajor(from: "12.14.0")),
+        .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", .upToNextMajor(from: "3.1.0")),
     ],
     targets: [
         // Application
