@@ -59,6 +59,13 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
+    static var googleMobileAds: Self {
+        .product(
+            name: "GoogleMobileAds",
+            package: "swift-package-manager-google-mobile-ads",
+        )
+    }
+
     static var sfSafeSymbols: Self {
         .product(
             name: "SFSafeSymbols",
@@ -115,6 +122,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.17.1")),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.23.1")),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", .upToNextMajor(from: "1.10.1")),
+        .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", .upToNextMajor(from: "12.14.0")),
     ],
     targets: [
         // Application
