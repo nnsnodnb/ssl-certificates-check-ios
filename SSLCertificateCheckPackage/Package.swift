@@ -54,6 +54,13 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
+    static var dependenciesTestSupport: Self {
+        .product(
+            name: "DependenciesTestSupport",
+            package: "swift-dependencies",
+        )
+    }
+
     static var firebaseAnalytics: Self {
         .product(
             name: "FirebaseAnalytics",
@@ -238,6 +245,14 @@ let package = Package(
             ]
         ),
         // Tests
+        .testTarget(
+            name: "ConsentFeatureTests",
+            dependencies: [
+                .consentFeature,
+                .dependencies,
+                .dependenciesTestSupport,
+            ],
+        ),
         .testTarget(
             name: "InfoFeatureTests",
             dependencies: [
