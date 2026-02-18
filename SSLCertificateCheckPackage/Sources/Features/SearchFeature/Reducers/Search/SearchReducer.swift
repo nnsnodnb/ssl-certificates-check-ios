@@ -23,6 +23,7 @@ package struct SearchReducer {
         var searchButtonDisabled = true
         var text: String = ""
         var isShareExtensionImageShow = false
+        var searchPageBottomBannerAdUnitID: String?
         var searchableURL: URL?
         var searchResult: Identified<[X509], SearchResultReducer.State?>?
         var searchResultDetail: Identified<X509, SearchResultDetailReducer.State?>?
@@ -70,6 +71,7 @@ package struct SearchReducer {
 
     // MARK: - Action
     package enum Action: Equatable {
+        case onAppear
         case textChanged(String)
         case pasteURLChanged(URL)
         case universalLinksURLChanged(URL)
@@ -100,6 +102,8 @@ package struct SearchReducer {
     }
 
     // MARK: - Properties
+    @Dependency(\.adUnitID)
+    private var adUnitID
     @Dependency(\.bundle)
     private var bundle
     @Dependency(\.search)
@@ -113,6 +117,9 @@ package struct SearchReducer {
     package var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                state.searchPageBottomBannerAdUnitID = try? adUnitID.searchPageBottomBannerAdUnitID()
+                return .none
             case let .textChanged(text):
                 state.text = text
                 guard !state.text.isEmpty,

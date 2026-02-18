@@ -16,10 +16,12 @@ import XCTestDynamicOverlay
 public struct RootDependency: Sendable {
     // MARK: - Properties
     public let requestStartRewardAdUnitID: String
+    public let searchPageBottomBannerAdUnitID: String
 
     // MARK: - Initialize
-    public init(requestStartRewardAdUnitID: String) {
+    public init(requestStartRewardAdUnitID: String, searchPageBottomBannerAdUnitID: String) {
         self.requestStartRewardAdUnitID = requestStartRewardAdUnitID
+        self.searchPageBottomBannerAdUnitID = searchPageBottomBannerAdUnitID
     }
 }
 
@@ -72,6 +74,7 @@ public struct RootPage: View {
         self.store = .init(
             initialState: RootReducer.State(
                 requestStartRewardAdUnitID: dependency.requestStartRewardAdUnitID,
+                searchPageBottomBannerAdUnitID: dependency.searchPageBottomBannerAdUnitID,
             ),
             reducer: {
                 RootReducer()
@@ -79,6 +82,7 @@ public struct RootPage: View {
             withDependencies: {
                 $0.adUnitID = .init(
                     requestStartRewardAdUnitID: { dependency.requestStartRewardAdUnitID },
+                    searchPageBottomBannerAdUnitID: { dependency.searchPageBottomBannerAdUnitID },
                 )
             },
         )
@@ -89,6 +93,7 @@ public struct RootPage: View {
     RootPage(
         dependency: .init(
             requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/1712485313",
+            searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
         )
     )
 }

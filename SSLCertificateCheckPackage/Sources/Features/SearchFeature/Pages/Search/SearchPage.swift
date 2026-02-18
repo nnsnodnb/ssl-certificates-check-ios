@@ -39,6 +39,9 @@ package struct SearchPage: View {
                     }
             }
         )
+        .onAppear {
+            store.send(.onAppear)
+        }
         .sheet(
             item: $store.scope(state: \.info, action: \.info),
             content: { store in
@@ -65,29 +68,32 @@ package struct SearchPage: View {
 // MARK: - Private method
 private extension SearchPage {
     var form: some View {
-        Form {
-            Section(
-                content: {
-                    input
-                },
-                header: {
-                    Text("Enter the host you want to check")
-                        .padding(.top, 16)
-                }
-            )
-            Section {
-                introductionShareExtension
-            }
-        }
-        .overlay {
-            if store.isLoading {
-                Color.gray.opacity(0.8)
-                    .overlay {
-                        ProgressView()
-                            .tint(.white)
-                            .scaleEffect(x: 2, y: 2, anchor: .center)
+        GeometryReader { proxy in
+            Form {
+                Section(
+                    content: {
+                        input
+                    },
+                    header: {
+                        Text("Enter the host you want to check")
+                            .padding(.top, 16)
                     }
-                    .ignoresSafeArea(edges: .bottom)
+                )
+                Section {
+                    introductionShareExtension
+                }
+                bottomAdBannerSection(proxy: proxy)
+            }
+            .overlay {
+                if store.isLoading {
+                    Color.gray.opacity(0.8)
+                        .overlay {
+                            ProgressView()
+                                .tint(.white)
+                                .scaleEffect(x: 2, y: 2, anchor: .center)
+                        }
+                        .ignoresSafeArea(edges: .bottom)
+                }
             }
         }
     }
@@ -150,6 +156,25 @@ private extension SearchPage {
             }
         }
         .padding(.vertical, 8)
+    }
+
+    @ViewBuilder
+    func bottomAdBannerSection(proxy: GeometryProxy) -> some View {
+        if let adUnitID = store.searchPageBottomBannerAdUnitID {
+            Section {
+                VStack(alignment: .center, spacing: 8) {
+                    Text("Advertisement")
+                        .font(.system(size: 14))
+                    SearchBottomAdBanner(adUnitID: adUnitID)
+                        .frame(
+                            width: max(proxy.frame(in: .global).size.width - 20, 0),
+                            height: max(proxy.frame(in: .global).size.width - 20, 0),
+                        )
+                }
+            }
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+        }
     }
 }
 

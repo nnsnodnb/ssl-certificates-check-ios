@@ -203,6 +203,7 @@ let package = Package(
                 .clientDependencies,
                 .composableArchitecture,
                 .dependencies,
+                .googleMobileAds,
                 .infoFeature,
                 .logger,
                 .sfSafeSymbols,

@@ -15,6 +15,7 @@ package struct RootReducer: Sendable {
     // MARK: - State
     package struct State: Equatable, Sendable {
         package let requestStartRewardAdUnitID: String
+        package let searchPageBottomBannerAdUnitID: String
         package var consent: ConsentReducer.State?
         package var search: SearchReducer.State?
     }

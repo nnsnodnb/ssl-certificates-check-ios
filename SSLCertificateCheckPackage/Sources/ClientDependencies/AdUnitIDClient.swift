@@ -13,12 +13,14 @@ import Foundation
 package struct AdUnitIDClient: Sendable {
     // MARK: - Properties
     package var requestStartRewardAdUnitID: @Sendable () throws -> String
+    package var searchPageBottomBannerAdUnitID: @Sendable () throws -> String
 }
 
 // MARK: - DependencyKey
 extension AdUnitIDClient: DependencyKey {
     package static let liveValue: Self = .init(
         requestStartRewardAdUnitID: { throw Error.mustSetAdIDFromRootPage },
+        searchPageBottomBannerAdUnitID: { throw Error.mustSetAdIDFromRootPage },
     )
 }
 

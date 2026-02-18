@@ -20,6 +20,7 @@ struct ProductionApp: App {
             RootPage(
                 dependency: .init(
                     requestStartRewardAdUnitID: "ca-app-pub-3417597686353524/1636683434",
+                    searchPageBottomBannerAdUnitID: "ca-app-pub-3417597686353524/1523645555",
                 )
             )
         }
