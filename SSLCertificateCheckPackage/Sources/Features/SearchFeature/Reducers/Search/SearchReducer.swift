@@ -178,6 +178,9 @@ package struct SearchReducer {
                     }
                 )
             case let .search(url):
+                guard !state.searchButtonDisabled else {
+                    return .none
+                }
                 Logger.info("Start searching")
                 return .run(
                     operation: { send in

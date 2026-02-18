@@ -5,105 +5,110 @@
 //  Created by Yuya Oka on 2023/10/22.
 //
 
+import ClientDependencies
 import ComposableArchitecture
+import Foundation
 @testable import SearchFeature
+import Testing
 import X509Parser
-import XCTest
 
-final class TestSearchReducerSearch: XCTestCase {
-    @MainActor
+@MainActor
+struct TestSearchReducerSearch {
+    @Test
     func testEmptyText() async throws {
         let store = TestStore(
-            initialState: SearchReducer.State()
-        ) {
-            SearchReducer()
-        }
+            initialState: SearchReducer.State(),
+            reducer: {
+                SearchReducer()
+            },
+        )
 
-        await store.send(.search)
+        await store.send(.search(URL(string: "https://example.com")!))
     }
 
-    @MainActor
+    @Test
     func testInvalidText() async throws {
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: true,
                 text: "example.",
                 searchableURL: nil
-            )
-        ) {
-            SearchReducer()
-        }
+            ),
+            reducer: {
+                SearchReducer()
+            },
+        )
 
-        await store.send(.search)
+        await store.send(.search(URL(string: "https://example.com")!))
     }
 
-    @MainActor
+    @Test
     func testValidTextSuccessResponse() async throws {
         let x509 = X509.stub
-        let search = SearchClient(
-            fetchCertificates: { _ in [x509] }
-        )
-        let store = TestStore(
-            initialState: SearchReducer.State(
-                searchButtonDisabled: false,
-                text: "example.com",
-                searchableURL: URL(string: "https://example.com")
+        await withDependencies {
+            $0.search.fetchCertificates = { _ in [x509] }
+        } operation: {
+            let store = TestStore(
+                initialState: SearchReducer.State(
+                    searchButtonDisabled: false,
+                    text: "example.com",
+                    searchableURL: URL(string: "https://example.com"),
+                    isLoading: true,
+                ),
+                reducer: {
+                    SearchReducer()
+                },
             )
-        ) {
-            SearchReducer()
-                .dependency(search)
-        }
 
-        await store.send(.search) {
-            $0.isLoading = true
-        }
-        await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
-            $0.isLoading = false
-            $0.destinations = [.searchResult]
-            $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
+            await store.send(.search(URL(string: "https://example.com")!))
+            await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
+                $0.isLoading = false
+                $0.destinations = [.searchResult]
+                $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
+            }
         }
     }
 
-    @MainActor
+    @Test
     func testValidTextFailureResponse() async throws {
         enum Error: Swift.Error {
             case testError
         }
 
-        let search = SearchClient(
-            fetchCertificates: { _ in throw Error.testError }
-        )
-        let store = TestStore(
-            initialState: SearchReducer.State(
-                searchButtonDisabled: false,
-                text: "example.com",
-                searchableURL: URL(string: "https://example.com")
+        await withDependencies {
+            $0.search.fetchCertificates = { _ in throw Error.testError }
+        } operation: {
+            let store = TestStore(
+                initialState: SearchReducer.State(
+                    searchButtonDisabled: false,
+                    text: "example.com",
+                    searchableURL: URL(string: "https://example.com"),
+                    isLoading: true,
+                ),
+                reducer: {
+                    SearchReducer()
+                },
             )
-        ) {
-            SearchReducer()
-                .dependency(search)
-        }
 
-        await store.send(.search) {
-            $0.isLoading = true
-        }
-        await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
-            $0.isLoading = false
-            $0.alert = AlertState(
-                title: {
-                    TextState("Failed to obtain certificate")
-                },
-                actions: {
-                    ButtonState(
-                        label: {
-                            TextState("Close")
-                        }
-                    )
-                },
-                message: {
-                    TextState("Please check or re-run the URL.")
-                }
-            )
+            await store.send(.search(URL(string: "https://example.com")!))
+            await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
+                $0.isLoading = false
+                $0.alert = AlertState(
+                    title: {
+                        TextState("Failed to obtain certificate")
+                    },
+                    actions: {
+                        ButtonState(
+                            label: {
+                                TextState("Close")
+                            }
+                        )
+                    },
+                    message: {
+                        TextState("Please check or re-run the URL.")
+                    }
+                )
+            }
         }
     }
 }

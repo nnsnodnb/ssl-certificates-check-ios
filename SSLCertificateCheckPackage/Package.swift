@@ -276,6 +276,8 @@ let package = Package(
         .testTarget(
             name: "SearchFeatureTests",
             dependencies: [
+                .clientDependencies,
+                .dependenciesTestSupport,
                 .searchFeature,
             ]
         ),

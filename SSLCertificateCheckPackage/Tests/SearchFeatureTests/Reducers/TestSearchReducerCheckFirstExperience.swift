@@ -5,30 +5,35 @@
 //  Created by Yuya Oka on 2023/10/22.
 //
 
+import ClientDependencies
 import ComposableArchitecture
+import Foundation
 @testable import SearchFeature
+import Testing
 import X509Parser
-import XCTest
 
-final class TestSearchReducerCheckFirstExperience: XCTestCase {
-    @MainActor
+@MainActor
+struct TestSearchReducerCheckFirstExperience {
+    @Test
     func testIsCheckFirstExperienceIsFalse() async throws {
         let store = TestStore(
-            initialState: SearchReducer.State(isCheckFirstExperience: false)
-        ) {
-            SearchReducer()
-        }
+            initialState: SearchReducer.State(isCheckFirstExperience: false),
+            reducer: {
+                SearchReducer()
+            },
+        )
 
         await store.send(.checkFirstExperience)
     }
 
-    @MainActor
+    @Test(
+        .dependencies {
+            $0.keyValueStore.getWasRequestReviewFinishFirstSearchExperience = { false }
+            $0.keyValueStore.setWasRequestReviewFinishFirstSearchExperience = { _ in }
+        }
+    )
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
         let x509 = X509.stub
-        let keyValueStore = KeyValueStoreClient(
-            getWasRequestReviewFinishFirstSearchExperience: { false },
-            setWasRequestReviewFinishFirstSearchExperience: { _ in }
-        )
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
@@ -38,11 +43,11 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
                 searchResultDetail: .init(SearchResultDetailReducer.State(x509: x509), id: x509),
                 isCheckFirstExperience: true,
                 destinations: [.searchResult, .searchResultDetail]
-            )
-        ) {
-            SearchReducer()
-                .dependency(keyValueStore)
-        }
+            ),
+            reducer: {
+                SearchReducer()
+            },
+        )
 
         await store.send(.checkFirstExperience) {
             $0.isCheckFirstExperience = false
@@ -52,13 +57,14 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
         }
     }
 
-    @MainActor
+    @Test(
+        .dependencies {
+            $0.keyValueStore.getWasRequestReviewFinishFirstSearchExperience = { true }
+            $0.keyValueStore.setWasRequestReviewFinishFirstSearchExperience = { _ in }
+        }
+    )
     func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
         let x509 = X509.stub
-        let keyValueStore = KeyValueStoreClient(
-            getWasRequestReviewFinishFirstSearchExperience: { true },
-            setWasRequestReviewFinishFirstSearchExperience: { _ in }
-        )
         let store = TestStore(
             initialState: SearchReducer.State(
                 searchButtonDisabled: false,
@@ -68,11 +74,11 @@ final class TestSearchReducerCheckFirstExperience: XCTestCase {
                 searchResultDetail: .init(SearchResultDetailReducer.State(x509: x509), id: x509),
                 isCheckFirstExperience: true,
                 destinations: [.searchResult, .searchResultDetail]
-            )
-        ) {
-            SearchReducer()
-                .dependency(keyValueStore)
-        }
+            ),
+            reducer: {
+                SearchReducer()
+            },
+        )
 
         await store.send(.checkFirstExperience) {
             $0.isCheckFirstExperience = false
