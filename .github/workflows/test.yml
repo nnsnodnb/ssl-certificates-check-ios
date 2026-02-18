@@ -18,6 +18,7 @@ jobs:
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
+      TEST_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro"
 
     steps:
       - uses: actions/checkout@v6
@@ -45,6 +46,18 @@ jobs:
       - name: Make test-result folder
         run: mkdir -p test-results
 
+      - name: Xcode test for ApplicationTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+              -scheme ApplicationTests \
+              -workspace SSLCertificateCheck.xcworkspace \
+              -parallel-testing-enabled=YES \
+              -destination "${TEST_DESTINATION}" \
+              -resultBundlePath "test-results/Test-ApplicationTests.xcresult" \
+              -clonedSourcePackagesDirPath .swiftpm \
+              -disableAutomaticPackageResolution | xcpretty
+
       - name: Xcode test for ConsentFeatureTests
         run: |
           set -o pipefail && \
@@ -52,8 +65,8 @@ jobs:
               -scheme ConsentFeatureTests \
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
-              -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
-              -resultBundlePath "test-results/Test-InfoFeatureTests.xcresult" \
+              -destination "${TEST_DESTINATION}" \
+              -resultBundlePath "test-results/Test-ConsentFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
 
@@ -64,7 +77,7 @@ jobs:
               -scheme InfoFeatureTests \
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
-              -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+              -destination "${TEST_DESTINATION}" \
               -resultBundlePath "test-results/Test-InfoFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
@@ -76,7 +89,7 @@ jobs:
               -scheme LicenseFeatureTests \
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
-              -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+              -destination "${TEST_DESTINATION}" \
               -resultBundlePath "test-results/Test-LicenseFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
@@ -88,7 +101,7 @@ jobs:
             -scheme SearchFeatureTests \
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
-            -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+            -destination "${TEST_DESTINATION}" \
             -resultBundlePath "test-results/Test-SearchFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
@@ -100,7 +113,7 @@ jobs:
             -scheme X509ParserTests \
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
-            -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+            -destination "${TEST_DESTINATION}" \
             -resultBundlePath "test-results/Test-X509ParserTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty

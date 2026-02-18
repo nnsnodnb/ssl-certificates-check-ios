@@ -246,6 +246,14 @@ let package = Package(
         ),
         // Tests
         .testTarget(
+            name: "ApplicationTests",
+            dependencies: [
+                .application,
+                .dependencies,
+                .dependenciesTestSupport,
+            ],
+        ),
+        .testTarget(
             name: "ConsentFeatureTests",
             dependencies: [
                 .consentFeature,
