@@ -272,6 +272,7 @@ let package = Package(
         .testTarget(
             name: "LicenseFeatureTests",
             dependencies: [
+                .clientDependencies,
                 .licenseFeature,
             ]
         ),
