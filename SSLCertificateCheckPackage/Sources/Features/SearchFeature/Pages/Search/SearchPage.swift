@@ -57,9 +57,7 @@ package struct SearchPage: View {
     }
 
     // MARK: - Initialize
-    package init(
-        store: StoreOf<SearchReducer> = Store(initialState: SearchReducer.State()) { SearchReducer() }
-    ) {
+    package init(store: StoreOf<SearchReducer>) {
         self.store = store
     }
 }

@@ -287,4 +287,8 @@ package struct SearchReducer {
                 }
         }
     }
+
+    // MARK: - Initialize
+    package init() {
+    }
 }

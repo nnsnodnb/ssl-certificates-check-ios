@@ -16,6 +16,7 @@ extension PackageDescription.Target.Dependency {
     // MARK: - Aliases
     static let appClip: Self = .target(name: "AppClip")
     static let application: Self = .target(name: "Application")
+    static let consentFeature: Self = .target(name: "ConsentFeature")
     static let clientDependencies: Self = .target(name: "ClientDependencies")
     static let infoFeature: Self = .target(name: "InfoFeature")
     static let licenseFeature: Self = .target(name: "LicenseFeature")
@@ -145,6 +146,7 @@ let package = Package(
         .target(
             name: .application,
             dependencies: [
+                .consentFeature,
                 .firebaseAnalytics,
                 .firebaseCrashlytics,
                 .googleMobileAds,
@@ -157,6 +159,14 @@ let package = Package(
             path: "Sources/AppExtensions/Share"
         ),
         // Features
+        .target(
+            name: "ConsentFeature",
+            dependencies: [
+                .clientDependencies,
+                .composableArchitecture,
+            ],
+            path: "Sources/Features/ConsentFeature",
+        ),
         .target(
             name: "InfoFeature",
             dependencies: [
@@ -202,6 +212,7 @@ let package = Package(
                 .dependencies,
                 .dependenciesMacros,
                 .googleMobileAds,
+                .googleUserMessagingPlatform,
                 .x509Parser,
             ],
             plugins: [
