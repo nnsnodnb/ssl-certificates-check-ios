@@ -6,26 +6,19 @@
 //
 
 import ComposableArchitecture
+import DependenciesTestSupport
+import Foundation
 @testable import InfoFeature
-import XCTest
+import Testing
 
-final class TestInfoReducerAlert: XCTestCase {
-    // MARK: - Properties
-    private var application: ApplicationClient!
-
-    override func setUp() {
-        super.setUp()
-        application = .init(
-            open: { _ in true }
-        )
+@MainActor
+@Suite(
+    .dependencies {
+        $0.application.open = { _ in true }
     }
-
-    override func tearDown() {
-        super.tearDown()
-        application = nil
-    }
-
-    @MainActor
+)
+struct TestInfoReducerAlert {
+    @Test
     func testAlertDismiss() async throws {
         let store = TestStore(
             initialState: InfoReducer.State(
@@ -49,11 +42,11 @@ final class TestInfoReducerAlert: XCTestCase {
                         )
                     }
                 )
-            )
-        ) {
-            InfoReducer()
-                .dependency(application)
-        }
+            ),
+            reducer: {
+                InfoReducer()
+            },
+        )
 
         await store.send(.alert(.dismiss)) {
             $0.alert = nil
@@ -86,11 +79,11 @@ final class TestInfoReducerAlert: XCTestCase {
                         )
                     }
                 )
-            )
-        ) {
-            InfoReducer()
-                .dependency(application)
-        }
+            ),
+            reducer: {
+                InfoReducer()
+            },
+        )
 
         await store.send(.alert(.presented(.openURL(url)))) {
             $0.alert = nil

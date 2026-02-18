@@ -264,6 +264,8 @@ let package = Package(
         .testTarget(
             name: "InfoFeatureTests",
             dependencies: [
+                .clientDependencies,
+                .dependenciesTestSupport,
                 .infoFeature,
             ]
         ),
