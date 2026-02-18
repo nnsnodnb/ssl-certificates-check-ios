@@ -43,18 +43,80 @@ jobs:
       - name: Write IDESkipMacroFingerprintValidation
         run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 
-      - name: Xcode test for SSLCertificateCheckPackage
+      - name: Make test-result folder
+        run: mkdir -p test-results
+
+      - name: Xcode test for ApplicationTests
         run: |
           set -o pipefail && \
             xcodebuild test \
+              -scheme ApplicationTests \
               -workspace SSLCertificateCheck.xcworkspace \
-              -scheme SSLCertificateCheckPackage \
-              -testPlan SSLCertificateCheckPackage \
-              -destination "${TEST_DESTINATION}" \
               -parallel-testing-enabled=YES \
-              -resultBundlePath "$(mktemp -d)/Test-SSLCertificateCheckPackage.xcresult" \
+              -destination "${TEST_DESTINATION}" \
+              -resultBundlePath "test-results/Test-ApplicationTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for ConsentFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+              -scheme ConsentFeatureTests \
+              -workspace SSLCertificateCheck.xcworkspace \
+              -parallel-testing-enabled=YES \
+              -destination "${TEST_DESTINATION}" \
+              -resultBundlePath "test-results/Test-ConsentFeatureTests.xcresult" \
+              -clonedSourcePackagesDirPath .swiftpm \
+              -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for InfoFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+              -scheme InfoFeatureTests \
+              -workspace SSLCertificateCheck.xcworkspace \
+              -parallel-testing-enabled=YES \
+              -destination "${TEST_DESTINATION}" \
+              -resultBundlePath "test-results/Test-InfoFeatureTests.xcresult" \
+              -clonedSourcePackagesDirPath .swiftpm \
+              -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for LicenseFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+              -scheme LicenseFeatureTests \
+              -workspace SSLCertificateCheck.xcworkspace \
+              -parallel-testing-enabled=YES \
+              -destination "${TEST_DESTINATION}" \
+              -resultBundlePath "test-results/Test-LicenseFeatureTests.xcresult" \
+              -clonedSourcePackagesDirPath .swiftpm \
+              -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for SearchFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+            -scheme SearchFeatureTests \
+            -workspace SSLCertificateCheck.xcworkspace \
+            -parallel-testing-enabled=YES \
+            -destination "${TEST_DESTINATION}" \
+            -resultBundlePath "test-results/Test-SearchFeatureTests.xcresult" \
+            -clonedSourcePackagesDirPath .swiftpm \
+            -disableAutomaticPackageResolution | xcpretty
+
+      - name: Xcode test for X509ParserTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+            -scheme X509ParserTests \
+            -workspace SSLCertificateCheck.xcworkspace \
+            -parallel-testing-enabled=YES \
+            -destination "${TEST_DESTINATION}" \
+            -resultBundlePath "test-results/Test-X509ParserTests.xcresult" \
+            -clonedSourcePackagesDirPath .swiftpm \
+            -disableAutomaticPackageResolution | xcpretty
 
       #- uses: kishikawakatsumi/xcresulttool@v1
       #  if: success() || failure()
