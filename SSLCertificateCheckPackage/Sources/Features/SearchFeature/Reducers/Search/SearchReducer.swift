@@ -34,7 +34,7 @@ package struct SearchReducer {
         @Presents var alert: AlertState<Action.Alert>?
 
         // MARK: - Destination
-        package enum Destination: Hashable {
+        package enum Destination {
             case searchResult
             case searchResultDetail
         }
@@ -70,8 +70,9 @@ package struct SearchReducer {
     }
 
     // MARK: - Action
-    package enum Action: Equatable {
+    package enum Action {
         case onAppear
+        case preloadRewardedAds
         case textChanged(String)
         case pasteURLChanged(URL)
         case universalLinksURLChanged(URL)
@@ -119,7 +120,14 @@ package struct SearchReducer {
             switch action {
             case .onAppear:
                 state.searchPageBottomBannerAdUnitID = try? adUnitID.searchPageBottomBannerAdUnitID()
-                return .none
+                return .send(.preloadRewardedAds)
+            case .preloadRewardedAds:
+                return .run(
+                    priority: .background,
+                    operation: { _ in
+                        try await rewardedAd.load()
+                    },
+                )
             case let .textChanged(text):
                 state.text = text
                 guard !state.text.isEmpty,
@@ -176,10 +184,15 @@ package struct SearchReducer {
                 return .run(
                     operation: { send in
                         let result = try await rewardedAd.show()
-                        guard result > 0 else { return }
+                        guard result > 0 else {
+                            await send(.preloadRewardedAds)
+                            return
+                        }
                         await send(.search(url))
+                        await send(.preloadRewardedAds)
                     },
                     catch: { error, send in
+                        await send(.preloadRewardedAds)
                         await send(.searchResponse(.failure(.search)))
                         Logger.error("Failed fetch Ads: \(error)")
                     }

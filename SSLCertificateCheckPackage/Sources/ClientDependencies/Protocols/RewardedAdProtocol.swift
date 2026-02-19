@@ -9,7 +9,7 @@ import Foundation
 import GoogleMobileAds
 
 @MainActor
-package protocol RewardedAdProtocol {
+package protocol RewardedAdProtocol: Equatable, Sendable {
     func canPresent() throws
-    func present(delegate: (any FullScreenContentDelegate)?)
+    func present(delegate: (any FullScreenContentDelegate)?, userDidEarnRewardHandler: @escaping () -> Void)
 }

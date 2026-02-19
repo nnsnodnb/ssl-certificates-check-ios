@@ -15,9 +15,8 @@ extension RewardedAd: RewardedAdProtocol {
         try canPresent(from: nil)
     }
 
-    package func present(delegate: (any FullScreenContentDelegate)?) {
+    package func present(delegate: (any FullScreenContentDelegate)?, userDidEarnRewardHandler: @escaping () -> Void) {
         fullScreenContentDelegate = delegate
-        present(from: nil) {
-        }
+        present(from: nil, userDidEarnRewardHandler: userDidEarnRewardHandler)
     }
 }

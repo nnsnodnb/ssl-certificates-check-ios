@@ -47,6 +47,7 @@ struct TestSearchReducerOpenAds {
     func testValidTextSuccessResponse() async throws {
         let x509 = X509.stub
         await withDependencies {
+            $0.rewardedAd.load = {}
             $0.rewardedAd.show = { 1 }
             $0.search.fetchCertificates = { _ in [x509] }
         } operation: {
@@ -65,6 +66,7 @@ struct TestSearchReducerOpenAds {
                 $0.isLoading = true
             }
             await store.receive(\.search, timeout: 0)
+            await store.receive(\.preloadRewardedAds, timeout: 0)
             await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
                 $0.isLoading = false
                 $0.destinations = [.searchResult]
@@ -80,6 +82,7 @@ struct TestSearchReducerOpenAds {
         }
 
         await withDependencies {
+            $0.rewardedAd.load = {}
             $0.rewardedAd.show = { 1 }
             $0.search.fetchCertificates = { _ in throw Error.testError }
         } operation: {
@@ -98,6 +101,7 @@ struct TestSearchReducerOpenAds {
                 $0.isLoading = true
             }
             await store.receive(\.search, timeout: 0)
+            await store.receive(\.preloadRewardedAds, timeout: 0)
             await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
                 $0.isLoading = false
                 $0.alert = AlertState(
