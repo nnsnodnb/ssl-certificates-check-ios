@@ -1,19 +1,20 @@
 //
-//  TestSearchReducerSearch.swift
-//  
+//  TestSearchReducerOpenAds.swift
+//  SSLCertificateCheckPackage
 //
-//  Created by Yuya Oka on 2023/10/22.
+//  Created by Yuya Oka on 2026/02/18.
 //
 
 import ClientDependencies
 import ComposableArchitecture
+import DependenciesTestSupport
 import Foundation
 @testable import SearchFeature
 import Testing
 import X509Parser
 
 @MainActor
-struct TestSearchReducerSearch {
+struct TestSearchReducerOpenAds {
     @Test
     func testEmptyText() async throws {
         let store = TestStore(
@@ -23,7 +24,7 @@ struct TestSearchReducerSearch {
             },
         )
 
-        await store.send(.search(URL(string: "https://example.com")!))
+        await store.send(.openAds)
     }
 
     @Test
@@ -39,13 +40,15 @@ struct TestSearchReducerSearch {
             },
         )
 
-        await store.send(.search(URL(string: "https://example.com")!))
+        await store.send(.openAds)
     }
 
     @Test
     func testValidTextSuccessResponse() async throws {
         let x509 = X509.stub
         await withDependencies {
+            $0.rewardedAd.load = {}
+            $0.rewardedAd.show = { 1 }
             $0.search.fetchCertificates = { _ in [x509] }
         } operation: {
             let store = TestStore(
@@ -53,14 +56,17 @@ struct TestSearchReducerSearch {
                     searchButtonDisabled: false,
                     text: "example.com",
                     searchableURL: URL(string: "https://example.com"),
-                    isLoading: true,
                 ),
                 reducer: {
                     SearchReducer()
                 },
             )
 
-            await store.send(.search(URL(string: "https://example.com")!))
+            await store.send(.openAds) {
+                $0.isLoading = true
+            }
+            await store.receive(\.search, timeout: 0)
+            await store.receive(\.preloadRewardedAds, timeout: 0)
             await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
                 $0.isLoading = false
                 $0.destinations = [.searchResult]
@@ -76,6 +82,8 @@ struct TestSearchReducerSearch {
         }
 
         await withDependencies {
+            $0.rewardedAd.load = {}
+            $0.rewardedAd.show = { 1 }
             $0.search.fetchCertificates = { _ in throw Error.testError }
         } operation: {
             let store = TestStore(
@@ -83,14 +91,17 @@ struct TestSearchReducerSearch {
                     searchButtonDisabled: false,
                     text: "example.com",
                     searchableURL: URL(string: "https://example.com"),
-                    isLoading: true,
                 ),
                 reducer: {
                     SearchReducer()
                 },
             )
 
-            await store.send(.search(URL(string: "https://example.com")!))
+            await store.send(.openAds) {
+                $0.isLoading = true
+            }
+            await store.receive(\.search, timeout: 0)
+            await store.receive(\.preloadRewardedAds, timeout: 0)
             await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
                 $0.isLoading = false
                 $0.alert = AlertState(

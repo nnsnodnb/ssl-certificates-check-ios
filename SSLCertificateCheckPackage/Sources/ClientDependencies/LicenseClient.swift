@@ -12,7 +12,7 @@ import Foundation
 @DependencyClient
 package struct LicenseClient {
     // MARK: - Properties
-    var fetchLicenses: @Sendable () async throws -> [License]
+    package var fetchLicenses: @Sendable () async throws -> [License]
 }
 
 // MARK: - DependencyKey
@@ -23,4 +23,16 @@ extension LicenseClient: DependencyKey {
         }
     )
     package static let testValue: LicenseClient = .init()
+}
+
+// MARK: - DependencyValues
+package extension DependencyValues {
+    var license: LicenseClient {
+        get {
+            self[LicenseClient.self]
+        }
+        set {
+            self[LicenseClient.self] = newValue
+        }
+    }
 }

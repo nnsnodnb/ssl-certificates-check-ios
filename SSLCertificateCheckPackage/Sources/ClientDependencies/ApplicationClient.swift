@@ -13,7 +13,7 @@ import UIKit
 @DependencyClient
 package struct ApplicationClient: Sendable {
     // MARK: - Properties
-    var open: @Sendable (URL) async throws -> Bool
+    package var open: @Sendable (URL) async throws -> Bool
 }
 
 // MARK: - DependencyKey
@@ -22,4 +22,16 @@ extension ApplicationClient: DependencyKey {
         open: { @MainActor in await UIApplication.shared.open($0) }
     )
     package static let testValue: ApplicationClient = .init()
+}
+
+// MARK: - DependencyValues
+package extension DependencyValues {
+    var application: ApplicationClient {
+        get {
+            self[ApplicationClient.self]
+        }
+        set {
+            self[ApplicationClient.self] = newValue
+        }
+    }
 }

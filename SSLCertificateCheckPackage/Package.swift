@@ -16,6 +16,8 @@ extension PackageDescription.Target.Dependency {
     // MARK: - Aliases
     static let appClip: Self = .target(name: "AppClip")
     static let application: Self = .target(name: "Application")
+    static let consentFeature: Self = .target(name: "ConsentFeature")
+    static let clientDependencies: Self = .target(name: "ClientDependencies")
     static let infoFeature: Self = .target(name: "InfoFeature")
     static let licenseFeature: Self = .target(name: "LicenseFeature")
     static let logger: Self = .target(name: "Logger")
@@ -45,6 +47,20 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
+    static var dependenciesMacros: Self {
+        .product(
+            name: "DependenciesMacros",
+            package: "swift-dependencies"
+        )
+    }
+
+    static var dependenciesTestSupport: Self {
+        .product(
+            name: "DependenciesTestSupport",
+            package: "swift-dependencies",
+        )
+    }
+
     static var firebaseAnalytics: Self {
         .product(
             name: "FirebaseAnalytics",
@@ -56,6 +72,20 @@ extension PackageDescription.Target.Dependency {
         .product(
             name: "FirebaseCrashlytics",
             package: "firebase-ios-sdk"
+        )
+    }
+
+    static var googleMobileAds: Self {
+        .product(
+            name: "GoogleMobileAds",
+            package: "swift-package-manager-google-mobile-ads",
+        )
+    }
+
+    static var googleUserMessagingPlatform: Self {
+        .product(
+            name: "GoogleUserMessagingPlatform",
+            package: "swift-package-manager-google-user-messaging-platform",
         )
     }
 
@@ -115,14 +145,18 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.17.1")),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.23.1")),
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", .upToNextMajor(from: "1.10.1")),
+        .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", .upToNextMajor(from: "12.14.0")),
+        .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", .upToNextMajor(from: "3.1.0")),
     ],
     targets: [
         // Application
         .target(
             name: .application,
             dependencies: [
+                .consentFeature,
                 .firebaseAnalytics,
                 .firebaseCrashlytics,
+                .googleMobileAds,
                 .searchFeature,
             ]
         ),
@@ -132,6 +166,14 @@ let package = Package(
             path: "Sources/AppExtensions/Share"
         ),
         // Features
+        .target(
+            name: "ConsentFeature",
+            dependencies: [
+                .clientDependencies,
+                .composableArchitecture,
+            ],
+            path: "Sources/Features/ConsentFeature",
+        ),
         .target(
             name: "InfoFeature",
             dependencies: [
@@ -147,21 +189,21 @@ let package = Package(
         .target(
             name: "LicenseFeature",
             dependencies: [
+                .clientDependencies,
                 .composableArchitecture,
                 .dependencies,
                 .firebaseAnalytics,
                 .logger,
             ],
             path: "Sources/Features/LicenseFeature",
-            plugins: [
-                .licensesPlugin,
-            ]
         ),
         .target(
             name: "SearchFeature",
             dependencies: [
+                .clientDependencies,
                 .composableArchitecture,
                 .dependencies,
+                .googleMobileAds,
                 .infoFeature,
                 .logger,
                 .sfSafeSymbols,
@@ -171,6 +213,20 @@ let package = Package(
             path: "Sources/Features/SearchFeature"
         ),
         // Misc
+        .target(
+            name: "ClientDependencies",
+            dependencies: [
+                .composableArchitecture,
+                .dependencies,
+                .dependenciesMacros,
+                .googleMobileAds,
+                .googleUserMessagingPlatform,
+                .x509Parser,
+            ],
+            plugins: [
+                .licensesPlugin,
+            ]
+        ),
         .target(
             name: "Logger",
             dependencies: [
@@ -191,20 +247,41 @@ let package = Package(
         ),
         // Tests
         .testTarget(
+            name: "ApplicationTests",
+            dependencies: [
+                .application,
+                .dependencies,
+                .dependenciesTestSupport,
+            ],
+        ),
+        .testTarget(
+            name: "ConsentFeatureTests",
+            dependencies: [
+                .consentFeature,
+                .dependencies,
+                .dependenciesTestSupport,
+            ],
+        ),
+        .testTarget(
             name: "InfoFeatureTests",
             dependencies: [
+                .clientDependencies,
+                .dependenciesTestSupport,
                 .infoFeature,
             ]
         ),
         .testTarget(
             name: "LicenseFeatureTests",
             dependencies: [
+                .clientDependencies,
                 .licenseFeature,
             ]
         ),
         .testTarget(
             name: "SearchFeatureTests",
             dependencies: [
+                .clientDependencies,
+                .dependenciesTestSupport,
                 .searchFeature,
             ]
         ),

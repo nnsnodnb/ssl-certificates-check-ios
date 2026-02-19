@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
+import ClientDependencies
 import SwiftUI
 
 package struct LicenseDetailPage: View {

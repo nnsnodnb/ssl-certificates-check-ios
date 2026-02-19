@@ -17,7 +17,12 @@ struct ProductionApp: App {
     // MARK: - Body
     var body: some Scene {
         WindowGroup {
-            RootPage()
+            RootPage(
+                dependency: .init(
+                    requestStartRewardAdUnitID: "ca-app-pub-3417597686353524/1636683434",
+                    searchPageBottomBannerAdUnitID: "ca-app-pub-3417597686353524/1523645555",
+                )
+            )
         }
     }
 }

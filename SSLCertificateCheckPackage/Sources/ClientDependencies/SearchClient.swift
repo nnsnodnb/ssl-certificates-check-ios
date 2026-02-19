@@ -14,7 +14,7 @@ import X509Parser
 @DependencyClient
 package struct SearchClient: Sendable {
     // MARK: - Properties
-    var fetchCertificates: @Sendable (URL) async throws -> [X509]
+    package var fetchCertificates: @Sendable (URL) async throws -> [X509]
 }
 
 // MARK: - DependencyKey
@@ -84,6 +84,18 @@ private extension SearchClient {
                 serverTrustCompletion(serverTrust)
                 return (.performDefaultHandling, nil)
             }
+        }
+    }
+}
+
+// MARK: - DependencyValues
+package extension DependencyValues {
+    var search: SearchClient {
+        get {
+            self[SearchClient.self]
+        }
+        set {
+            self[SearchClient.self] = newValue
         }
     }
 }

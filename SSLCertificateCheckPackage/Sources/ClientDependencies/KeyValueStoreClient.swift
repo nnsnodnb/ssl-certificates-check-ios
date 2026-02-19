@@ -14,8 +14,8 @@ import SwiftUI
 package struct KeyValueStoreClient {
     // MARK: - Properties
     // swiftlint:disable identifier_name
-    var getWasRequestReviewFinishFirstSearchExperience: @Sendable () async throws -> Bool
-    var setWasRequestReviewFinishFirstSearchExperience: @Sendable (Bool) async throws -> Void
+    package var getWasRequestReviewFinishFirstSearchExperience: @Sendable () async throws -> Bool
+    package var setWasRequestReviewFinishFirstSearchExperience: @Sendable (Bool) async throws -> Void
     // swiftlint:enable identifier_name
 }
 
@@ -67,6 +67,18 @@ private extension KeyValueStoreClient {
 
         func setWasRequestReviewFinishFirstSearchExperience(value: Bool) {
             wasRequestReviewFinishFirstSearchExperience = value
+        }
+    }
+}
+
+// MARK: - DependencyValues
+package extension DependencyValues {
+    var keyValueStore: KeyValueStoreClient {
+        get {
+            self[KeyValueStoreClient.self]
+        }
+        set {
+            self[KeyValueStoreClient.self] = newValue
         }
     }
 }
