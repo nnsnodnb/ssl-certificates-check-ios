@@ -237,6 +237,7 @@ let package = Package(
                 .googleMobileAds,
                 .googleUserMessagingPlatform,
                 .revenueCat,
+                .revenueCatUI,
                 .x509Parser,
             ],
             plugins: [
