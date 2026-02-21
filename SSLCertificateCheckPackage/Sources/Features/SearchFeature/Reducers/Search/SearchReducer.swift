@@ -55,6 +55,7 @@ package struct SearchReducer {
             isLoading: Bool = false,
             destinations: [Destination] = [],
             alert: AlertState<Action.Alert>? = nil,
+            isPremiumActive: Bool = false,
         ) {
             self.info = info
             self.searchButtonDisabled = searchButtonDisabled
@@ -68,6 +69,10 @@ package struct SearchReducer {
             self.isLoading = isLoading
             self.destinations = destinations
             self.alert = alert
+            self._isPremiumActive = Shared(
+                wrappedValue: isPremiumActive,
+                .inMemory("key_premium_subscription_is_active"),
+            )
         }
     }
 
