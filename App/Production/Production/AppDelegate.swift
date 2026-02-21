@@ -7,6 +7,7 @@
 
 import class FirebaseCore.FirebaseApp
 import class GoogleMobileAds.MobileAds
+import class RevenueCat.Purchases
 import UIKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
@@ -18,6 +19,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         Task {
             _ = await MobileAds.shared.start()
         }
+        Purchases.configure(withAPIKey: "appl_tCBoNHVYLrNNHLlPSrarLoDORLz")
         return true
     }
 }
