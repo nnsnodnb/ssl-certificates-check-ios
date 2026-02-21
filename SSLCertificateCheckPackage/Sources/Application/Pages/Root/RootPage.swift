@@ -58,10 +58,17 @@ public struct RootPage: View {
         IfLetStore(
             store.scope(state: \.checkSubscription, action: \.checkSubscription),
             then: { store in
-                CheckSubscriptionPage(store: store)
+                ZStack {
+                    CheckSubscriptionPage(store: store)
+                    consentPage
+                }
             },
             else: {
-                consentPage
+                Color(UIColor.systemBackground.withAlphaComponent(0.000001))
+                    .ignoresSafeArea(.all)
+                    .onAppear {
+                        store.send(.showCheckSubscription)
+                    }
             }
         )
     }
@@ -71,13 +78,6 @@ public struct RootPage: View {
             store.scope(state: \.consent, action: \.consent),
             then: { store in
                 ConsentPage(store: store)
-            },
-            else: {
-                Color(UIColor.systemBackground.withAlphaComponent(0.000001))
-                    .ignoresSafeArea(.all)
-                    .onAppear {
-                        store.send(.showCheckSubscription)
-                    }
             }
         )
     }

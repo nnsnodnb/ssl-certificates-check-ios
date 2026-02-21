@@ -314,6 +314,14 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "SubscriptionFeatureTests",
+            dependencies: [
+                .clientDependencies,
+                .dependenciesTestSupport,
+                .subscriptionFeature,
+            ],
+        ),
+        .testTarget(
             name: "X509ParserTests",
             dependencies: [
                 .x509Parser,

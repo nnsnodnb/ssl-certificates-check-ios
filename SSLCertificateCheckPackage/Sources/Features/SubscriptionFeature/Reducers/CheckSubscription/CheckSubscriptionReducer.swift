@@ -17,28 +17,28 @@ package struct CheckSubscriptionReducer: Sendable {
     package struct State: Equatable, Sendable {
         @Shared(.inMemory("key_premium_subscription_is_active"))
         package var isPremiumActive = false
+        package var wasSendCompleted = false
 
         // MARK: - Initialize
-        package init(isPremiumActive: Bool = false) {
+        package init(
+            isPremiumActive: Bool = false,
+            wasSendCompleted: Bool = false,
+        ) {
             self.$isPremiumActive.withLock { $0 = isPremiumActive }
+            self.wasSendCompleted = wasSendCompleted
         }
     }
 
     // MARK: - Action
     package enum Action {
         case onAppear
-        case completed(Bool)
+        case gotIsPremiumActive(Bool)
         case delegate(Delegate)
 
         @CasePathable
         package enum Delegate {
             case completed
         }
-    }
-
-    // MARK: - CancelID
-    package enum CancelID {
-        case isPremiumActiveStream
     }
 
     // MARK: - Dependency
@@ -53,21 +53,18 @@ package struct CheckSubscriptionReducer: Sendable {
                 return .run(
                     operation: { send in
                         for await isActive in try await revenueCat.isPremiumActiveStream() {
-                            await send(.completed(isActive))
-                            break
+                            await send(.gotIsPremiumActive(isActive))
                         }
                     },
                     catch: { _, send in
-                        await send(.completed(false))
+                        await send(.gotIsPremiumActive(false))
                     }
                 )
-                .cancellable(id: CancelID.isPremiumActiveStream, cancelInFlight: true)
-            case let .completed(isActive):
+            case let .gotIsPremiumActive(isActive):
                 state.$isPremiumActive.withLock { $0 = isActive }
-                return .merge(
-                    .cancel(id: CancelID.isPremiumActiveStream),
-                    .send(.delegate(.completed)),
-                )
+                if state.wasSendCompleted { return .none }
+                state.wasSendCompleted = true
+                return .send(.delegate(.completed))
             case .delegate:
                 return .none
             }

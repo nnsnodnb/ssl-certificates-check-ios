@@ -42,7 +42,6 @@ package struct RootReducer: Sendable {
                 state.consent = .init()
                 return .none
             case .checkSubscription(.delegate(.completed)):
-                state.checkSubscription = nil
                 return .send(.showConsent)
             case .checkSubscription:
                 return .none
