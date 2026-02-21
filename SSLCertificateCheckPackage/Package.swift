@@ -22,6 +22,7 @@ extension PackageDescription.Target.Dependency {
     static let licenseFeature: Self = .target(name: "LicenseFeature")
     static let logger: Self = .target(name: "Logger")
     static let searchFeature: Self = .target(name: "SearchFeature")
+    static let subscriptionFeature: Self = .target(name: "SubscriptionFeature")
     static let share: Self = .target(name: "Share")
     static let uiComponents: Self = .target(name: "UIComponents")
     static let x509Parser: Self = .target(name: "X509Parser")
@@ -173,6 +174,7 @@ let package = Package(
                 .firebaseCrashlytics,
                 .googleMobileAds,
                 .searchFeature,
+                .subscriptionFeature,
             ]
         ),
         // AppExtensions
@@ -226,6 +228,15 @@ let package = Package(
                 .x509Parser,
             ],
             path: "Sources/Features/SearchFeature"
+        ),
+        .target(
+            name: "SubscriptionFeature",
+            dependencies: [
+                .clientDependencies,
+                .composableArchitecture,
+                .revenueCat,
+            ],
+            path: "Sources/Features/SubscriptionFeature",
         ),
         // Misc
         .target(

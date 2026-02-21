@@ -10,6 +10,7 @@ import ConsentFeature
 import Dependencies
 import GoogleMobileAds
 import SearchFeature
+import SubscriptionFeature
 import SwiftUI
 import XCTestDynamicOverlay
 
@@ -48,6 +49,18 @@ public struct RootPage: View {
                 SearchPage(store: store)
             },
             else: {
+                checkSubscriptionPage
+            }
+        )
+    }
+
+    private var checkSubscriptionPage: some View {
+        IfLetStore(
+            store.scope(state: \.checkSubscription, action: \.checkSubscription),
+            then: { store in
+                CheckSubscriptionPage(store: store)
+            },
+            else: {
                 consentPage
             }
         )
@@ -63,7 +76,7 @@ public struct RootPage: View {
                 Color(UIColor.systemBackground.withAlphaComponent(0.000001))
                     .ignoresSafeArea(.all)
                     .onAppear {
-                        store.send(.showConsent)
+                        store.send(.showCheckSubscription)
                     }
             }
         )

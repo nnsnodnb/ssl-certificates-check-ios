@@ -70,19 +70,11 @@ private extension SearchPage {
     var form: some View {
         GeometryReader { proxy in
             Form {
-                Section(
-                    content: {
-                        input
-                    },
-                    header: {
-                        Text("Enter the host you want to check")
-                            .padding(.top, 16)
-                    }
-                )
-                Section {
-                    introductionShareExtension
+                inputSection
+                introductionShareExtensionSection
+                if !store.isPremiumActive {
+                    bottomAdBannerSection(proxy: proxy)
                 }
-                bottomAdBannerSection(proxy: proxy)
             }
             .overlay {
                 if store.isLoading {
@@ -98,64 +90,75 @@ private extension SearchPage {
         }
     }
 
-    var input: some View {
-        HStack(alignment: .center, spacing: 0) {
-            Text("https://")
-                .padding(.horizontal, 8)
-            Divider()
-            HStack(alignment: .center, spacing: 0) {
-                TextField(
-                    "example.com",
-                    text: $store.text.sending(\.textChanged)
-                )
-                .keyboardType(.URL)
-                .textCase(.lowercase)
-                .focused($isFocused)
-                .padding(.horizontal, 8)
-                PasteButton(payloadType: URL.self) { urls in
-                    guard let url = urls.first else { return }
-                    Task { @MainActor in
-                        store.send(.pasteURLChanged(url))
+    var inputSection: some View {
+        Section(
+            content: {
+                HStack(alignment: .center, spacing: 0) {
+                    Text("https://")
+                        .padding(.horizontal, 8)
+                    Divider()
+                    HStack(alignment: .center, spacing: 0) {
+                        TextField(
+                            "example.com",
+                            text: $store.text.sending(\.textChanged)
+                        )
+                        .keyboardType(.URL)
+                        .textCase(.lowercase)
+                        .focused($isFocused)
+                        .padding(.horizontal, 8)
+                        PasteButton(payloadType: URL.self) { urls in
+                            guard let url = urls.first else { return }
+                            Task { @MainActor in
+                                store.send(.pasteURLChanged(url))
+                            }
+                        }
+                        .buttonBorderShape(.capsule)
+                        .labelStyle(.iconOnly)
+                        .offset(x: 8)
                     }
                 }
-                .buttonBorderShape(.capsule)
-                .labelStyle(.iconOnly)
-                .offset(x: 8)
-            }
-        }
+            },
+            header: {
+                Text("Enter the host you want to check")
+                    .padding(.top, 16)
+            },
+        )
     }
 
-    var introductionShareExtension: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .center, spacing: 8) {
-                Text("App provides ShareExtension feature")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Divider()
-                if store.isShareExtensionImageShow {
-                    VStack(alignment: .center, spacing: 12) {
-                        Text("Open a https site and open share sheet in Safari. Then tap '**CertsCheck**' logo.")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Image(.imgShareExtension)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
+
+    var introductionShareExtensionSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .center, spacing: 8) {
+                    Text("App provides ShareExtension feature")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Divider()
+                    if store.isShareExtensionImageShow {
+                        VStack(alignment: .center, spacing: 12) {
+                            Text("Open a https site and open share sheet in Safari. Then tap '**CertsCheck**' logo.")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(.imgShareExtension)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
+                        }
                     }
+                    Button(
+                        action: {
+                            store.send(.toggleIntroductionShareExtension)
+                        },
+                        label: {
+                            Text(store.isShareExtensionImageShow ? "Close" : "About more")
+                                .frame(maxWidth: .infinity)
+                        }
+                    )
+                    .buttonStyle(BorderlessButtonStyle())
+                    .frame(height: 24)
+                    .frame(maxWidth: .infinity)
                 }
-                Button(
-                    action: {
-                        store.send(.toggleIntroductionShareExtension)
-                    },
-                    label: {
-                        Text(store.isShareExtensionImageShow ? "Close" : "About more")
-                            .frame(maxWidth: .infinity)
-                    }
-                )
-                .buttonStyle(BorderlessButtonStyle())
-                .frame(height: 24)
-                .frame(maxWidth: .infinity)
             }
+            .padding(.vertical, 8)
         }
-        .padding(.vertical, 8)
     }
 
     @ViewBuilder
