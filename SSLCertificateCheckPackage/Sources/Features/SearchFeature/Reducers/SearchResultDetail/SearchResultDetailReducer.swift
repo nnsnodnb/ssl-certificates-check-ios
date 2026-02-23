@@ -16,6 +16,8 @@ package struct SearchResultDetailReducer {
     package struct State: Equatable {
         // MARK: - Properties
         package let x509: X509
+        @Shared(.inMemory("key_premium_subscription_is_active"))
+        package var isPremiumActive = false
     }
 
     // MARK: - Action
