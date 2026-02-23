@@ -28,7 +28,7 @@ package struct PaywallReducer: Sendable {
 
     // MARK: - Action
     package enum Action {
-        case restoreCompleted(CustomerInfo)
+        case restoreCompleted(any CustomerInfoProtocol)
         case restoreFailure
         case alert(PresentationAction<Alert>)
 
@@ -49,7 +49,7 @@ package struct PaywallReducer: Sendable {
         Reduce { state, action in
             switch action {
             case let .restoreCompleted(customerInfo):
-                if customerInfo.entitlements.all["Premium"]?.isActive == true {
+                if customerInfo.isPremiumActive {
                     state.$isPremiumActive.withLock { $0 = true }
                     state.alert = .init(
                         title: {
