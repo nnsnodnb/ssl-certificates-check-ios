@@ -78,8 +78,8 @@ private extension InfoPage {
     }
 
     @ViewBuilder var secondSection: some View {
-        if !store.isPremiumActive {
-            Section {
+        Section {
+            if !store.isPremiumActive {
                 buttonRow(
                     action: {
                         store.send(.openPaywall)
@@ -92,6 +92,17 @@ private extension InfoPage {
                     title: "Subscribe Premium"
                 )
             }
+            buttonRow(
+                action: {
+                    store.send(.buyMeACoffee)
+                },
+                image: {
+                    Image(systemSymbol: .cupAndHeatWavesFill)
+                        .resizable()
+                        .foregroundStyle(Color.brown)
+                },
+                title: "Buy me a coffee",
+            )
         }
     }
 

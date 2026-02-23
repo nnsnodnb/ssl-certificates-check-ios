@@ -23,6 +23,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             ]
         }
         Purchases.configure(withAPIKey: "appl_tCBoNHVYLrNNHLlPSrarLoDORLz")
+        Task {
+            _ = try await Purchases.shared.logIn("$RCAnonymousID:ccff33d798344877aa1f363be90eb38f")
+        }
         return true
     }
 }
