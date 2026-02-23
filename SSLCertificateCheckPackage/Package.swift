@@ -199,6 +199,7 @@ let package = Package(
                 .dependencies,
                 .firebaseAnalytics,
                 .licenseFeature,
+                .subscriptionFeature,
                 .uiComponents,
             ],
             path: "Sources/Features/InfoFeature"
