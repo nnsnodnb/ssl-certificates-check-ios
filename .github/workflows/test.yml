@@ -118,6 +118,18 @@ jobs:
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
 
+      - name: Xcode test for SubscriptionFeatureTests
+        run: |
+          set -o pipefail && \
+            xcodebuild test \
+            -scheme SubscriptionFeatureTests \
+            -workspace SSLCertificateCheck.xcworkspace \
+            -parallel-testing-enabled=YES \
+            -destination "${TEST_DESTINATION}" \
+            -resultBundlePath "test-results/Test-SubscriptionFeatureTests.xcresult" \
+            -clonedSourcePackagesDirPath .swiftpm \
+            -disableAutomaticPackageResolution | xcpretty
+
       #- uses: kishikawakatsumi/xcresulttool@v1
       #  if: success() || failure()
       #  with:

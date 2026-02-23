@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  InfoPage.swift
 //  
 //
 //  Created by Yuya Oka on 2023/10/13.
@@ -9,6 +9,7 @@ import BetterSafariView
 import ComposableArchitecture
 import LicenseFeature
 import SFSafeSymbols
+import SubscriptionFeature
 import SwiftUI
 import UIComponents
 
@@ -29,6 +30,9 @@ package struct InfoPage: View {
             }
         )
         .interactiveDismissDisabled(store.interactiveDismissDisabled)
+        .sheet(item: $store.scope(state: \.paywall, action: \.paywall), content: { store in
+            PaywallPage(store: store)
+        })
         .alert($store.scope(state: \.alert, action: \.alert))
     }
 
@@ -44,6 +48,7 @@ private extension InfoPage {
         Form {
             firstSection
             secondSection
+            thirdSection
         }
     }
 
@@ -72,7 +77,25 @@ private extension InfoPage {
         }
     }
 
-    var secondSection: some View {
+    @ViewBuilder var secondSection: some View {
+        if !store.isPremiumActive {
+            Section {
+                buttonRow(
+                    action: {
+                        store.send(.openPaywall)
+                    },
+                    image: {
+                        Image(systemSymbol: .crownFill)
+                            .resizable()
+                            .foregroundStyle(.yellow)
+                    },
+                    title: "Subscribe Premium"
+                )
+            }
+        }
+    }
+
+    var thirdSection: some View {
         Section {
             buttonRow(
                 action: {
@@ -100,7 +123,7 @@ private extension InfoPage {
                 HStack(alignment: .center, spacing: 12) {
                     Image(systemSymbol: .tagFill)
                         .resizable()
-                        .foregroundStyle(.yellow)
+                        .foregroundStyle(Color.blue.opacity(0.7))
                         .frame(width: 18, height: 18)
                     Text("Version")
                         .foregroundStyle(.primary)

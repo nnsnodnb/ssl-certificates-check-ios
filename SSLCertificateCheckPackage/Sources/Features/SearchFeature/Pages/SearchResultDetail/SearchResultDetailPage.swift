@@ -6,12 +6,14 @@
 //
 
 import ComposableArchitecture
+import SFSafeSymbols
+import SubscriptionFeature
 import SwiftUI
 import X509Parser
 
 package struct SearchResultDetailPage: View {
     // MARK: - Properties
-    package let store: StoreOf<SearchResultDetailReducer>
+    @Bindable package var store: StoreOf<SearchResultDetailReducer>
 
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -29,6 +31,9 @@ package struct SearchResultDetailPage: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 store.send(.appear)
+            }
+            .sheet(item: $store.scope(state: \.paywall, action: \.paywall)) { store in
+                PaywallPage(store: store)
             }
     }
 }
@@ -49,7 +54,11 @@ private extension SearchResultDetailPage {
     var otherSection: some View {
         Section {
             item(title: "Version", content: "Version \(store.x509.version)")
-            item(title: "Serial Number", content: store.x509.serialNumber)
+            item(
+                title: "Serial Number",
+                content: store.x509.serialNumber,
+                needPremiumSubscription: true,
+            )
         }
     }
 
@@ -99,8 +108,16 @@ private extension SearchResultDetailPage {
     var sha256FingerprintSection: some View {
         Section(
             content: {
-                item(title: "Certificate", content: store.x509.sha256Fingerprint.certificate)
-                item(title: "Public key", content: store.x509.sha256Fingerprint.publicKey)
+                item(
+                    title: "Certificate",
+                    content: store.x509.sha256Fingerprint.certificate,
+                    needPremiumSubscription: true,
+                )
+                item(
+                    title: "Public key",
+                    content: store.x509.sha256Fingerprint.publicKey,
+                    needPremiumSubscription: true,
+                )
             },
             header: {
                 Text("SHA256 Fingerprints")
@@ -109,15 +126,57 @@ private extension SearchResultDetailPage {
         )
     }
 
-    func item(title: String?, content: String) -> some View {
+    func item(title: String?, content: String, needPremiumSubscription: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             if let title {
                 Text(title)
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
             }
-            Text(content)
-                .textSelection(.enabled)
+            if needPremiumSubscription && !store.isPremiumActive {
+                needPremiumSubscriptionItem(content: content)
+            } else {
+                Text(content)
+                    .textSelection(.enabled)
+            }
+        }
+    }
+
+    func needPremiumSubscriptionItem(content: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(content.prefix(Int(ceil(Double(content.count) * 0.25))) + "...")
+            Button(
+                action: {
+                    store.send(.showPaywall)
+                },
+                label: {
+                    if #available(iOS 26.0, *) {
+                        Label(
+                            title: {
+                                Text("Show all content (Premium)")
+                                    .fontWeight(.semibold)
+                            },
+                            icon: {
+                                Image(systemSymbol: .lockFill)
+                                    .foregroundStyle(Color(UIColor.systemYellow))
+                            }
+                        )
+                        .font(.system(size: 14))
+                        .labelIconToTitleSpacing(4)
+                    } else {
+                        HStack(alignment: .center, spacing: 4) {
+                            Image(systemSymbol: .lockFill)
+                                .foregroundStyle(Color(UIColor.systemYellow))
+                            Text("Show all content (Premium)")
+                                .fontWeight(.semibold)
+                        }
+                        .font(.system(size: 14))
+                    }
+                }
+            )
+            .font(.system(size: 14))
+            .buttonStyle(.plain)
+            .padding(.vertical, 4)
         }
     }
 }

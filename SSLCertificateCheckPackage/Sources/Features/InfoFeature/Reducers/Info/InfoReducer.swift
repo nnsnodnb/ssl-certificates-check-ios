@@ -9,6 +9,7 @@ import ClientDependencies
 import ComposableArchitecture
 import Foundation
 import LicenseFeature
+import SubscriptionFeature
 
 @Reducer
 package struct InfoReducer {
@@ -17,11 +18,14 @@ package struct InfoReducer {
     package struct State: Equatable {
         // MARK: - Properties
         let version: String
+        @Presents var paywall: PaywallReducer.State?
         @Presents var licenseList: LicenseListReducer.State?
         var destinations: [Destination] = []
         var interactiveDismissDisabled = false
         var url: URL?
         @Presents var alert: AlertState<Action.Alert>?
+        @Shared(.inMemory("key_premium_subscription_is_active"))
+        var isPremiumActive = false
 
         // MARK: - Destination
         package enum Destination {
@@ -47,6 +51,7 @@ package struct InfoReducer {
         // MARK: - Initialize
         package init(
             version: String,
+            paywall: PaywallReducer.State? = nil,
             licenseList: LicenseListReducer.State? = nil,
             destinations: [Destination] = [],
             interactiveDismissDisabled: Bool = false,
@@ -54,6 +59,7 @@ package struct InfoReducer {
             alert: AlertState<Action.Alert>? = nil
         ) {
             self.version = version
+            self.paywall = paywall
             self.licenseList = licenseList
             self.destinations = destinations
             self.interactiveDismissDisabled = interactiveDismissDisabled
@@ -63,8 +69,9 @@ package struct InfoReducer {
     }
 
     // MARK: - Action
-    package enum Action: Equatable {
+    package enum Action {
         case close
+        case openPaywall
         case openAppReview
         case pushLicenseList
         case safari(State.Link?)
@@ -73,6 +80,7 @@ package struct InfoReducer {
         case openForeignBrowser(URL)
         case navigationPathChanged([State.Destination])
         case alert(PresentationAction<Alert>)
+        case paywall(PresentationAction<PaywallReducer.Action>)
         case licenseList(PresentationAction<LicenseListReducer.Action>)
 
         // MARK: - Alert
@@ -94,6 +102,9 @@ package struct InfoReducer {
         Reduce { state, action in
             switch action {
             case .close:
+                return .none
+            case .openPaywall:
+                state.paywall = .init()
                 return .none
             case .openAppReview:
                 let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
@@ -146,9 +157,17 @@ package struct InfoReducer {
             case .alert:
                 state.alert = nil
                 return .none
+            case .paywall(.dismiss):
+                state.paywall = nil
+                return .none
+            case .paywall:
+                return .none
             case .licenseList:
                 return .none
             }
+        }
+        .ifLet(\.$paywall, action: \.paywall) {
+            PaywallReducer()
         }
         .ifLet(\.$licenseList, action: \.licenseList) {
             LicenseListReducer()

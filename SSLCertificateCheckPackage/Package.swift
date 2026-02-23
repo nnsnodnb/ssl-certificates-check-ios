@@ -22,6 +22,7 @@ extension PackageDescription.Target.Dependency {
     static let licenseFeature: Self = .target(name: "LicenseFeature")
     static let logger: Self = .target(name: "Logger")
     static let searchFeature: Self = .target(name: "SearchFeature")
+    static let subscriptionFeature: Self = .target(name: "SubscriptionFeature")
     static let share: Self = .target(name: "Share")
     static let uiComponents: Self = .target(name: "UIComponents")
     static let x509Parser: Self = .target(name: "X509Parser")
@@ -89,6 +90,20 @@ extension PackageDescription.Target.Dependency {
         )
     }
 
+    static var revenueCat: Self {
+        .product(
+            name: "RevenueCat",
+            package: "purchases-ios-spm",
+        )
+    }
+
+    static var revenueCatUI: Self {
+        .product(
+            name: "RevenueCatUI",
+            package: "purchases-ios-spm",
+        )
+    }
+
     static var sfSafeSymbols: Self {
         .product(
             name: "SFSafeSymbols",
@@ -140,6 +155,7 @@ let package = Package(
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.8.0")),
         .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.2.0")),
         .package(url: "https://github.com/stleamist/BetterSafariView.git", .upToNextMajor(from: "2.4.2")),
+        .package(url: "https://github.com/RevenueCat/purchases-ios-spm.git", .upToNextMajor(from: "5.59.0")),
         .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "7.0.0")),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", .upToNextMajor(from: "0.63.2")),
         .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.17.1")),
@@ -158,6 +174,7 @@ let package = Package(
                 .firebaseCrashlytics,
                 .googleMobileAds,
                 .searchFeature,
+                .subscriptionFeature,
             ]
         ),
         // AppExtensions
@@ -182,6 +199,7 @@ let package = Package(
                 .dependencies,
                 .firebaseAnalytics,
                 .licenseFeature,
+                .subscriptionFeature,
                 .uiComponents,
             ],
             path: "Sources/Features/InfoFeature"
@@ -207,10 +225,20 @@ let package = Package(
                 .infoFeature,
                 .logger,
                 .sfSafeSymbols,
+                .subscriptionFeature,
                 .uiComponents,
                 .x509Parser,
             ],
             path: "Sources/Features/SearchFeature"
+        ),
+        .target(
+            name: "SubscriptionFeature",
+            dependencies: [
+                .clientDependencies,
+                .composableArchitecture,
+                .revenueCat,
+            ],
+            path: "Sources/Features/SubscriptionFeature",
         ),
         // Misc
         .target(
@@ -221,6 +249,8 @@ let package = Package(
                 .dependenciesMacros,
                 .googleMobileAds,
                 .googleUserMessagingPlatform,
+                .revenueCat,
+                .revenueCatUI,
                 .x509Parser,
             ],
             plugins: [
@@ -284,6 +314,14 @@ let package = Package(
                 .dependenciesTestSupport,
                 .searchFeature,
             ]
+        ),
+        .testTarget(
+            name: "SubscriptionFeatureTests",
+            dependencies: [
+                .clientDependencies,
+                .dependenciesTestSupport,
+                .subscriptionFeature,
+            ],
         ),
         .testTarget(
             name: "X509ParserTests",

@@ -32,6 +32,8 @@ package struct SearchReducer {
         var isLoading = false
         var destinations: [Destination] = []
         @Presents var alert: AlertState<Action.Alert>?
+        @Shared(.inMemory("key_premium_subscription_is_active"))
+        package var isPremiumActive = false
 
         // MARK: - Destination
         package enum Destination {
@@ -52,7 +54,8 @@ package struct SearchReducer {
             isRequestReview: Bool = false,
             isLoading: Bool = false,
             destinations: [Destination] = [],
-            alert: AlertState<Action.Alert>? = nil
+            alert: AlertState<Action.Alert>? = nil,
+            isPremiumActive: Bool = false,
         ) {
             self.info = info
             self.searchButtonDisabled = searchButtonDisabled
@@ -66,6 +69,10 @@ package struct SearchReducer {
             self.isLoading = isLoading
             self.destinations = destinations
             self.alert = alert
+            self._isPremiumActive = Shared(
+                wrappedValue: isPremiumActive,
+                .inMemory("key_premium_subscription_is_active"),
+            )
         }
     }
 
@@ -120,8 +127,10 @@ package struct SearchReducer {
             switch action {
             case .onAppear:
                 state.searchPageBottomBannerAdUnitID = try? adUnitID.searchPageBottomBannerAdUnitID()
+                guard !state.isPremiumActive else { return .none }
                 return .send(.preloadRewardedAds)
             case .preloadRewardedAds:
+                guard !state.isPremiumActive else { return .none }
                 return .run(
                     priority: .background,
                     operation: { _ in
@@ -180,6 +189,9 @@ package struct SearchReducer {
                     return .none
                 }
                 state.isLoading = true
+                if state.isPremiumActive {
+                    return .send(.search(url))
+                }
                 Logger.info("Start load Ads")
                 return .run(
                     operation: { send in
@@ -288,6 +300,8 @@ package struct SearchReducer {
                 return .none
             case .searchResultDetail(.appear):
                 state.isCheckFirstExperience = true
+                return .none
+            case .searchResultDetail:
                 return .none
             case .alert:
                 state.alert = nil
