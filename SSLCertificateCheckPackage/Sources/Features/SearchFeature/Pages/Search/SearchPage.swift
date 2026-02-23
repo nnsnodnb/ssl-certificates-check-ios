@@ -125,7 +125,6 @@ private extension SearchPage {
         )
     }
 
-
     var introductionShareExtensionSection: some View {
         Section {
             VStack(alignment: .leading, spacing: 18) {
