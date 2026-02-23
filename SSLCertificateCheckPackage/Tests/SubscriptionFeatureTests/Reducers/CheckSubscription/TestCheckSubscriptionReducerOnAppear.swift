@@ -1,5 +1,5 @@
 //
-//  TestSubscriptionFeatureOnAppear.swift
+//  TestCheckSubscriptionReducerOnAppear.swift
 //  SSLCertificateCheckPackage
 //
 //  Created by Yuya Oka on 2026/02/21.
@@ -12,7 +12,7 @@ import DependenciesTestSupport
 import Testing
 
 @MainActor
-struct TestSubscriptionFeatureOnAppear {
+struct TestCheckSubscriptionReducerOnAppear {
     @Test(
         .dependencies {
             $0.revenueCat.isPremiumActiveStream = {

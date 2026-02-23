@@ -1,5 +1,5 @@
 //
-//  TestSubscriptionFeatureGotIsPremiumActive.swift
+//  TestCheckSubscriptionReducerGotIsPremiumActive.swift
 //  SSLCertificateCheckPackage
 //
 //  Created by Yuya Oka on 2026/02/21.
@@ -11,7 +11,7 @@ import Dependencies
 import Testing
 
 @MainActor
-struct TestSubscriptionFeatureGotIsPremiumActive { // swiftlint:disable:this type_name
+struct TestCheckSubscriptionReducerGotIsPremiumActive { // swiftlint:disable:this type_name
     @Test
     func testAtFirst() async throws {
         let store = TestStore(
