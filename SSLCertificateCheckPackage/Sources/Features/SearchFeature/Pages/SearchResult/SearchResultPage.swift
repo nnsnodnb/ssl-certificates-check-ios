@@ -25,6 +25,7 @@ package struct SearchResultPage: View {
                 }
             }
         }
+        .navigationTitle("Results")
     }
 }
 
