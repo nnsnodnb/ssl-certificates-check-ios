@@ -72,6 +72,7 @@ package struct InfoReducer {
     package enum Action {
         case close
         case openPaywall
+        case buyMeACoffee
         case openAppReview
         case pushLicenseList
         case safari(State.Link?)
@@ -79,6 +80,8 @@ package struct InfoReducer {
         case confirmOpenForeignBrowserAlert(URL)
         case openForeignBrowser(URL)
         case navigationPathChanged([State.Destination])
+        case successGifted
+        case failureGifted
         case alert(PresentationAction<Alert>)
         case paywall(PresentationAction<PaywallReducer.Action>)
         case licenseList(PresentationAction<LicenseListReducer.Action>)
@@ -86,12 +89,15 @@ package struct InfoReducer {
         // MARK: - Alert
         package enum Alert: Equatable {
             case openURL(URL)
+            case close
         }
     }
 
     // MARK: - Properties
     @Dependency(\.application)
     private var application
+    @Dependency(\.revenueCat)
+    private var revenueCat
 
     // MARK: - Initialize
     package init() {
@@ -106,6 +112,20 @@ package struct InfoReducer {
             case .openPaywall:
                 state.paywall = .init()
                 return .none
+            case .buyMeACoffee:
+                return .run(
+                    operation: { send in
+                        try await revenueCat.buyMeACoffee()
+                        await send(.successGifted)
+                    },
+                    catch: { error, send in
+                        guard let error = error as? RevenueCatClient.Error,
+                              error != .userCancelled else {
+                            return
+                        }
+                        await send(.failureGifted)
+                    },
+                )
             case .openAppReview:
                 let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
                 return .send(.confirmOpenForeignBrowserAlert(url))
@@ -150,6 +170,42 @@ package struct InfoReducer {
             case let .navigationPathChanged(destinations):
                 state.destinations = destinations
                 state.interactiveDismissDisabled = !destinations.isEmpty
+                return .none
+            case .successGifted:
+                state.alert = .init(
+                    title: {
+                        TextState("Thank you for the coffee gift!")
+                    },
+                    actions: {
+                        ButtonState(
+                            action: .close,
+                            label: {
+                                TextState("Keep it up!")
+                            },
+                        )
+                    },
+                    message: {
+                        TextState("I will continue to do my best in development!")
+                    },
+                )
+                return .none
+            case .failureGifted:
+                state.alert = .init(
+                    title: {
+                        TextState("The purchase failed.")
+                    },
+                    actions: {
+                        ButtonState(
+                            action: .close,
+                            label: {
+                                TextState("Close")
+                            },
+                        )
+                    },
+                    message: {
+                        TextState("Thank you for your kindness")
+                    },
+                )
                 return .none
             case let .alert(.presented(.openURL(url))):
                 state.alert = nil

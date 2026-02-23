@@ -9,6 +9,7 @@ import ClientDependencies
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import RevenueCat
 
 @Reducer
 package struct CheckSubscriptionReducer: Sendable {

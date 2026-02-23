@@ -14,6 +14,14 @@ import RevenueCat
 package struct RevenueCatClient: Sendable {
     package var isPremiumActiveStream: @Sendable () async throws -> AsyncStream<Bool>
     package var isPremiumActive: @Sendable () async throws -> Bool
+    package var buyMeACoffee: @Sendable () async throws -> Void
+
+    // MARK: - Error
+    package enum Error: Swift.Error {
+        case internalError
+        case userCancelled
+        case purchaseError
+    }
 }
 
 // MARK: - DependencyKey
@@ -24,6 +32,9 @@ extension RevenueCatClient: DependencyKey {
         },
         isPremiumActive: {
             try await Implementation.shared.isPremiumActive()
+        },
+        buyMeACoffee: {
+            try await Implementation.shared.buyMeACoffee()
         },
     )
 }
@@ -61,6 +72,21 @@ extension RevenueCatClient {
             let isActive = customerInfo.entitlements.all["Premium"]?.isActive == true
             _isPremiumActive.setValue(isActive)
             return isActive
+        }
+
+        func buyMeACoffee() async throws {
+            let offerings = try await Purchases.shared.offerings()
+            guard let package = offerings.current?.availablePackages.first(where: { $0.identifier == "$rc_gift" }) else {
+                throw Error.internalError
+            }
+            let result = try await Purchases.shared.purchase(product: package.storeProduct)
+            if result.userCancelled {
+                throw Error.userCancelled
+            }
+            if result.transaction?.transactionIdentifier != nil {
+                return
+            }
+            throw Error.purchaseError
         }
 
         private func startListening() async {
