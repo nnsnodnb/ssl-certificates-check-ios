@@ -9,7 +9,7 @@
       }
     ]
   },
-  "identifier" : "1C000BB4",
+  "identifier" : "656182B2",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -22,9 +22,9 @@
     "_billingIssuesEnabled" : false,
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
-    "_locale" : "en_US",
+    "_locale" : "ja",
     "_renewalBillingIssuesEnabled" : false,
-    "_storefront" : "USA",
+    "_storefront" : "JPN",
     "_storeKitErrors" : [
 
     ],
@@ -32,7 +32,7 @@
   },
   "subscriptionGroups" : [
     {
-      "id" : "A0718E02",
+      "id" : "EB876DE0",
       "localizations" : [
 
       ],
@@ -45,11 +45,15 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "0.99",
+          "displayPrice" : "200",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "42794B09",
-          "introductoryOffer" : null,
+          "internalID" : "8927ED88",
+          "introductoryOffer" : {
+            "internalID" : "625F496A",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
             {
               "description" : "",
@@ -60,7 +64,7 @@
           "productID" : "premium_monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly",
-          "subscriptionGroupID" : "A0718E02",
+          "subscriptionGroupID" : "EB876DE0",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 
@@ -73,11 +77,16 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "11.99",
+          "displayPrice" : "2000",
           "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "E55C8990",
-          "introductoryOffer" : null,
+          "groupNumber" : 2,
+          "internalID" : "5BEFB449",
+          "introductoryOffer" : {
+            "displayPrice" : "0.99",
+            "internalID" : "681D8FB3",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
           "localizations" : [
             {
               "description" : "",
@@ -85,10 +94,10 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "premium_yearly",
+          "productID" : "premium_yearly_2",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Yearly",
-          "subscriptionGroupID" : "A0718E02",
+          "subscriptionGroupID" : "EB876DE0",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 
