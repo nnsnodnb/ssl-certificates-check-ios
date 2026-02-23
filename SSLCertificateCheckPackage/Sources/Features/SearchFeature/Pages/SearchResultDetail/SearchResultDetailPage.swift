@@ -7,12 +7,13 @@
 
 import ComposableArchitecture
 import SFSafeSymbols
+import SubscriptionFeature
 import SwiftUI
 import X509Parser
 
 package struct SearchResultDetailPage: View {
     // MARK: - Properties
-    package let store: StoreOf<SearchResultDetailReducer>
+    @Bindable package var store: StoreOf<SearchResultDetailReducer>
 
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -30,6 +31,9 @@ package struct SearchResultDetailPage: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 store.send(.appear)
+            }
+            .sheet(item: $store.scope(state: \.paywall, action: \.paywall)) { store in
+                PaywallPage(store: store)
             }
     }
 }
@@ -143,7 +147,7 @@ private extension SearchResultDetailPage {
             Text(content.prefix(Int(ceil(Double(content.count) * 0.25))) + "...")
             Button(
                 action: {
-                    // TODO: Present PaywallView
+                    store.send(.showPaywall)
                 },
                 label: {
                     if #available(iOS 26.0, *) {

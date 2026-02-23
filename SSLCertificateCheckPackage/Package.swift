@@ -224,6 +224,7 @@ let package = Package(
                 .infoFeature,
                 .logger,
                 .sfSafeSymbols,
+                .subscriptionFeature,
                 .uiComponents,
                 .x509Parser,
             ],

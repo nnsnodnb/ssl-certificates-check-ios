@@ -301,6 +301,8 @@ package struct SearchReducer {
             case .searchResultDetail(.appear):
                 state.isCheckFirstExperience = true
                 return .none
+            case .searchResultDetail:
+                return .none
             case .alert:
                 state.alert = nil
                 return .none

@@ -23,6 +23,11 @@ package struct PaywallPage: View {
             }
             .alert($store.scope(state: \.alert, action: \.alert))
     }
+
+    // MARK: - Initialize
+    package init(store: StoreOf<PaywallReducer>) {
+        self.store = store
+    }
 }
 
 #Preview {
