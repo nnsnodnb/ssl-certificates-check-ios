@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  InfoPage.swift
 //  
 //
 //  Created by Yuya Oka on 2023/10/13.
