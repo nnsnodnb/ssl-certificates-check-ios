@@ -90,6 +90,13 @@ extension PackageDescription.Target.Dependency {
     )
   }
 
+  static var memberwiseInit: Self {
+    .product(
+      name: "MemberwiseInit",
+      package: "swift-memberwise-init-macro",
+    )
+  }
+
   static var revenueCat: Self {
     .product(
       name: "RevenueCat",
@@ -161,6 +168,7 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.17.1")),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", .upToNextMajor(from: "1.23.1")),
     .package(url: "https://github.com/pointfreeco/swift-dependencies.git", .upToNextMajor(from: "1.10.1")),
+    .package(url: "https://github.com/gohanlon/swift-memberwise-init-macro.git", .upToNextMajor(from: "0.5.2")),
     .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", .upToNextMajor(from: "12.14.0")),
     .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", .upToNextMajor(from: "3.1.0")),
   ],
@@ -173,6 +181,7 @@ let package = Package(
         .firebaseAnalytics,
         .firebaseCrashlytics,
         .googleMobileAds,
+        .memberwiseInit,
         .searchFeature,
         .subscriptionFeature,
       ]
@@ -188,6 +197,7 @@ let package = Package(
       dependencies: [
         .clientDependencies,
         .composableArchitecture,
+        .memberwiseInit,
       ],
       path: "Sources/Features/ConsentFeature",
     ),
@@ -199,6 +209,7 @@ let package = Package(
         .dependencies,
         .firebaseAnalytics,
         .licenseFeature,
+        .memberwiseInit,
         .subscriptionFeature,
         .uiComponents,
       ],
@@ -212,6 +223,7 @@ let package = Package(
         .dependencies,
         .firebaseAnalytics,
         .logger,
+        .memberwiseInit,
       ],
       path: "Sources/Features/LicenseFeature",
     ),
@@ -224,6 +236,7 @@ let package = Package(
         .googleMobileAds,
         .infoFeature,
         .logger,
+        .memberwiseInit,
         .sfSafeSymbols,
         .subscriptionFeature,
         .uiComponents,
@@ -236,6 +249,7 @@ let package = Package(
       dependencies: [
         .clientDependencies,
         .composableArchitecture,
+        .memberwiseInit,
         .revenueCat,
       ],
       path: "Sources/Features/SubscriptionFeature",
@@ -249,6 +263,7 @@ let package = Package(
         .dependenciesMacros,
         .googleMobileAds,
         .googleUserMessagingPlatform,
+        .memberwiseInit,
         .revenueCat,
         .revenueCatUI,
         .x509Parser,
@@ -266,12 +281,14 @@ let package = Package(
     .target(
       name: "UIComponents",
       dependencies: [
+        .memberwiseInit,
         .sfSafeSymbols,
       ]
     ),
     .target(
       name: "X509Parser",
       dependencies: [
+        .memberwiseInit,
         .x509,
       ]
     ),
