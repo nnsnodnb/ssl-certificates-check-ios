@@ -8,5 +8,5 @@
 import Foundation
 
 package protocol CustomerInfoProtocol: Equatable, Sendable {
-    var isPremiumActive: Bool { get }
+  var isPremiumActive: Bool { get }
 }

@@ -7,17 +7,19 @@
 
 import ComposableArchitecture
 @testable import InfoFeature
-import XCTest
+import Testing
 
-final class TestInfoReducerDismiss: XCTestCase {
-    @MainActor
-    func testNoneEffect() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(version: "v1.0.0-test")
-        ) {
-            InfoReducer()
-        }
+@MainActor
+struct TestInfoReducerDismiss {
+  @Test
+  func testNoneEffect() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(version: "v1.0.0-test"),
+      reducer: {
+        InfoReducer()
+      },
+    )
 
-        await store.send(.close)
-    }
+    await store.send(.close)
+  }
 }

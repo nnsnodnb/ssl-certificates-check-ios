@@ -1,6 +1,6 @@
 //
 //  TestInfoReducerURL.swift
-//  
+//
 //
 //  Created by Yuya Oka on 2023/10/22.
 //
@@ -8,57 +8,62 @@
 import ComposableArchitecture
 import Foundation
 @testable import InfoFeature
-import XCTest
+import Testing
 
-final class TestInfoReducerURL: XCTestCase {
-    @MainActor
-    func testCaseURL() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(version: "v1.0.0-test")
-        ) {
-            InfoReducer()
-        }
+@MainActor
+struct TestInfoReducerURL {
+  @Test
+  func testCaseURL() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(version: "v1.0.0-test"),
+      reducer: {
+        InfoReducer()
+      },
+    )
 
-        await store.send(.url(URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")))
+    await store.send(.url(URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")))
+  }
+
+  @Test
+  func testCaseSafari() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(version: "v1.0.0-test"),
+      reducer: {
+        InfoReducer()
+      },
+    )
+
+    await store.send(.safari(.gitHub)) {
+      $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
     }
+  }
 
-    @MainActor
-    func testCaseSafari() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(version: "v1.0.0-test")
-        ) {
-            InfoReducer()
-        }
+  @Test
+  func testReset() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(
+        version: "v1.0.0-test",
+        url: URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")
+      ),
+      reducer: {
+        InfoReducer()
+      },
+    )
 
-        await store.send(.safari(.gitHub)) {
-            $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
-        }
+    await store.send(.url(nil)) {
+      $0.url = nil
     }
+  }
 
-    @MainActor
-    func testReset() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(
-                version: "v1.0.0-test",
-                url: URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")
-            )
-        ) {
-            InfoReducer()
-        }
+  @Test
+  func testNoneEffect() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(version: "v1.0.0-test"),
+      reducer: {
+        InfoReducer()
+      },
+    )
 
-        await store.send(.url(nil)) {
-            $0.url = nil
-        }
-    }
-
-    @MainActor
-    func testNoneEffect() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(version: "v1.0.0-test")
-        ) {
-            InfoReducer()
-        }
-
-        await store.send(.url(nil))
-    }
+    await store.send(.url(nil))
+  }
 }

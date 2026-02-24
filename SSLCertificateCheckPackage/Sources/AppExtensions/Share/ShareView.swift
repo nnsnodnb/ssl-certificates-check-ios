@@ -8,12 +8,12 @@
 import SwiftUI
 
 public struct ShareView: View {
-    // MARK: - Body
-    public var body: some View {
-        EmptyView()
-    }
+  // MARK: - Body
+  public var body: some View {
+    EmptyView()
+  }
 }
 
 #Preview {
-    ShareView()
+  ShareView()
 }

@@ -99,7 +99,9 @@
 				CF7E0EB42AD835C7003244D1 /* Products */,
 				CF7E0EE12AD83856003244D1 /* Frameworks */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		CF7E0EB42AD835C7003244D1 /* Products */ = {
 			isa = PBXGroup;

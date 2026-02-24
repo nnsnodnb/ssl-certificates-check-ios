@@ -11,17 +11,17 @@ import Testing
 
 @MainActor
 struct TestSearchResultDetailReducerShowPaywall {
-    @Test
-    func testIt() async throws {
-        let store = TestStore(
-            initialState: SearchResultDetailReducer.State(x509: .stub),
-            reducer: {
-                SearchResultDetailReducer()
-            },
-        )
+  @Test
+  func testIt() async throws {
+    let store = TestStore(
+      initialState: SearchResultDetailReducer.State(x509: .stub),
+      reducer: {
+        SearchResultDetailReducer()
+      },
+    )
 
-        await store.send(.showPaywall) {
-            $0.paywall = .init()
-        }
+    await store.send(.showPaywall) {
+      $0.paywall = .init()
     }
+  }
 }

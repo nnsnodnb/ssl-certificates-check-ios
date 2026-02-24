@@ -8,7 +8,7 @@
 import Foundation
 
 extension Data {
-    func hexadecimalString(separator: String = "") -> String {
-        map { String(format: "%0.2x", $0) }.joined(separator: separator)
-    }
+  func hexadecimalString(separator: String = "") -> String {
+    map { String(format: "%0.2x", $0) }.joined(separator: separator)
+  }
 }

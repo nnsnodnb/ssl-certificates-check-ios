@@ -11,20 +11,20 @@ import Testing
 
 @MainActor
 struct TestInfoReducerPaywall {
-    @Test
-    func testDismiss() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(
-                version: "1.0.0-test",
-                paywall: .init(),
-            ),
-            reducer: {
-                InfoReducer()
-            },
-        )
+  @Test
+  func testDismiss() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(
+        version: "1.0.0-test",
+        paywall: .init(),
+      ),
+      reducer: {
+        InfoReducer()
+      },
+    )
 
-        await store.send(.paywall(.dismiss)) {
-            $0.paywall = nil
-        }
+    await store.send(.paywall(.dismiss)) {
+      $0.paywall = nil
     }
+  }
 }
