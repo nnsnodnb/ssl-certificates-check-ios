@@ -12,30 +12,30 @@ import Testing
 
 @MainActor
 struct TestPaywallReducerAlert {
-    func testAlertOkay() async throws {
-        let store = TestStore(
-            initialState: PaywallReducer.State(
-                alert: .init(
-                    title: {
-                        TextState("This is test")
-                    },
-                    actions: {
-                        ButtonState(
-                            action: .okay,
-                            label: {
-                                TextState("Okay")
-                            },
-                        )
-                    },
-                )
-            ),
-            reducer: {
-                PaywallReducer()
-            },
+  func testAlertOkay() async throws {
+    let store = TestStore(
+      initialState: PaywallReducer.State(
+        alert: .init(
+          title: {
+            TextState("This is test")
+          },
+          actions: {
+            ButtonState(
+              action: .okay,
+              label: {
+                TextState("Okay")
+              },
+            )
+          },
         )
+      ),
+      reducer: {
+        PaywallReducer()
+      },
+    )
 
-        await store.send(.alert(.presented(.okay))) {
-            $0.alert = nil
-        }
+    await store.send(.alert(.presented(.okay))) {
+      $0.alert = nil
     }
+  }
 }

@@ -9,30 +9,30 @@ import ComposableArchitecture
 import SwiftUI
 
 package struct CheckSubscriptionPage: View {
-    // MARK: - Properties
-    let store: StoreOf<CheckSubscriptionReducer>
+  // MARK: - Properties
+  let store: StoreOf<CheckSubscriptionReducer>
 
-    package var body: some View {
-        Color(UIColor.systemBackground.withAlphaComponent(0.000001))
-            .ignoresSafeArea(.all)
-            .onAppear {
-                store.send(.onAppear)
-            }
-    }
+  package var body: some View {
+    Color(UIColor.systemBackground.withAlphaComponent(0.000001))
+      .ignoresSafeArea(.all)
+      .onAppear {
+        store.send(.onAppear)
+      }
+  }
 
-    // MARK: - Initialize
-    package init(store: StoreOf<CheckSubscriptionReducer>) {
-        self.store = store
-    }
+  // MARK: - Initialize
+  package init(store: StoreOf<CheckSubscriptionReducer>) {
+    self.store = store
+  }
 }
 
 #Preview {
-    CheckSubscriptionPage(
-        store: .init(
-            initialState: CheckSubscriptionReducer.State(),
-            reducer: {
-                CheckSubscriptionReducer()
-            },
-        )
+  CheckSubscriptionPage(
+    store: .init(
+      initialState: CheckSubscriptionReducer.State(),
+      reducer: {
+        CheckSubscriptionReducer()
+      },
     )
+  )
 }

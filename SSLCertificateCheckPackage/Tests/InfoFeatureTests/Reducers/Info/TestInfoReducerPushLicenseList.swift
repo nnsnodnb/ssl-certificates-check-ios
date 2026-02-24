@@ -7,21 +7,23 @@
 
 import ComposableArchitecture
 @testable import InfoFeature
-import XCTest
+import Testing
 
-final class TestInfoReducerPushLicenseList: XCTestCase {
-    @MainActor
-    func testPrepareShowLicenseList() async throws {
-        let store = TestStore(
-            initialState: InfoReducer.State(version: "v1.0.0-test")
-        ) {
-            InfoReducer()
-        }
+@MainActor
+struct TestInfoReducerPushLicenseList {
+  @Test
+  func testPrepareShowLicenseList() async throws {
+    let store = TestStore(
+      initialState: InfoReducer.State(version: "v1.0.0-test"),
+      reducer: {
+        InfoReducer()
+      },
+    )
 
-        await store.send(.pushLicenseList) {
-            $0.licenseList = .init()
-            $0.destinations = [.licenseList]
-            $0.interactiveDismissDisabled = true
-        }
+    await store.send(.pushLicenseList) {
+      $0.licenseList = .init()
+      $0.destinations = [.licenseList]
+      $0.interactiveDismissDisabled = true
     }
+  }
 }

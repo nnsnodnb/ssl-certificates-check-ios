@@ -12,22 +12,22 @@ import Testing
 
 @MainActor
 struct TestSearchReducerPreloadRewardedAds {
-    @Test(
-        .dependencies {
-            $0.rewardedAd.load = {}
-        }
-    )
-    func testIt() async throws {
-        let store = TestStore(
-            initialState: SearchReducer.State(
-                searchButtonDisabled: false,
-                text: "example.com",
-            ),
-            reducer: {
-                SearchReducer()
-            },
-        )
-
-        await store.send(.preloadRewardedAds)
+  @Test(
+    .dependencies {
+      $0.rewardedAd.load = {}
     }
+  )
+  func testIt() async throws {
+    let store = TestStore(
+      initialState: SearchReducer.State(
+        searchButtonDisabled: false,
+        text: "example.com",
+      ),
+      reducer: {
+        SearchReducer()
+      },
+    )
+
+    await store.send(.preloadRewardedAds)
+  }
 }

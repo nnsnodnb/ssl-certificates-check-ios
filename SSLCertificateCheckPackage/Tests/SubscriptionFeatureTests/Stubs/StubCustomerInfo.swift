@@ -9,6 +9,6 @@ import Foundation
 @testable import SubscriptionFeature
 
 struct StubCustomerInfo: CustomerInfoProtocol {
-    // MARK: - Properties
-    let isPremiumActive: Bool
+  // MARK: - Properties
+  let isPremiumActive: Bool
 }

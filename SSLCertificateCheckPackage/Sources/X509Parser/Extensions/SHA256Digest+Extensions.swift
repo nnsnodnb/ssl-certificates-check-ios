@@ -8,7 +8,7 @@
 import CryptoKit
 
 extension SHA256Digest {
-    func hexadecimalString(separator: String = "") -> String {
-        map { String(format: "%0.2x", $0) }.joined(separator: separator)
-    }
+  func hexadecimalString(separator: String = "") -> String {
+    map { String(format: "%0.2x", $0) }.joined(separator: separator)
+  }
 }

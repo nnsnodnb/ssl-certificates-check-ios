@@ -11,29 +11,29 @@ import Testing
 
 @MainActor
 struct TestPaywallReducerRestoreFailure {
-    @Test
-    func testIt() async throws {
-        let store = TestStore(
-            initialState: PaywallReducer.State(),
-            reducer: {
-                PaywallReducer()
-            },
-        )
+  @Test
+  func testIt() async throws {
+    let store = TestStore(
+      initialState: PaywallReducer.State(),
+      reducer: {
+        PaywallReducer()
+      },
+    )
 
-        await store.send(.restoreFailure) {
-            $0.alert = .init(
-                title: {
-                    TextState("Failed to restore purchases.")
-                },
-                actions: {
-                    ButtonState(
-                        action: .close,
-                        label: {
-                            TextState("Close")
-                        },
-                    )
-                },
-            )
-        }
+    await store.send(.restoreFailure) {
+      $0.alert = .init(
+        title: {
+          TextState("Failed to restore purchases.")
+        },
+        actions: {
+          ButtonState(
+            action: .close,
+            label: {
+              TextState("Close")
+            },
+          )
+        },
+      )
     }
+  }
 }

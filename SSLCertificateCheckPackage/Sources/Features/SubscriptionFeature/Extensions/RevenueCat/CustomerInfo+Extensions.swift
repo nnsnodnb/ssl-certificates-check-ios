@@ -10,7 +10,7 @@ import RevenueCat
 
 // MARK: - CustomerInfoProtocol
 extension CustomerInfo: CustomerInfoProtocol {
-    package var isPremiumActive: Bool {
-        entitlements.all["Premium"]?.isActive == true
-    }
+  package var isPremiumActive: Bool {
+    entitlements.all["Premium"]?.isActive == true
+  }
 }
