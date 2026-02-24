@@ -51,6 +51,7 @@ private extension SearchResultPage {
   }
 }
 
+#if DEBUG
 struct SearchResultPage_Previews: PreviewProvider {
   static var previews: some View {
     SearchResultPage(
@@ -67,3 +68,4 @@ struct SearchResultPage_Previews: PreviewProvider {
     )
   }
 }
+#endif
