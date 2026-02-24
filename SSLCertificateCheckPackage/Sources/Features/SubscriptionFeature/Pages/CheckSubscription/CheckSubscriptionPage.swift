@@ -18,6 +18,13 @@ package struct CheckSubscriptionPage: View {
   package var body: some View {
     Color(UIColor.systemBackground.withAlphaComponent(0.000001))
       .ignoresSafeArea(.all)
+      .overlay {
+        if !store.wasSendCompleted {
+          ProgressView()
+            .progressViewStyle(.circular)
+            .scaleEffect(2)
+        }
+      }
       .onAppear {
         store.send(.onAppear)
       }
