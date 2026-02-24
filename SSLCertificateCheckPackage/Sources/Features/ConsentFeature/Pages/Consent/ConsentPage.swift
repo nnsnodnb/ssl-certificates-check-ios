@@ -6,12 +6,15 @@
 //
 
 import ComposableArchitecture
+import MemberwiseInit
 import SwiftUI
 
+@MemberwiseInit(.package)
 package struct ConsentPage: View {
   // MARK: - Properties
-  let store: StoreOf<ConsentReducer>
+  package let store: StoreOf<ConsentReducer>
 
+  // MARK: - Body
   package var body: some View {
     Color(UIColor.systemBackground.withAlphaComponent(0.000001))
       .ignoresSafeArea(.all)
@@ -19,20 +22,17 @@ package struct ConsentPage: View {
         store.send(.showConsent)
       }
   }
-
-  // MARK: - Initialize
-  package init(store: StoreOf<ConsentReducer>) {
-    self.store = store
-  }
 }
 
-#Preview {
-  ConsentPage(
-    store: .init(
-      initialState: .init(),
-      reducer: {
-        ConsentReducer()
-      },
+struct ConsentPage_Previews: PreviewProvider {
+  static var previews: some View {
+    ConsentPage(
+      store: .init(
+        initialState: .init(),
+        reducer: {
+          ConsentReducer()
+        },
+      )
     )
-  )
+  }
 }

@@ -8,9 +8,11 @@
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import MemberwiseInit
 import RevenueCat
 
 @Reducer
+@MemberwiseInit(.package)
 package struct PaywallReducer: Sendable {
   // MARK: - State
   @ObservableState
@@ -100,9 +102,5 @@ package struct PaywallReducer: Sendable {
         return .none
       }
     }
-  }
-
-  // MARK: - Initialize
-  package init() {
   }
 }

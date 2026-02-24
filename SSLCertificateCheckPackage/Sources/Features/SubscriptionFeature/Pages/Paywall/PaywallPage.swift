@@ -6,11 +6,14 @@
 //
 
 import ComposableArchitecture
+import MemberwiseInit
 import RevenueCatUI
 import SwiftUI
 
+@MemberwiseInit(.package)
 package struct PaywallPage: View {
   // MARK: - Properties
+  @Init(.package)
   @Bindable package var store: StoreOf<PaywallReducer>
 
   package var body: some View {
@@ -23,20 +26,17 @@ package struct PaywallPage: View {
       }
       .alert($store.scope(state: \.alert, action: \.alert))
   }
-
-  // MARK: - Initialize
-  package init(store: StoreOf<PaywallReducer>) {
-    self.store = store
-  }
 }
 
-#Preview {
-  PaywallPage(
-    store: .init(
-      initialState: PaywallReducer.State(),
-      reducer: {
-        PaywallReducer()
-      },
+struct PaywallPage_Previews: PreviewProvider {
+  static var previews: some View {
+    PaywallPage(
+      store: .init(
+        initialState: PaywallReducer.State(),
+        reducer: {
+          PaywallReducer()
+        },
+      )
     )
-  )
+  }
 }

@@ -6,10 +6,13 @@
 //
 
 import ClientDependencies
+import MemberwiseInit
 import SwiftUI
 
+@MemberwiseInit
 package struct LicenseDetailPage: View {
   // MARK: - Properties
+  @Init(.package)
   private let license: License
 
   // MARK: - Body
@@ -28,21 +31,18 @@ package struct LicenseDetailPage: View {
     .formStyle(.columns)
     .navigationTitle(license.name)
   }
-
-  // MARK: - Initialize
-  package init(license: License) {
-    self.license = license
-  }
 }
 
-#Preview {
-  NavigationStack {
-    LicenseDetailPage(
-      license: .init(
-        id: "dummy",
-        name: "Dummy",
-        licenseText: "Dummy license text"
+struct LicenseDetailPage_Previews: PreviewProvider {
+  static var previews: some View {
+    NavigationStack {
+      LicenseDetailPage(
+        license: .init(
+          id: "dummy",
+          name: "Dummy",
+          licenseText: "Dummy license text"
+        )
       )
-    )
+    }
   }
 }

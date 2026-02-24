@@ -1,15 +1,18 @@
 //
-//  SwiftUIView.swift
+//  CheckSubscriptionPage.swift
 //  SSLCertificateCheckPackage
 //
 //  Created by Yuya Oka on 2026/02/21.
 //
 
 import ComposableArchitecture
+import MemberwiseInit
 import SwiftUI
 
+@MemberwiseInit(.package)
 package struct CheckSubscriptionPage: View {
   // MARK: - Properties
+  @Init(.package)
   let store: StoreOf<CheckSubscriptionReducer>
 
   package var body: some View {
@@ -19,20 +22,17 @@ package struct CheckSubscriptionPage: View {
         store.send(.onAppear)
       }
   }
-
-  // MARK: - Initialize
-  package init(store: StoreOf<CheckSubscriptionReducer>) {
-    self.store = store
-  }
 }
 
-#Preview {
-  CheckSubscriptionPage(
-    store: .init(
-      initialState: CheckSubscriptionReducer.State(),
-      reducer: {
-        CheckSubscriptionReducer()
-      },
+struct CheckSubscriptionPage_Previews: PreviewProvider {
+  static var previews: some View {
+    CheckSubscriptionPage(
+      store: .init(
+        initialState: CheckSubscriptionReducer.State(),
+        reducer: {
+          CheckSubscriptionReducer()
+        },
+      )
     )
-  )
+  }
 }
