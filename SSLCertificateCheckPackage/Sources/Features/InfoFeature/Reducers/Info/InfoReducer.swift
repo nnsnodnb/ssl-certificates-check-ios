@@ -36,6 +36,8 @@ package struct InfoReducer {
         package enum Link {
             case gitHub
             case xTwitter
+            case terms
+            case privacyPolicy
 
             // MARK: - Properties
             package var url: URL {
@@ -44,6 +46,10 @@ package struct InfoReducer {
                     return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
                 case .xTwitter:
                     return URL(string: "https://x.com/nnsnodnb")!
+                case .terms:
+                    return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Terms")!
+                case .privacyPolicy:
+                    return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Privacy-Policy")!
                 }
             }
         }

@@ -130,11 +130,34 @@ private extension InfoPage {
                 },
                 title: "Licenses"
             )
+            buttonRow(
+                action: {
+                    store.send(.safari(.terms))
+                },
+                image: {
+                    Image(systemSymbol: .textDocumentFill)
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundStyle(Color.gray.opacity(0.5))
+                },
+                title: "Terms of Use"
+            )
+            buttonRow(
+                action: {
+                    store.send(.safari(.privacyPolicy))
+                },
+                image: {
+                    Image(systemSymbol: .handRaisedFill)
+                        .resizable()
+                        .scaledToFit()
+                },
+                title: "Privacy"
+            )
             HStack(alignment: .center, spacing: 8) {
                 HStack(alignment: .center, spacing: 12) {
                     Image(systemSymbol: .tagFill)
                         .resizable()
-                        .foregroundStyle(Color.blue.opacity(0.7))
+                        .foregroundStyle(.black.opacity(0.7))
                         .frame(width: 18, height: 18)
                     Text("Version")
                         .foregroundStyle(.primary)
