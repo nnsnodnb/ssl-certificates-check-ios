@@ -9,21 +9,17 @@ import ComposableArchitecture
 import ConsentFeature
 import Dependencies
 import GoogleMobileAds
+import MemberwiseInit
 import SearchFeature
 import SubscriptionFeature
 import SwiftUI
 import XCTestDynamicOverlay
 
+@MemberwiseInit(.public)
 public struct RootDependency: Sendable {
   // MARK: - Properties
   public let requestStartRewardAdUnitID: String
   public let searchPageBottomBannerAdUnitID: String
-
-  // MARK: - Initialize
-  public init(requestStartRewardAdUnitID: String, searchPageBottomBannerAdUnitID: String) {
-    self.requestStartRewardAdUnitID = requestStartRewardAdUnitID
-    self.searchPageBottomBannerAdUnitID = searchPageBottomBannerAdUnitID
-  }
 }
 
 public struct RootPage: View {
@@ -102,11 +98,13 @@ public struct RootPage: View {
   }
 }
 
-#Preview {
-  RootPage(
-    dependency: .init(
-      requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/1712485313",
-      searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
+struct RootPage_Previews: PreviewProvider {
+  static var previews: some View {
+    RootPage(
+      dependency: .init(
+        requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/1712485313",
+        searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
+      )
     )
-  )
+  }
 }

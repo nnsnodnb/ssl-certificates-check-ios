@@ -6,6 +6,7 @@
 //
 
 import GoogleMobileAds
+import MemberwiseInit
 import SwiftUI
 
 package struct SearchBottomAdBanner: UIViewRepresentable {
@@ -31,14 +32,11 @@ package struct SearchBottomAdBanner: UIViewRepresentable {
 
 // MARK: - Coordinator
 package extension SearchBottomAdBanner {
+  @MemberwiseInit(.package)
   final class Coordinator: NSObject, BannerViewDelegate {
     // MARK: - Properties
+    @Init(.package)
     private let parent: SearchBottomAdBanner
-
-    // MARK: - Initialize
-    init(parent: SearchBottomAdBanner) {
-      self.parent = parent
-    }
   }
 }
 

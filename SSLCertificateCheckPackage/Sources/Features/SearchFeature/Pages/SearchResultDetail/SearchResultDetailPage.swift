@@ -6,13 +6,16 @@
 //
 
 import ComposableArchitecture
+import MemberwiseInit
 import SFSafeSymbols
 import SubscriptionFeature
 import SwiftUI
 import X509Parser
 
+@MemberwiseInit(.package)
 package struct SearchResultDetailPage: View {
   // MARK: - Properties
+  @Init(.package)
   @Bindable package var store: StoreOf<SearchResultDetailReducer>
 
   private let dateFormatter: DateFormatter = {
@@ -181,14 +184,15 @@ private extension SearchResultDetailPage {
   }
 }
 
-#if DEBUG
-#Preview {
-  SearchResultDetailPage(
-    store: .init(
-      initialState: SearchResultDetailReducer.State(x509: .stub)
-    ) {
-      SearchResultDetailReducer()
-    }
-  )
+struct SearchResultDetailPage_Previews: PreviewProvider {
+  static var previews: some View {
+    SearchResultDetailPage(
+      store: .init(
+        initialState: SearchResultDetailReducer.State(x509: .stub),
+        reducer: {
+          SearchResultDetailReducer()
+        },
+      )
+    )
+  }
 }
-#endif

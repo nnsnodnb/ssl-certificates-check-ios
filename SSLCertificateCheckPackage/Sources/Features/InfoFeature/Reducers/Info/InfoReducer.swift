@@ -9,23 +9,25 @@ import ClientDependencies
 import ComposableArchitecture
 import Foundation
 import LicenseFeature
+import MemberwiseInit
 import SubscriptionFeature
 
 @Reducer
+@MemberwiseInit(.package)
 package struct InfoReducer {
   // MARK: - State
   @ObservableState
   package struct State: Equatable {
     // MARK: - Properties
-    let version: String
-    @Presents var paywall: PaywallReducer.State?
-    @Presents var licenseList: LicenseListReducer.State?
-    var destinations: [Destination] = []
-    var interactiveDismissDisabled = false
-    var url: URL?
-    @Presents var alert: AlertState<Action.Alert>?
+    package let version: String
+    @Presents package var paywall: PaywallReducer.State?
+    @Presents package var licenseList: LicenseListReducer.State?
+    package var destinations: [Destination] = []
+    package var interactiveDismissDisabled = false
+    package var url: URL?
+    @Presents package  var alert: AlertState<Action.Alert>?
     @Shared(.inMemory("key_premium_subscription_is_active"))
-    var isPremiumActive = false
+    package var isPremiumActive = false
 
     // MARK: - Destination
     package enum Destination {
@@ -104,10 +106,6 @@ package struct InfoReducer {
   private var application
   @Dependency(\.revenueCat)
   private var revenueCat
-
-  // MARK: - Initialize
-  package init() {
-  }
 
   // MARK: - Body
   package var body: some ReducerOf<Self> {

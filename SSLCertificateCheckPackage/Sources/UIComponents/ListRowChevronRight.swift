@@ -5,9 +5,11 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
+import MemberwiseInit
 import SFSafeSymbols
 import SwiftUI
 
+@MemberwiseInit(.package)
 package struct ListRowChevronRight: View {
   // MARK: - Body
   package var body: some View {
@@ -16,12 +18,10 @@ package struct ListRowChevronRight: View {
       .foregroundStyle(Color.secondary)
       .opacity(0.5)
   }
-
-  // MARK: - Initialize
-  package init() {
-  }
 }
 
-#Preview {
-  ListRowChevronRight()
+struct ListRowChevronRight_Previews: PreviewProvider {
+  static var previews: some View {
+    ListRowChevronRight()
+  }
 }

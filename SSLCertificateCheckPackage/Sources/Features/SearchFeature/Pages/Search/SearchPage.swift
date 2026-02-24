@@ -7,12 +7,15 @@
 
 import ComposableArchitecture
 import InfoFeature
+import MemberwiseInit
 import SFSafeSymbols
 import StoreKit
 import SwiftUI
 
+@MemberwiseInit(.package)
 package struct SearchPage: View {
   // MARK: - Properties
+  @Init(.package)
   @Bindable private var store: StoreOf<SearchReducer>
 
   @FocusState private var isFocused: Bool
@@ -57,11 +60,6 @@ package struct SearchPage: View {
       requestReview()
       store.send(.displayedRequestReview)
     })
-  }
-
-  // MARK: - Initialize
-  package init(store: StoreOf<SearchReducer>) {
-    self.store = store
   }
 }
 
@@ -246,12 +244,14 @@ private extension View {
   }
 }
 
-#Preview {
-  SearchPage(
-    store: Store(
-      initialState: SearchReducer.State()
-    ) {
-      SearchReducer()
-    }
-  )
+struct SearchPage_Previews: PreviewProvider {
+  static var previews: some View {
+    SearchPage(
+      store: Store(
+        initialState: SearchReducer.State()
+      ) {
+        SearchReducer()
+      }
+    )
+  }
 }

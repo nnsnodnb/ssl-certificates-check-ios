@@ -9,15 +9,15 @@ import ClientDependencies
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import MemberwiseInit
 
 @Reducer
+@MemberwiseInit(.package)
 package struct ConsentReducer: Sendable {
   // MARK: - State
   @ObservableState
+  @MemberwiseInit(.package)
   package struct State: Equatable, Sendable {
-    // MARK: - Initialize
-    package init() {
-    }
   }
 
   // MARK: - Action
@@ -58,9 +58,5 @@ package struct ConsentReducer: Sendable {
         return .none
       }
     }
-  }
-
-  // MARK: - Initialize
-  package init() {
   }
 }

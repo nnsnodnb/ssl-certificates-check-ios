@@ -11,9 +11,11 @@ import ComposableArchitecture
 import Foundation
 import InfoFeature
 import Logger
+import MemberwiseInit
 import X509Parser
 
 @Reducer
+@MemberwiseInit(.package)
 package struct SearchReducer {
   // MARK: - State
   @ObservableState
@@ -323,9 +325,5 @@ package struct SearchReducer {
           SearchResultDetailReducer()
         }
     }
-  }
-
-  // MARK: - Initialize
-  package init() {
   }
 }

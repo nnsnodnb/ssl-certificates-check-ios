@@ -1,6 +1,6 @@
 //
 //  InfoPage.swift
-//  
+//
 //
 //  Created by Yuya Oka on 2023/10/13.
 //
@@ -8,245 +8,246 @@
 import BetterSafariView
 import ComposableArchitecture
 import LicenseFeature
+import MemberwiseInit
 import SFSafeSymbols
 import SubscriptionFeature
 import SwiftUI
 import UIComponents
 
+@MemberwiseInit(.package)
 package struct InfoPage: View {
-    // MARK: - Properties
-    @Bindable private var store: StoreOf<InfoReducer>
+  // MARK: - Properties
+  @Init(.package)
+  @Bindable private var store: StoreOf<InfoReducer>
 
-    // MARK: - Body
-    package var body: some View {
-        NavigationStack(
-            path: $store.destinations.sending(\.navigationPathChanged),
-            root: {
-                form
-                    .navigationTitle("App Information")
-                    .navigationDestination(store: store)
-                    .toolbar(store: store)
-                    .safari(store: $store)
-            }
-        )
-        .interactiveDismissDisabled(store.interactiveDismissDisabled)
-        .sheet(item: $store.scope(state: \.paywall, action: \.paywall), content: { store in
-            PaywallPage(store: store)
-        })
-        .alert($store.scope(state: \.alert, action: \.alert))
-    }
-
-    // MARK: - Initialize
-    package init(store: StoreOf<InfoReducer>) {
-        self.store = store
-    }
+  // MARK: - Body
+  package var body: some View {
+    NavigationStack(
+      path: $store.destinations.sending(\.navigationPathChanged),
+      root: {
+        form
+          .navigationTitle("App Information")
+          .navigationDestination(store: store)
+          .toolbar(store: store)
+          .safari(store: $store)
+      }
+    )
+    .interactiveDismissDisabled(store.interactiveDismissDisabled)
+    .sheet(item: $store.scope(state: \.paywall, action: \.paywall), content: { store in
+      PaywallPage(store: store)
+    })
+    .alert($store.scope(state: \.alert, action: \.alert))
+  }
 }
 
 // MARK: - Private method
 private extension InfoPage {
-    var form: some View {
-        Form {
-            firstSection
-            secondSection
-            thirdSection
-        }
+  var form: some View {
+    Form {
+      firstSection
+      secondSection
+      thirdSection
     }
+  }
 
-    var firstSection: some View {
-        Section {
-            buttonRow(
-                action: {
-                    store.send(.safari(.gitHub))
-                },
-                image: {
-                    Image(.icGithub)
-                        .resizable()
-                },
-                title: "Source code"
-            )
-            buttonRow(
-                action: {
-                    store.send(.safari(.xTwitter))
-                },
-                image: {
-                    Image(.icXTwitetr)
-                        .resizable()
-                },
-                title: "Contact developer"
-            )
-        }
+  var firstSection: some View {
+    Section {
+      buttonRow(
+        action: {
+          store.send(.safari(.gitHub))
+        },
+        image: {
+          Image(.icGithub)
+            .resizable()
+        },
+        title: "Source code"
+      )
+      buttonRow(
+        action: {
+          store.send(.safari(.xTwitter))
+        },
+        image: {
+          Image(.icXTwitetr)
+            .resizable()
+        },
+        title: "Contact developer"
+      )
     }
+  }
 
-    @ViewBuilder var secondSection: some View {
-        Section {
-            if !store.isPremiumActive {
-                buttonRow(
-                    action: {
-                        store.send(.openPaywall)
-                    },
-                    image: {
-                        Image(systemSymbol: .crownFill)
-                            .resizable()
-                            .foregroundStyle(.yellow)
-                    },
-                    title: "Subscribe Premium"
-                )
-            }
-            buttonRow(
-                action: {
-                    store.send(.buyMeACoffee)
-                },
-                image: {
-                    Image(systemSymbol: .cupAndHeatWavesFill)
-                        .resizable()
-                        .foregroundStyle(Color.brown)
-                },
-                title: "Buy me a coffee",
-            )
-        }
-    }
-
-    var thirdSection: some View {
-        Section {
-            buttonRow(
-                action: {
-                    store.send(.openAppReview)
-                },
-                image: {
-                    Image(systemSymbol: .starBubble)
-                        .resizable()
-                        .foregroundStyle(.purple)
-                },
-                title: "Review App"
-            )
-            buttonRow(
-                action: {
-                    store.send(.pushLicenseList)
-                },
-                image: {
-                    Image(systemSymbol: .listBulletRectangleFill)
-                        .resizable()
-                        .foregroundStyle(.green)
-                },
-                title: "Licenses"
-            )
-            buttonRow(
-                action: {
-                    store.send(.safari(.terms))
-                },
-                image: {
-                    Image(systemSymbol: .textDocumentFill)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundStyle(Color.gray.opacity(0.5))
-                },
-                title: "Terms of Use"
-            )
-            buttonRow(
-                action: {
-                    store.send(.safari(.privacyPolicy))
-                },
-                image: {
-                    Image(systemSymbol: .handRaisedFill)
-                        .resizable()
-                        .scaledToFit()
-                },
-                title: "Privacy"
-            )
-            HStack(alignment: .center, spacing: 8) {
-                HStack(alignment: .center, spacing: 12) {
-                    Image(systemSymbol: .tagFill)
-                        .resizable()
-                        .foregroundStyle(.black.opacity(0.7))
-                        .frame(width: 18, height: 18)
-                    Text("Version")
-                        .foregroundStyle(.primary)
-                }
-                Spacer()
-                Text(store.version)
-                    .foregroundStyle(.secondary)
-            }
-            HStack(alignment: .center, spacing: 12) {
-                Image(systemSymbol: .swift)
-                    .resizable()
-                    .foregroundStyle(.orange)
-                    .frame(width: 18, height: 18)
-                Text("Developed by SwiftUI")
-                    .foregroundStyle(.primary)
-            }
-        }
-    }
-
-    private func buttonRow(
-        action: @escaping () -> Void,
-        image: () -> some View,
-        title: String
-    ) -> some View {
-        Button(
-            action: action,
-            label: {
-                HStack {
-                    HStack(spacing: 12) {
-                        image()
-                            .frame(width: 18, height: 18)
-                        Text(title)
-                            .foregroundStyle(Color.primary)
-                    }
-                    Spacer()
-                    ListRowChevronRight()
-                }
-            }
+  @ViewBuilder var secondSection: some View {
+    Section {
+      if !store.isPremiumActive {
+        buttonRow(
+          action: {
+            store.send(.openPaywall)
+          },
+          image: {
+            Image(systemSymbol: .crownFill)
+              .resizable()
+              .foregroundStyle(.yellow)
+          },
+          title: "Subscribe Premium"
         )
+      }
+      buttonRow(
+        action: {
+          store.send(.buyMeACoffee)
+        },
+        image: {
+          Image(systemSymbol: .cupAndHeatWavesFill)
+            .resizable()
+            .foregroundStyle(Color.brown)
+        },
+        title: "Buy me a coffee",
+      )
     }
+  }
+
+  var thirdSection: some View {
+    Section {
+      buttonRow(
+        action: {
+          store.send(.openAppReview)
+        },
+        image: {
+          Image(systemSymbol: .starBubble)
+            .resizable()
+            .foregroundStyle(.purple)
+        },
+        title: "Review App"
+      )
+      buttonRow(
+        action: {
+          store.send(.pushLicenseList)
+        },
+        image: {
+          Image(systemSymbol: .listBulletRectangleFill)
+            .resizable()
+            .foregroundStyle(.green)
+        },
+        title: "Licenses"
+      )
+      buttonRow(
+        action: {
+          store.send(.safari(.terms))
+        },
+        image: {
+          Image(systemSymbol: .textDocumentFill)
+            .resizable()
+            .scaledToFit()
+            .foregroundStyle(Color.gray.opacity(0.5))
+        },
+        title: "Terms of Use"
+      )
+      buttonRow(
+        action: {
+          store.send(.safari(.privacyPolicy))
+        },
+        image: {
+          Image(systemSymbol: .handRaisedFill)
+            .resizable()
+            .scaledToFit()
+        },
+        title: "Privacy"
+      )
+      HStack(alignment: .center, spacing: 8) {
+        HStack(alignment: .center, spacing: 12) {
+          Image(systemSymbol: .tagFill)
+            .resizable()
+            .foregroundStyle(.black.opacity(0.7))
+            .frame(width: 18, height: 18)
+          Text("Version")
+            .foregroundStyle(.primary)
+        }
+        Spacer()
+        Text(store.version)
+          .foregroundStyle(.secondary)
+      }
+      HStack(alignment: .center, spacing: 12) {
+        Image(systemSymbol: .swift)
+          .resizable()
+          .foregroundStyle(.orange)
+          .frame(width: 18, height: 18)
+        Text("Developed by SwiftUI")
+          .foregroundStyle(.primary)
+      }
+    }
+  }
+
+  private func buttonRow(
+    action: @escaping () -> Void,
+    image: () -> some View,
+    title: String
+  ) -> some View {
+    Button(
+      action: action,
+      label: {
+        HStack {
+          HStack(spacing: 12) {
+            image()
+              .frame(width: 18, height: 18)
+            Text(title)
+              .foregroundStyle(Color.primary)
+          }
+          Spacer()
+          ListRowChevronRight()
+        }
+      }
+    )
+  }
 }
 
 private extension View {
-    func toolbar(store: StoreOf<InfoReducer>) -> some View {
-        toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if #available(iOS 26.0, *) {
-                    Button(role: .cancel) {
-                        store.send(.close)
-                    }
-                } else {
-                    Button(
-                        action: {
-                            store.send(.close)
-                        },
-                        label: {
-                            Image(systemSymbol: .xmark)
-                        }
-                    )
-                }
+  func toolbar(store: StoreOf<InfoReducer>) -> some View {
+    toolbar {
+      ToolbarItem(placement: .topBarLeading) {
+        if #available(iOS 26.0, *) {
+          Button(role: .cancel) {
+            store.send(.close)
+          }
+        } else {
+          Button(
+            action: {
+              store.send(.close)
+            },
+            label: {
+              Image(systemSymbol: .xmark)
             }
+          )
         }
+      }
     }
+  }
 
-    func navigationDestination(store: StoreOf<InfoReducer>) -> some View {
-        navigationDestination(for: InfoReducer.State.Destination.self) { destination in
-            switch destination {
-            case .licenseList:
-                if let store = store.scope(state: \.licenseList, action: \.licenseList.presented) {
-                    LicenseListPage(store: store)
-                }
-            }
+  func navigationDestination(store: StoreOf<InfoReducer>) -> some View {
+    navigationDestination(for: InfoReducer.State.Destination.self) { destination in
+      switch destination {
+      case .licenseList:
+        if let store = store.scope(state: \.licenseList, action: \.licenseList.presented) {
+          LicenseListPage(store: store)
         }
+      }
     }
+  }
 
-    func safari(store: Bindable<StoreOf<InfoReducer>>) -> some View {
-        safariView(item: store.url.sending(\.url)) { url in
-            SafariView(url: url)
-                .dismissButtonStyle(.close)
-        }
+  func safari(store: Bindable<StoreOf<InfoReducer>>) -> some View {
+    safariView(item: store.url.sending(\.url)) { url in
+      SafariView(url: url)
+        .dismissButtonStyle(.close)
     }
+  }
 }
 
-#Preview {
+struct InfoPage_Previews: PreviewProvider {
+  static var previews: some View {
     InfoPage(
-        store: Store(
-            initialState: InfoReducer.State(version: "v1.0.0")
-        ) {
-            InfoReducer()
-        }
+      store: .init(
+        initialState: InfoReducer.State(version: "v1.0.0"),
+        reducer: {
+          InfoReducer()
+        },
+      )
     )
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "a358ec654767fbac44f6831846d982e68d72c9bb1bdaf1892723b22de4e7bc3b",
+  "originHash" : "d726cac83db9d16c106eb84a2428cd30d6682019866252b505fcbb240e08d7fc",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -260,6 +260,15 @@
       "state" : {
         "revision" : "2f5ab6e091dd032b63dacbda052405756010dc3b",
         "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "swift-memberwise-init-macro",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gohanlon/swift-memberwise-init-macro.git",
+      "state" : {
+        "revision" : "47a2bdf45f1567e7324438f8482e362ee1c3fb44",
+        "version" : "0.5.2"
       }
     },
     {

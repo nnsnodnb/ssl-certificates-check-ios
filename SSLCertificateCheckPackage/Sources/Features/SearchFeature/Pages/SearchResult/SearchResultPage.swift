@@ -6,10 +6,12 @@
 //
 
 import ComposableArchitecture
+import MemberwiseInit
 import SwiftUI
 import UIComponents
 import X509Parser
 
+@MemberwiseInit(.package)
 package struct SearchResultPage: View {
   // MARK: - Properties
   package let store: StoreOf<SearchResultReducer>
@@ -49,18 +51,19 @@ private extension SearchResultPage {
   }
 }
 
-#if DEBUG
-#Preview {
-  SearchResultPage(
-    store: .init(
-      initialState: SearchResultReducer.State(
-        certificates: .init(
-          uniqueElements: [.stub]
-        )
+struct SearchResultPage_Previews: PreviewProvider {
+  static var previews: some View {
+    SearchResultPage(
+      store: .init(
+        initialState: SearchResultReducer.State(
+          certificates: .init(
+            uniqueElements: [.stub]
+          )
+        ),
+        reducer: {
+          SearchResultReducer()
+        },
       )
-    ) {
-      SearchResultReducer()
-    }
-  )
+    )
+  }
 }
-#endif

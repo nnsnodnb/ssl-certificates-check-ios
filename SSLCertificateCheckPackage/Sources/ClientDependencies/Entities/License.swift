@@ -6,17 +6,12 @@
 //
 
 import Foundation
+import MemberwiseInit
 
+@MemberwiseInit(.package)
 package struct License: Identifiable, Hashable, Sendable {
   // MARK: - Properties
   package let id: String
   package let name: String
   package let licenseText: String?
-
-  // MARK: - Initialize
-  package init(id: String, name: String, licenseText: String?) {
-    self.id = id
-    self.name = name
-    self.licenseText = licenseText
-  }
 }

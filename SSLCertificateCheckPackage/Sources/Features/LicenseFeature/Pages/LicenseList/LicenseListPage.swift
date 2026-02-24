@@ -7,10 +7,13 @@
 
 import ClientDependencies
 import ComposableArchitecture
+import MemberwiseInit
 import SwiftUI
 
+@MemberwiseInit(.package)
 package struct LicenseListPage: View {
   // MARK: - Properties
+  @Init(.package)
   private let store: StoreOf<LicenseListReducer>
 
   // MARK: - Body
@@ -21,11 +24,6 @@ package struct LicenseListPage: View {
         guard store.licenses.isEmpty else { return }
         store.send(.fetchLicenses)
       }
-  }
-
-  // MARK: - Initialize
-  package init(store: StoreOf<LicenseListReducer>) {
-    self.store = store
   }
 }
 
@@ -49,14 +47,16 @@ private extension LicenseListPage {
   }
 }
 
-#Preview {
-  NavigationStack {
-    LicenseListPage(
-      store: Store(
-        initialState: LicenseListReducer.State()
-      ) {
-        LicenseListReducer()
-      }
-    )
+struct LicenseListPage_Previews: PreviewProvider {
+  static var previews: some View {
+    NavigationStack {
+      LicenseListPage(
+        store: Store(
+          initialState: LicenseListReducer.State()
+        ) {
+          LicenseListReducer()
+        }
+      )
+    }
   }
 }

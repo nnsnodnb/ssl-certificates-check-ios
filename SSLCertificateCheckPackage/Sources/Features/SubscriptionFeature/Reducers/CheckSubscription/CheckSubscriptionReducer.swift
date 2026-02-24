@@ -9,8 +9,10 @@ import ClientDependencies
 import ComposableArchitecture
 import Dependencies
 import Foundation
+import MemberwiseInit
 
 @Reducer
+@MemberwiseInit(.package)
 package struct CheckSubscriptionReducer: Sendable {
   // MARK: - State
   @ObservableState
@@ -69,9 +71,5 @@ package struct CheckSubscriptionReducer: Sendable {
         return .none
       }
     }
-  }
-
-  // MARK: - Initialize
-  package init() {
   }
 }

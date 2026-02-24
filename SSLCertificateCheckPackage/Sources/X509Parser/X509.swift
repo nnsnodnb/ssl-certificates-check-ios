@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import MemberwiseInit
 
+@MemberwiseInit(.package)
 package struct X509: Hashable, Sendable, Identifiable {
   // MARK: - Properties
   package var id: String { serialNumber }
@@ -18,25 +20,6 @@ package struct X509: Hashable, Sendable, Identifiable {
   package let issuer: DistinguishedNames
   package let subject: DistinguishedNames
   package let sha256Fingerprint: SHA256Fingerprint
-
-  // MARK: - Initialize
-  package init(
-    version: String,
-    serialNumber: String,
-    notValidBefore: Date,
-    notValidAfter: Date,
-    issuer: DistinguishedNames,
-    subject: DistinguishedNames,
-    sha256Fingerprint: SHA256Fingerprint
-  ) {
-    self.version = version
-    self.serialNumber = serialNumber
-    self.notValidBefore = notValidBefore
-    self.notValidAfter = notValidAfter
-    self.issuer = issuer
-    self.subject = subject
-    self.sha256Fingerprint = sha256Fingerprint
-  }
 }
 
 // MARK: - DistinguishedNames
@@ -105,16 +88,11 @@ package extension X509 {
 
 // MARK: - SHA256Fingerprint
 package extension X509 {
+  @MemberwiseInit(.package)
   struct SHA256Fingerprint: Hashable, Sendable {
     // MARK: - Properties
     package let certificate: String
     package let publicKey: String
-
-    // MARK: - Initialize
-    package init(certificate: String, publicKey: String) {
-      self.certificate = certificate
-      self.publicKey = publicKey
-    }
   }
 }
 

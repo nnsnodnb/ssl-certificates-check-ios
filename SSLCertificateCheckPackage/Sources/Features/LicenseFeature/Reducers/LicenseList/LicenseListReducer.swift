@@ -10,18 +10,17 @@ import ClientDependencies
 import ComposableArchitecture
 import Foundation
 import Logger
+import MemberwiseInit
 
 @Reducer
+@MemberwiseInit(.package)
 package struct LicenseListReducer {
   // MARK: - State
   @ObservableState
+  @MemberwiseInit(.package)
   package struct State: Equatable {
     // MARK: - Properties
-    var licenses: IdentifiedArrayOf<License> = []
-
-    // MARK: - Initialize
-    package init() {
-    }
+    package var licenses: IdentifiedArrayOf<License> = []
   }
 
   // MARK: - Action
@@ -39,10 +38,6 @@ package struct LicenseListReducer {
   // MARK: - Properties
   @Dependency(\.license)
   private var license
-
-  // MARK: - Initialize
-  package init() {
-  }
 
   // MARK: - Body
   package var body: some ReducerOf<Self> {
