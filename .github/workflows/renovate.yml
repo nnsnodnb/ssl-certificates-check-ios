@@ -23,9 +23,9 @@ jobs:
       result: ${{ steps.parse.outputs.result }}
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-    - uses: tj-actions/changed-files@v47
+    - uses: tj-actions/changed-files@7dee1b0c1557f278e5c7dc244927139d78c0e22a # v47.0.4
       id: files_changes
       with:
         json: "true"
@@ -62,12 +62,12 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
 
     steps:
-    - uses: Cyberbeni/install-swift-tool@v2
+    - uses: Cyberbeni/install-swift-tool@891fcd02f2f8df5f1604977182c358ed07130a16 # v3.1.6
       with:
         url: https://github.com/nnsnodnb/github-apps-token-swift
         version: '*'
 
-    - uses: 1password/load-secrets-action@v3
+    - uses: 1password/load-secrets-action@8d0d610af187e78a2772c2d18d627f4c52d3fbfb # v3.1.0
       with:
         export-env: true
       env:
@@ -89,7 +89,7 @@ jobs:
         echo "token=${token}" >> "${GITHUB_OUTPUT}"
         rm /tmp/github-apps-private-key.pem
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         fetch-depth: 0
         token: ${{ steps.get-github-app.outputs.token }}

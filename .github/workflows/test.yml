@@ -21,7 +21,7 @@ jobs:
       TEST_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro"
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Get SwiftPM originHash
         id: get-swiftpm-origin-hash
@@ -44,7 +44,9 @@ jobs:
         run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 
       - name: Make test-result folder
-        run: mkdir -p test-results
+        id: test-result-dir
+        run: |
+          echo "TEST_RESULTS_DIR=$(mktemp -d)" >> "${GITHUB_OUTPUT}"
 
       - name: Xcode test for ApplicationTests
         run: |
@@ -54,7 +56,7 @@ jobs:
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
               -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "test-results/Test-ApplicationTests.xcresult" \
+              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ApplicationTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
 
@@ -66,7 +68,7 @@ jobs:
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
               -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "test-results/Test-ConsentFeatureTests.xcresult" \
+              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ConsentFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
 
@@ -78,7 +80,7 @@ jobs:
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
               -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "test-results/Test-InfoFeatureTests.xcresult" \
+              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-InfoFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
 
@@ -90,7 +92,7 @@ jobs:
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
               -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "test-results/Test-LicenseFeatureTests.xcresult" \
+              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-LicenseFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcpretty
 
@@ -102,7 +104,7 @@ jobs:
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
             -destination "${TEST_DESTINATION}" \
-            -resultBundlePath "test-results/Test-SearchFeatureTests.xcresult" \
+            -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-SearchFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
 
@@ -114,7 +116,7 @@ jobs:
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
             -destination "${TEST_DESTINATION}" \
-            -resultBundlePath "test-results/Test-X509ParserTests.xcresult" \
+            -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-X509ParserTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
 
@@ -126,16 +128,12 @@ jobs:
             -workspace SSLCertificateCheck.xcworkspace \
             -parallel-testing-enabled=YES \
             -destination "${TEST_DESTINATION}" \
-            -resultBundlePath "test-results/Test-SubscriptionFeatureTests.xcresult" \
+            -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-SubscriptionFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcpretty
 
-      #- uses: kishikawakatsumi/xcresulttool@v1
-      #  if: success() || failure()
-      #  with:
-      #    path: |
-      #      test-results/Test-InfoFeatureTests.xcresult
-      #      test-results/Test-LicenseFeatureTests.xcresult
-      #      test-results/Test-SearchFeatureTests.xcresult
-      #      test-results/Test-X509ParserTests.xcresult
-      #    show-passed-tests: false
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: test-results
+          path: ${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}
