@@ -90,6 +90,9 @@ extension RevenueCatClient {
     }
 
     private func startListening() async {
+      if let customerInfo = try? await Purchases.shared.customerInfo() {
+        applyCustomerInfo(customerInfo)
+      }
       if let customerInfo = try? await Purchases.shared.customerInfo(fetchPolicy: .fetchCurrent) {
         applyCustomerInfo(customerInfo)
       }
