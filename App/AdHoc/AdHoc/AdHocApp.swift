@@ -6,14 +6,13 @@
 //
 
 import Application
+import class FirebaseCore.FirebaseApp
+import class GoogleMobileAds.MobileAds
+import class RevenueCat.Purchases
 import SwiftUI
 
 @main
 struct AdHocApp: App {
-  // MARK: - Properties
-  @UIApplicationDelegateAdaptor(AppDelegate.self)
-  var delegate
-
   // MARK: - Body
   var body: some Scene {
     WindowGroup {
@@ -24,5 +23,14 @@ struct AdHocApp: App {
         )
       )
     }
+  }
+
+  // MARK: - Initialize
+  init() {
+    FirebaseApp.configure()
+    Task {
+      _ = await MobileAds.shared.start()
+    }
+    Purchases.configure(withAPIKey: "appl_tCBoNHVYLrNNHLlPSrarLoDORLz")
   }
 }
