@@ -162,7 +162,7 @@ let package = Package(
     .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.8.0")),
     .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.2.0")),
     .package(url: "https://github.com/stleamist/BetterSafariView.git", .upToNextMajor(from: "2.4.2")),
-    .package(url: "https://github.com/RevenueCat/purchases-ios-spm.git", .upToNextMajor(from: "5.59.0")),
+    .package(url: "https://github.com/RevenueCat/purchases-ios-spm.git", .upToNextMajor(from: "5.60.0")),
     .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "7.0.0")),
     .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", .upToNextMajor(from: "0.63.2")),
     .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.17.1")),
