@@ -48,7 +48,7 @@ package struct ConsentReducer: Sendable {
               await send(.completed)
               return
             }
-            try await consentInformation.load()
+            try await consentInformation.loadAndPresentIfRequired()
             await send(.completed)
           },
         )

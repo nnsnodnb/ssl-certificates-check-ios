@@ -37,6 +37,9 @@ package struct InfoPage: View {
       PaywallPage(store: store)
     })
     .alert($store.scope(state: \.alert, action: \.alert))
+    .onAppear {
+      store.send(.onAppear)
+    }
   }
 }
 
@@ -47,6 +50,7 @@ private extension InfoPage {
       firstSection
       secondSection
       thirdSection
+      fourthSection
     }
   }
 
@@ -108,28 +112,6 @@ private extension InfoPage {
     Section {
       buttonRow(
         action: {
-          store.send(.openAppReview)
-        },
-        image: {
-          Image(systemSymbol: .starBubble)
-            .resizable()
-            .foregroundStyle(.purple)
-        },
-        title: "Review App"
-      )
-      buttonRow(
-        action: {
-          store.send(.pushLicenseList)
-        },
-        image: {
-          Image(systemSymbol: .listBulletRectangleFill)
-            .resizable()
-            .foregroundStyle(.green)
-        },
-        title: "Licenses"
-      )
-      buttonRow(
-        action: {
           store.send(.safari(.terms))
         },
         image: {
@@ -149,7 +131,54 @@ private extension InfoPage {
             .resizable()
             .scaledToFit()
         },
-        title: "Privacy"
+        title: "Privacy Policy"
+      )
+      if store.visiblePrivacyOptionsRequirements {
+        buttonRow(
+          action: {
+            if !store.isLoadingConsentForm {
+              store.send(.showPresentPrivacyOptions)
+            }
+          },
+          image: {
+            if store.isLoadingConsentForm {
+              ProgressView()
+                .progressViewStyle(.circular)
+            } else {
+              Image(systemSymbol: .handRaisedSquareFill)
+                .resizable()
+                .foregroundStyle(.white, .red.opacity(0.9))
+            }
+          },
+          title: "Privacy Settings",
+        )
+      }
+    }
+  }
+
+  var fourthSection: some View {
+    Section {
+      buttonRow(
+        action: {
+          store.send(.openAppReview)
+        },
+        image: {
+          Image(systemSymbol: .starBubble)
+            .resizable()
+            .foregroundStyle(.purple)
+        },
+        title: "Review App"
+      )
+      buttonRow(
+        action: {
+          store.send(.pushLicenseList)
+        },
+        image: {
+          Image(systemSymbol: .listBulletRectangleFill)
+            .resizable()
+            .foregroundStyle(.green)
+        },
+        title: "Licenses"
       )
       HStack(alignment: .center, spacing: 8) {
         HStack(alignment: .center, spacing: 12) {
@@ -177,7 +206,7 @@ private extension InfoPage {
 
   private func buttonRow(
     action: @escaping () -> Void,
-    image: () -> some View,
+    @ViewBuilder image: () -> some View,
     title: String
   ) -> some View {
     Button(

@@ -14,13 +14,15 @@ import SubscriptionFeature
 
 @Reducer
 @MemberwiseInit(.package)
-package struct InfoReducer {
+package struct InfoReducer: Sendable {
   // MARK: - State
   @ObservableState
   package struct State: Equatable {
     // MARK: - Properties
     package let version: String
     @Presents package var paywall: PaywallReducer.State?
+    package var visiblePrivacyOptionsRequirements = false
+    package var isLoadingConsentForm = false
     @Presents package var licenseList: LicenseListReducer.State?
     package var destinations: [Destination] = []
     package var interactiveDismissDisabled = false
@@ -60,6 +62,8 @@ package struct InfoReducer {
     package init(
       version: String,
       paywall: PaywallReducer.State? = nil,
+      visiblePrivacyOptionsRequirements: Bool = false,
+      isLoadingConsentForm: Bool = false,
       licenseList: LicenseListReducer.State? = nil,
       destinations: [Destination] = [],
       interactiveDismissDisabled: Bool = false,
@@ -68,6 +72,8 @@ package struct InfoReducer {
     ) {
       self.version = version
       self.paywall = paywall
+      self.visiblePrivacyOptionsRequirements = visiblePrivacyOptionsRequirements
+      self.isLoadingConsentForm = isLoadingConsentForm
       self.licenseList = licenseList
       self.destinations = destinations
       self.interactiveDismissDisabled = interactiveDismissDisabled
@@ -78,9 +84,13 @@ package struct InfoReducer {
 
   // MARK: - Action
   package enum Action {
+    case onAppear
     case close
     case openPaywall
     case buyMeACoffee
+    case loadConsentForm
+    case loadedConsentForm
+    case showPresentPrivacyOptions
     case openAppReview
     case pushLicenseList
     case safari(State.Link?)
@@ -104,6 +114,8 @@ package struct InfoReducer {
   // MARK: - Properties
   @Dependency(\.application)
   private var application
+  @Dependency(\.consentInformation)
+  private var consentInformation
   @Dependency(\.revenueCat)
   private var revenueCat
 
@@ -111,6 +123,9 @@ package struct InfoReducer {
   package var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
+      case .onAppear:
+        state.visiblePrivacyOptionsRequirements = consentInformation.visiblePrivacyOptionsRequirements()
+        return state.visiblePrivacyOptionsRequirements ? .send(.loadConsentForm) : .none
       case .close:
         return .none
       case .openPaywall:
@@ -128,6 +143,31 @@ package struct InfoReducer {
               return
             }
             await send(.failureGifted)
+          },
+        )
+      case .loadConsentForm:
+        guard state.visiblePrivacyOptionsRequirements else { return .none }
+        state.isLoadingConsentForm = true
+        return .run(
+          operation: { send in
+            try await consentInformation.load()
+            await send(.loadedConsentForm)
+          },
+        )
+      case .loadedConsentForm:
+        state.isLoadingConsentForm = false
+        return .none
+      case .showPresentPrivacyOptions:
+        guard state.visiblePrivacyOptionsRequirements && !state.isLoadingConsentForm else {
+          return .none
+        }
+        return .run(
+          operation: { send in
+            try await consentInformation.presentPrivacyOptions()
+            await send(.loadConsentForm)
+          },
+          catch: { _, send in
+            await send(.loadConsentForm)
           },
         )
       case .openAppReview:

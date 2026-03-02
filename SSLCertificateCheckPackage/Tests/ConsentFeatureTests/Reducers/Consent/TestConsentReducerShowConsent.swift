@@ -16,7 +16,7 @@ struct TestConsentReducerShowConsent {
   @Test(
     .dependencies {
       $0.consentInformation.requestConsent = { true }
-      $0.consentInformation.load = {}
+      $0.consentInformation.loadAndPresentIfRequired = {}
     }
   )
   func testShowConsentRequestConsentIsAvailable() async throws {
@@ -35,7 +35,7 @@ struct TestConsentReducerShowConsent {
   @Test(
     .dependencies {
       $0.consentInformation.requestConsent = { false }
-      $0.consentInformation.load = {}
+      $0.consentInformation.loadAndPresentIfRequired = {}
     }
   )
   func testShowConsentRequestConsentIsNotAvailable() async throws {
