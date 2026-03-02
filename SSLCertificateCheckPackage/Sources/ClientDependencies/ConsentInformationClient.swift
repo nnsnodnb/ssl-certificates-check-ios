@@ -27,8 +27,8 @@ extension ConsentInformationClient: DependencyKey {
       parameters.debugSettings = debugSettings
 #endif
 
-      guard ConsentInformation.shared.consentStatus == .required else { return false }
       try await ConsentInformation.shared.requestConsentInfoUpdate(with: parameters)
+      guard ConsentInformation.shared.consentStatus == .required else { return false }
       let status = ConsentInformation.shared.formStatus == .available
       return status
     },
