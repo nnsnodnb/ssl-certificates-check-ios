@@ -18,7 +18,7 @@ struct AdHocApp: App {
     WindowGroup {
       RootPage(
         dependency: .init(
-          requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/1712485313",
+          requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/6978759866",
           searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
         )
       )

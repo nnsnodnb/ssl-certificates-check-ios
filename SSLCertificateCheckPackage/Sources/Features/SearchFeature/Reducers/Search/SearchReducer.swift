@@ -120,23 +120,23 @@ package struct SearchReducer {
   private var search
   @Dependency(\.keyValueStore)
   private var keyValueStore
-  @Dependency(\.rewardedAd)
-  private var rewardedAd
+  @Dependency(\.rewardedInterstitialAd)
+  private var rewardedInterstitialAd
 
   // MARK: - Body
   package var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .onAppear:
-        state.searchPageBottomBannerAdUnitID = try? adUnitID.searchPageBottomBannerAdUnitID()
         guard !state.isPremiumActive else { return .none }
+        state.searchPageBottomBannerAdUnitID = try? adUnitID.searchPageBottomBannerAdUnitID()
         return .send(.preloadRewardedAds)
       case .preloadRewardedAds:
         guard !state.isPremiumActive else { return .none }
         return .run(
           priority: .background,
           operation: { _ in
-            try await rewardedAd.load()
+            try await rewardedInterstitialAd.load()
           },
         )
       case let .textChanged(text):
@@ -190,14 +190,13 @@ package struct SearchReducer {
               let url = state.searchableURL else {
           return .none
         }
-        state.isLoading = true
         if state.isPremiumActive {
           return .send(.search(url))
         }
         Logger.info("Start load Ads")
         return .run(
           operation: { send in
-            let result = try await rewardedAd.show()
+            let result = try await rewardedInterstitialAd.show()
             guard result > 0 else {
               await send(.preloadRewardedAds)
               return
@@ -207,14 +206,13 @@ package struct SearchReducer {
           },
           catch: { error, send in
             await send(.preloadRewardedAds)
-            await send(.searchResponse(.failure(.search)))
-            Logger.error("Failed fetch Ads: \(error)")
           }
         )
       case let .search(url):
         guard !state.searchButtonDisabled else {
           return .none
         }
+        state.isLoading = true
         Logger.info("Start searching")
         return .run(
           operation: { send in

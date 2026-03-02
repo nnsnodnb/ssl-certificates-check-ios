@@ -1,5 +1,5 @@
 //
-//  RewardedAdClientswift
+//  RewardedInterstitialAdClient
 //  SSLCertificateCheckPackage
 //
 //  Created by Yuya Oka on 2026/02/17.
@@ -11,19 +11,20 @@ import Foundation
 import GoogleMobileAds
 
 @DependencyClient
-package struct RewardedAdClient: Sendable {
+package struct RewardedInterstitialAdClient: Sendable {
   package var load: @Sendable () async throws -> Void
   package var show: @Sendable () async throws -> Int
 
   // MARK: - Error
   package enum Error: Swift.Error {
     case notReady
+    case interruption
   }
 }
 
 // MARK: - DependencyKey
-extension RewardedAdClient: DependencyKey {
-  package static let liveValue: RewardedAdClient = .init(
+extension RewardedInterstitialAdClient: DependencyKey {
+  package static let liveValue: Self = .init(
     load: {
       try await Implementation.shared.load()
     },
@@ -34,13 +35,13 @@ extension RewardedAdClient: DependencyKey {
 }
 
 // MARK: - Implementation
-private extension RewardedAdClient {
+private extension RewardedInterstitialAdClient {
   final actor Implementation: GlobalActor {
     // MARK: - State
     private enum State {
       case idle
       case loading
-      case ready(any RewardedAdProtocol)
+      case ready(any RewardedInterstitialAdProtocol)
       case failed
     }
 
@@ -49,6 +50,7 @@ private extension RewardedAdClient {
 
     private let delegate: LockIsolated<Delegate?> = .init(nil)
     private let state: LockIsolated<State> = .init(.idle)
+    private let earnedReward: LockIsolated<Bool> = .init(false)
 
     @Dependency(\.adUnitID.requestStartRewardAdUnitID)
     private var adUnitID
@@ -68,7 +70,7 @@ private extension RewardedAdClient {
       // MARK: - FullScreenContentDelegate
       // swiftlint:disable:next identifier_name
       func adDidDismissFullScreenContent(_ ad: any FullScreenPresentingAd) {
-        guard let rewardedAd = ad as? RewardedAd else { return }
+        guard let rewardedAd = ad as? RewardedInterstitialAd else { return }
         earnRewarded(rewardedAd.adReward.amount.intValue)
       }
     }
@@ -80,7 +82,7 @@ private extension RewardedAdClient {
         case .idle:
           state.setValue(.loading)
           do {
-            let rewardedAd = try await RewardedAd.load(with: try adUnitID(), request: .init())
+            let rewardedAd = try await RewardedInterstitialAd.load(with: try adUnitID(), request: .init())
             state.setValue(.ready(rewardedAd))
             return
           } catch {
@@ -101,14 +103,20 @@ private extension RewardedAdClient {
     func show() async throws -> Int {
       if case let .ready(rewardedAd) = state.value {
         try rewardedAd.canPresent()
-        return await withUnsafeContinuation { [weak self] continuation in
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
           let delegate = Delegate { [weak self] amount in
-            continuation.resume(returning: amount)
+            if self?.earnedReward.value == true {
+              continuation.resume(returning: amount)
+            } else {
+              self?.state.setValue(.idle)
+              continuation.resume(throwing: Error.interruption)
+            }
             self?.delegate.setValue(nil)
           }
           self?.delegate.setValue(delegate)
           rewardedAd.present(delegate: delegate) { [weak self] in
             self?.state.setValue(.idle)
+            self?.earnedReward.setValue(true)
           }
         }
       }
@@ -120,12 +128,12 @@ private extension RewardedAdClient {
 
 // MARK: - DependencyValues
 package extension DependencyValues {
-  var rewardedAd: RewardedAdClient {
+  var rewardedInterstitialAd: RewardedInterstitialAdClient {
     get {
-      self[RewardedAdClient.self]
+      self[RewardedInterstitialAdClient.self]
     }
     set {
-      self[RewardedAdClient.self] = newValue
+      self[RewardedInterstitialAdClient.self] = newValue
     }
   }
 }
