@@ -44,8 +44,14 @@ extension ConsentInformationClient: DependencyKey {
     visiblePrivacyOptionsRequirements: {
       ConsentInformation.shared.privacyOptionsRequirementStatus == .required
     },
-    presentPrivacyOptions: {
+    presentPrivacyOptions: { @MainActor in
       let parameters = RequestParameters()
+#if DEBUG
+      let debugSettings = DebugSettings()
+      debugSettings.geography = .EEA
+      parameters.debugSettings = debugSettings
+#endif
+
       try await ConsentInformation.shared.requestConsentInfoUpdate(with: parameters)
       guard ConsentInformation.shared.consentStatus == .obtained else { return }
       try await ConsentForm.presentPrivacyOptionsForm(from: nil)
