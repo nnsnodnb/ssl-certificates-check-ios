@@ -125,7 +125,7 @@ package struct InfoReducer: Sendable {
       switch action {
       case .onAppear:
         state.visiblePrivacyOptionsRequirements = consentInformation.visiblePrivacyOptionsRequirements()
-        return .none
+        return state.visiblePrivacyOptionsRequirements ? .send(.loadConsentForm) : .none
       case .close:
         return .none
       case .openPaywall:
