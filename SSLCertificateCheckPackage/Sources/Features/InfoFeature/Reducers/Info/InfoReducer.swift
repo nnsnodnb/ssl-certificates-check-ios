@@ -42,6 +42,7 @@ package struct InfoReducer: Sendable {
       case xTwitter
       case terms
       case privacyPolicy
+      case userdataExternalTransmission
 
       // MARK: - Properties
       package var url: URL {
@@ -54,6 +55,8 @@ package struct InfoReducer: Sendable {
           return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Terms")!
         case .privacyPolicy:
           return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Privacy-Policy")!
+        case .userdataExternalTransmission:
+          return URL(string: "https://nnsnodnb.moe/userdata-external-transmission/?app=moe.nnsnodnb.SSLCertificateCheck")!
         }
       }
     }

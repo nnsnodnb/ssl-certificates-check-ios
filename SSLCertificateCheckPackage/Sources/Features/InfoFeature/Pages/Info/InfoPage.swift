@@ -153,6 +153,18 @@ private extension InfoPage {
           title: "Privacy Settings",
         )
       }
+      buttonRow(
+        action: {
+          store.send(.safari(.userdataExternalTransmission))
+        },
+        image: {
+          Image(systemSymbol: .network)
+            .resizable()
+            .scaledToFit()
+            .foregroundStyle(Color(UIColor.systemCyan))
+        },
+        title: "About Userdata external tranmission",
+      )
     }
   }
 
