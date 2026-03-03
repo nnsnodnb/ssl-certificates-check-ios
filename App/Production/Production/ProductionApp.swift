@@ -18,7 +18,7 @@ struct ProductionApp: App {
     WindowGroup {
       RootPage(
         dependency: .init(
-          requestStartRewardAdUnitID: "ca-app-pub-3417597686353524/1636683434",
+          requestStartRewardAdUnitID: "ca-app-pub-3417597686353524/3610026498",
           searchPageBottomBannerAdUnitID: "ca-app-pub-3417597686353524/1523645555",
         )
       )

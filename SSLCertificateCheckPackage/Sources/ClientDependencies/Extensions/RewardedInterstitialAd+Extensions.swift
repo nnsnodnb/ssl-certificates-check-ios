@@ -1,5 +1,5 @@
 //
-//  RewardedAd+Extensions.swift
+//  RewardedInterstitialAd+Extensions.swift
 //  SSLCertificateCheckPackage
 //
 //  Created by Yuya Oka on 2026/02/17.
@@ -8,9 +8,9 @@
 import Foundation
 import GoogleMobileAds
 
-// MARK: - RewardedAdProtocol
+// MARK: - RewardedInterstitialAdProtocol
 @MainActor
-extension RewardedAd: RewardedAdProtocol {
+extension RewardedInterstitialAd: RewardedInterstitialAdProtocol {
   package func canPresent() throws {
     try canPresent(from: nil)
   }

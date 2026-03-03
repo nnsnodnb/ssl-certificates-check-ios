@@ -14,7 +14,7 @@ import Testing
 struct TestSearchReducerPreloadRewardedAds {
   @Test(
     .dependencies {
-      $0.rewardedAd.load = {}
+      $0.rewardedInterstitialAd.load = {}
     }
   )
   func testIt() async throws {

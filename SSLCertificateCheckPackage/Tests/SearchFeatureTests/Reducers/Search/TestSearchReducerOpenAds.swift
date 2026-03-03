@@ -47,8 +47,8 @@ struct TestSearchReducerOpenAds {
   func testValidTextSuccessResponseIsNotPremiumActive() async throws {
     let x509 = X509.stub
     await withDependencies {
-      $0.rewardedAd.load = {}
-      $0.rewardedAd.show = { 1 }
+      $0.rewardedInterstitialAd.load = {}
+      $0.rewardedInterstitialAd.show = { 1 }
       $0.search.fetchCertificates = { _ in [x509] }
     } operation: {
       let store = TestStore(
@@ -63,10 +63,10 @@ struct TestSearchReducerOpenAds {
         },
       )
 
-      await store.send(.openAds) {
+      await store.send(.openAds)
+      await store.receive(\.search, timeout: 0) {
         $0.isLoading = true
       }
-      await store.receive(\.search, timeout: 0)
       await store.receive(\.preloadRewardedAds, timeout: 0)
       await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
         $0.isLoading = false
@@ -97,10 +97,10 @@ struct TestSearchReducerOpenAds {
         },
       )
 
-      await store.send(.openAds) {
+      await store.send(.openAds)
+      await store.receive(\.search, URL(string: "https://example.com")!, timeout: 0) {
         $0.isLoading = true
       }
-      await store.receive(\.search, timeout: 0)
       await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
         $0.isLoading = false
         $0.destinations = [.searchResult]
@@ -116,8 +116,8 @@ struct TestSearchReducerOpenAds {
     }
 
     await withDependencies {
-      $0.rewardedAd.load = {}
-      $0.rewardedAd.show = { 1 }
+      $0.rewardedInterstitialAd.load = {}
+      $0.rewardedInterstitialAd.show = { 1 }
       $0.search.fetchCertificates = { _ in throw Error.testError }
     } operation: {
       let store = TestStore(
@@ -131,10 +131,10 @@ struct TestSearchReducerOpenAds {
         },
       )
 
-      await store.send(.openAds) {
+      await store.send(.openAds)
+      await store.receive(\.search, URL(string: "https://example.com")!, timeout: 0) {
         $0.isLoading = true
       }
-      await store.receive(\.search, timeout: 0)
       await store.receive(\.preloadRewardedAds, timeout: 0)
       await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
         $0.isLoading = false
