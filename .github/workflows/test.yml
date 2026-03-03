@@ -58,7 +58,7 @@ jobs:
               -destination "${TEST_DESTINATION}" \
               -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ApplicationTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcpretty
+              -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for ConsentFeatureTests
         run: |
@@ -70,7 +70,7 @@ jobs:
               -destination "${TEST_DESTINATION}" \
               -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ConsentFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcpretty
+              -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for InfoFeatureTests
         run: |
@@ -82,7 +82,7 @@ jobs:
               -destination "${TEST_DESTINATION}" \
               -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-InfoFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcpretty
+              -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for LicenseFeatureTests
         run: |
@@ -94,7 +94,7 @@ jobs:
               -destination "${TEST_DESTINATION}" \
               -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-LicenseFeatureTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcpretty
+              -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for SearchFeatureTests
         run: |
@@ -106,7 +106,7 @@ jobs:
             -destination "${TEST_DESTINATION}" \
             -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-SearchFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcpretty
+            -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for X509ParserTests
         run: |
@@ -118,7 +118,7 @@ jobs:
             -destination "${TEST_DESTINATION}" \
             -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-X509ParserTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcpretty
+            -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for SubscriptionFeatureTests
         run: |
@@ -130,7 +130,7 @@ jobs:
             -destination "${TEST_DESTINATION}" \
             -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-SubscriptionFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcpretty
+            -disableAutomaticPackageResolution | xcbeautify
 
       - name: Upload artifacts
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
