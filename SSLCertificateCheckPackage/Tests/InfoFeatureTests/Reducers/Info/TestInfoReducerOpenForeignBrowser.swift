@@ -15,7 +15,7 @@ import Testing
 @MainActor
 @Suite(
   .dependencies {
-    $0.application.open = { _ in true }
+    $0.openURL = OpenURLEffect { _ in true }
   }
 )
 struct TestInfoReducerOpenForeignBrowser {

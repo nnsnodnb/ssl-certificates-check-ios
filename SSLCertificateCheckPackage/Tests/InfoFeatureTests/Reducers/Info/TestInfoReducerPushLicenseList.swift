@@ -21,9 +21,7 @@ struct TestInfoReducerPushLicenseList {
     )
 
     await store.send(.pushLicenseList) {
-      $0.licenseList = .init()
-      $0.destinations = [.licenseList]
-      $0.interactiveDismissDisabled = true
+      $0.path[id: 0] = .licenseList(.init())
     }
   }
 }

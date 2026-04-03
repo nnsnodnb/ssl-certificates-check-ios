@@ -14,7 +14,7 @@ import Testing
 @MainActor
 @Suite(
   .dependencies {
-    $0.application.open = { _ in true }
+    $0.openURL = OpenURLEffect { _ in true }
   }
 )
 struct TestInfoReducerAlert {
@@ -88,6 +88,6 @@ struct TestInfoReducerAlert {
     await store.send(.alert(.presented(.openURL(url)))) {
       $0.alert = nil
     }
-    await store.receive(\.openForeignBrowser, url, timeout: 0)
+    await store.receive(\.openForeignBrowser, url)
   }
 }

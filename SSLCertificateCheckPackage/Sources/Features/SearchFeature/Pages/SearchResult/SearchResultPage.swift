@@ -22,7 +22,7 @@ package struct SearchResultPage: View {
       ForEach(store.certificates) { certificate in
         if let commonName = certificate.subject.commonName {
           row(commonName: commonName) {
-            store.send(.selectCertificate(certificate), animation: .default)
+            store.send(.selectCertificate(certificate))
           }
         }
       }

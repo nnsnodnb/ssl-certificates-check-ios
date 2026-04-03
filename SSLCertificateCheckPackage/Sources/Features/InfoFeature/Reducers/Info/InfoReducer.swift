@@ -15,6 +15,12 @@ import SubscriptionFeature
 @Reducer
 @MemberwiseInit(.package)
 package struct InfoReducer: Sendable {
+  // MARK: - Destination
+  @Reducer
+  package enum Path {
+    case licenseList(LicenseListReducer)
+  }
+
   // MARK: - State
   @ObservableState
   package struct State: Equatable {
@@ -23,18 +29,11 @@ package struct InfoReducer: Sendable {
     @Presents package var paywall: PaywallReducer.State?
     package var visiblePrivacyOptionsRequirements = false
     package var isLoadingConsentForm = false
-    @Presents package var licenseList: LicenseListReducer.State?
-    package var destinations: [Destination] = []
-    package var interactiveDismissDisabled = false
+    package var path: StackState<Path.State> = .init()
     package var url: URL?
     @Presents package  var alert: AlertState<Action.Alert>?
     @Shared(.inMemory("key_premium_subscription_is_active"))
     package var isPremiumActive = false
-
-    // MARK: - Destination
-    package enum Destination {
-      case licenseList
-    }
 
     // MARK: - Link
     package enum Link {
@@ -67,9 +66,7 @@ package struct InfoReducer: Sendable {
       paywall: PaywallReducer.State? = nil,
       visiblePrivacyOptionsRequirements: Bool = false,
       isLoadingConsentForm: Bool = false,
-      licenseList: LicenseListReducer.State? = nil,
-      destinations: [Destination] = [],
-      interactiveDismissDisabled: Bool = false,
+      path: StackState<Path.State> = .init(),
       url: URL? = nil,
       alert: AlertState<Action.Alert>? = nil
     ) {
@@ -77,9 +74,7 @@ package struct InfoReducer: Sendable {
       self.paywall = paywall
       self.visiblePrivacyOptionsRequirements = visiblePrivacyOptionsRequirements
       self.isLoadingConsentForm = isLoadingConsentForm
-      self.licenseList = licenseList
-      self.destinations = destinations
-      self.interactiveDismissDisabled = interactiveDismissDisabled
+      self.path = path
       self.url = url
       self.alert = alert
     }
@@ -100,7 +95,7 @@ package struct InfoReducer: Sendable {
     case url(URL?)
     case confirmOpenForeignBrowserAlert(URL)
     case openForeignBrowser(URL)
-    case navigationPathChanged([State.Destination])
+    case path(StackActionOf<Path>)
     case successGifted
     case failureGifted
     case alert(PresentationAction<Alert>)
@@ -115,10 +110,10 @@ package struct InfoReducer: Sendable {
   }
 
   // MARK: - Properties
-  @Dependency(\.application)
-  private var application
   @Dependency(\.consentInformation)
   private var consentInformation
+  @Dependency(\.openURL)
+  private var openURL
   @Dependency(\.revenueCat)
   private var revenueCat
 
@@ -177,9 +172,7 @@ package struct InfoReducer: Sendable {
         let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
         return .send(.confirmOpenForeignBrowserAlert(url))
       case .pushLicenseList:
-        state.licenseList = .init()
-        state.destinations.append(.licenseList)
-        state.interactiveDismissDisabled = true
+        state.path.append(.licenseList(.init()))
         return .none
       case let .safari(.some(link)):
         state.url = link.url
@@ -212,11 +205,9 @@ package struct InfoReducer: Sendable {
         return .none
       case let .openForeignBrowser(url):
         return .run { _ in
-          _ = try await application.open(url)
+          await openURL(url)
         }
-      case let .navigationPathChanged(destinations):
-        state.destinations = destinations
-        state.interactiveDismissDisabled = !destinations.isEmpty
+      case .path:
         return .none
       case .successGifted:
         state.alert = .init(
@@ -272,8 +263,9 @@ package struct InfoReducer: Sendable {
     .ifLet(\.$paywall, action: \.paywall) {
       PaywallReducer()
     }
-    .ifLet(\.$licenseList, action: \.licenseList) {
-      LicenseListReducer()
-    }
+    .forEach(\.path, action: \.path)
   }
 }
+
+// MARK: - InfoReducer.Path.State Equatable
+extension InfoReducer.Path.State: Equatable {}

@@ -38,44 +38,33 @@ public struct RootPage: View {
     }
   }
 
-  private var searchPage: some View {
-    IfLetStore(
-      store.scope(state: \.search, action: \.search),
-      then: { store in
-        SearchPage(store: store)
-      },
-      else: {
-        checkSubscriptionPage
-      }
-    )
+  @ViewBuilder private var searchPage: some View {
+    if let store = store.scope(state: \.search, action: \.search) {
+      SearchPage(store: store)
+    } else {
+      checkSubscriptionPage
+    }
   }
 
-  private var checkSubscriptionPage: some View {
-    IfLetStore(
-      store.scope(state: \.checkSubscription, action: \.checkSubscription),
-      then: { store in
-        ZStack {
-          CheckSubscriptionPage(store: store)
-          consentPage
+  @ViewBuilder private var checkSubscriptionPage: some View {
+    if let store = store.scope(state: \.checkSubscription, action: \.checkSubscription) {
+      ZStack {
+        CheckSubscriptionPage(store: store)
+        consentPage
+      }
+    } else {
+      Color(UIColor.systemBackground.withAlphaComponent(0.000001))
+        .ignoresSafeArea(.all)
+        .onAppear {
+          store.send(.showCheckSubscription)
         }
-      },
-      else: {
-        Color(UIColor.systemBackground.withAlphaComponent(0.000001))
-          .ignoresSafeArea(.all)
-          .onAppear {
-            store.send(.showCheckSubscription)
-          }
-      }
-    )
+    }
   }
 
-  private var consentPage: some View {
-    IfLetStore(
-      store.scope(state: \.consent, action: \.consent),
-      then: { store in
-        ConsentPage(store: store)
-      }
-    )
+  @ViewBuilder private var consentPage: some View {
+    if let store = store.scope(state: \.consent, action: \.consent) {
+      ConsentPage(store: store)
+    }
   }
 
   // MARK: - Initialize

@@ -35,7 +35,7 @@ package struct SearchResultDetailPage: View {
       .onAppear {
         store.send(.appear)
       }
-      .sheet(item: $store.scope(state: \.paywall, action: \.paywall)) { store in
+      .sheet(item: $store.scope(state: \.$paywall, action: \.paywall)) { store in
         PaywallPage(store: store)
       }
   }

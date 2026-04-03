@@ -204,7 +204,7 @@ package struct SearchReducer {
             await send(.search(url))
             await send(.preloadRewardedAds)
           },
-          catch: { error, send in
+          catch: { _, send in
             await send(.preloadRewardedAds)
           }
         )
