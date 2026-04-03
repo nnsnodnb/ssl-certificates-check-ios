@@ -23,20 +23,24 @@ package struct InfoPage: View {
   // MARK: - Body
   package var body: some View {
     NavigationStack(
-      path: $store.destinations.sending(\.navigationPathChanged),
+      path: $store.scope(state: \.path, action: \.path),
       root: {
         form
           .navigationTitle("App Information")
-          .navigationDestination(store: store)
           .toolbar(store: store)
           .safari(store: $store)
+      },
+      destination: { store in
+        switch store.case {
+        case let .licenseList(store):
+          LicenseListPage(store: store)
+        }
       }
     )
-    .interactiveDismissDisabled(store.interactiveDismissDisabled)
-    .sheet(item: $store.scope(state: \.paywall, action: \.paywall), content: { store in
+    .sheet(item: $store.scope(state: \.$paywall, action: \.paywall)) { store in
       PaywallPage(store: store)
-    })
-    .alert($store.scope(state: \.alert, action: \.alert))
+    }
+    .alert($store.scope(state: \.$alert, action: \.alert))
     .onAppear {
       store.send(.onAppear)
     }
@@ -256,17 +260,6 @@ private extension View {
               Image(systemSymbol: .xmark)
             }
           )
-        }
-      }
-    }
-  }
-
-  func navigationDestination(store: StoreOf<InfoReducer>) -> some View {
-    navigationDestination(for: InfoReducer.State.Destination.self) { destination in
-      switch destination {
-      case .licenseList:
-        if let store = store.scope(state: \.licenseList, action: \.licenseList.presented) {
-          LicenseListPage(store: store)
         }
       }
     }

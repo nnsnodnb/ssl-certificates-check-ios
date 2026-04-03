@@ -45,13 +45,10 @@ package struct SearchPage: View {
     .onAppear {
       store.send(.onAppear)
     }
-    .sheet(
-      item: $store.scope(state: \.info, action: \.info),
-      content: { store in
-        InfoPage(store: store)
-      }
-    )
-    .alert($store.scope(state: \.alert, action: \.alert))
+    .sheet(item: $store.scope(state: \.$info, action: \.info)) { store in
+      InfoPage(store: store)
+    }
+    .alert($store.scope(state: \.$alert, action: \.alert))
     .onOpenURL(perform: { url in
       store.send(.universalLinksURLChanged(url))
     })

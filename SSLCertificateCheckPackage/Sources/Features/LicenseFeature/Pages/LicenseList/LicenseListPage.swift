@@ -20,6 +20,7 @@ package struct LicenseListPage: View {
   package var body: some View {
     list
       .navigationTitle("Licenses")
+      .interactiveDismissDisabled(true)
       .task(priority: .high) {
         guard store.licenses.isEmpty else { return }
         store.send(.fetchLicenses)

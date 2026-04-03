@@ -24,7 +24,7 @@ package struct PaywallPage: View {
       .onRestoreFailure { _ in
         store.send(.restoreFailure)
       }
-      .alert($store.scope(state: \.alert, action: \.alert))
+      .alert($store.scope(state: \.$alert, action: \.alert))
   }
 }
 
