@@ -62,7 +62,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
 
     steps:
-    - uses: Cyberbeni/install-swift-tool@891fcd02f2f8df5f1604977182c358ed07130a16 # v3.1.6
+    - uses: Cyberbeni/install-swift-tool@63a4c8b16ce34401ae60706a1f386a06ba7530a8 # v3.1.8
       with:
         url: https://github.com/nnsnodnb/github-apps-token-swift
         version: '*'
