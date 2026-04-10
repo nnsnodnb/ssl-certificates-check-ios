@@ -23,7 +23,7 @@ struct TestInfoReducerOpenAppReview {
 
     await store.send(.openAppReview)
     let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
-    await store.receive(\.confirmOpenForeignBrowserAlert, url, timeout: 0) {
+    await store.receive(\.confirmOpenForeignBrowserAlert, url) {
       $0.alert = AlertState(
         title: {
           TextState("Open an external browser.")

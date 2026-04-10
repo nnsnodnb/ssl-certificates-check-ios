@@ -61,7 +61,7 @@ struct TestSearchReducerSearch {
       )
 
       await store.send(.search(URL(string: "https://example.com")!))
-      await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
+      await store.receive(\.searchResponse, .success([x509])) {
         $0.isLoading = false
         $0.destinations = [.searchResult]
         $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
@@ -91,7 +91,7 @@ struct TestSearchReducerSearch {
       )
 
       await store.send(.search(URL(string: "https://example.com")!))
-      await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
+      await store.receive(\.searchResponse, .failure(.search)) {
         $0.isLoading = false
         $0.alert = AlertState(
           title: {

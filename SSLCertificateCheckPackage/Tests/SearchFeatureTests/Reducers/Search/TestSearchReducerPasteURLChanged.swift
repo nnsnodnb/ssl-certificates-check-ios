@@ -23,7 +23,7 @@ struct TestSearchReducerPasteURLChanged {
 
     let url = URL(string: "https://example.com")!
     await store.send(.pasteURLChanged(url))
-    await store.receive(\.textChanged, "example.com", timeout: 0) {
+    await store.receive(\.textChanged, "example.com") {
       $0.text = "example.com"
       $0.searchButtonDisabled = false
       $0.searchableURL = URL(string: "https://example.com")!
@@ -41,7 +41,7 @@ struct TestSearchReducerPasteURLChanged {
 
     let url = URL(string: "https://example.com/hoge/foo")!
     await store.send(.pasteURLChanged(url))
-    await store.receive(\.textChanged, "example.com", timeout: 0) {
+    await store.receive(\.textChanged, "example.com") {
       $0.text = "example.com"
       $0.searchButtonDisabled = false
       $0.searchableURL = URL(string: "https://example.com")!

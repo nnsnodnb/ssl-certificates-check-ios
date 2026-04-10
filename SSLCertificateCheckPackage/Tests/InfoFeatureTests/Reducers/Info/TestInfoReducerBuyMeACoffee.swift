@@ -27,7 +27,7 @@ struct TestInfoReducerBuyMeACoffee {
     )
 
     await store.send(.buyMeACoffee)
-    await store.receive(\.successGifted, timeout: 0) {
+    await store.receive(\.successGifted) {
       $0.alert = .init(
         title: {
           TextState("Thank you for the coffee gift!")
@@ -76,7 +76,7 @@ struct TestInfoReducerBuyMeACoffee {
       )
 
       await store.send(.buyMeACoffee)
-      await store.receive(\.failureGifted, timeout: 0) {
+      await store.receive(\.failureGifted) {
         $0.alert = .init(
           title: {
             TextState("The purchase failed.")
