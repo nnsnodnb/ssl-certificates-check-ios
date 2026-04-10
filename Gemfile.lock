@@ -243,7 +243,7 @@ PLATFORMS
 
 DEPENDENCIES
   faraday (~> 1.10.5)
-  fastlane (~> 2.232.0)
+  fastlane (~> 2.232.2)
   fastlane-plugin-firebase_app_distribution (~> 1.0.0)
   fastlane-plugin-update_xcodeproj (~> 1.0.1)
 
