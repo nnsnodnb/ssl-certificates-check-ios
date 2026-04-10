@@ -52,7 +52,7 @@ struct TestSearchReducerCheckFirstExperience {
     await store.send(.checkFirstExperience) {
       $0.isCheckFirstExperience = false
     }
-    await store.receive(\.checkFirstExperienceResponse, .success(false), timeout: 0) {
+    await store.receive(\.checkFirstExperienceResponse, .success(false)) {
       $0.isRequestReview = true
     }
   }
@@ -83,6 +83,6 @@ struct TestSearchReducerCheckFirstExperience {
     await store.send(.checkFirstExperience) {
       $0.isCheckFirstExperience = false
     }
-    await store.receive(\.checkFirstExperienceResponse, .success(true), timeout: 0)
+    await store.receive(\.checkFirstExperienceResponse, .success(true))
   }
 }

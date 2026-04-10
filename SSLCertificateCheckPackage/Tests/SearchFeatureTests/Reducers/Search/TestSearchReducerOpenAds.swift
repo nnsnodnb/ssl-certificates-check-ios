@@ -64,11 +64,11 @@ struct TestSearchReducerOpenAds {
       )
 
       await store.send(.openAds)
-      await store.receive(\.search, timeout: 0) {
+      await store.receive(\.search) {
         $0.isLoading = true
       }
-      await store.receive(\.preloadRewardedAds, timeout: 0)
-      await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
+      await store.receive(\.preloadRewardedAds)
+      await store.receive(\.searchResponse, .success([x509])) {
         $0.isLoading = false
         $0.destinations = [.searchResult]
         $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
@@ -98,10 +98,10 @@ struct TestSearchReducerOpenAds {
       )
 
       await store.send(.openAds)
-      await store.receive(\.search, URL(string: "https://example.com")!, timeout: 0) {
+      await store.receive(\.search, URL(string: "https://example.com")!) {
         $0.isLoading = true
       }
-      await store.receive(\.searchResponse, .success([x509]), timeout: 0) {
+      await store.receive(\.searchResponse, .success([x509])) {
         $0.isLoading = false
         $0.destinations = [.searchResult]
         $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
@@ -132,11 +132,11 @@ struct TestSearchReducerOpenAds {
       )
 
       await store.send(.openAds)
-      await store.receive(\.search, URL(string: "https://example.com")!, timeout: 0) {
+      await store.receive(\.search, URL(string: "https://example.com")!) {
         $0.isLoading = true
       }
-      await store.receive(\.preloadRewardedAds, timeout: 0)
-      await store.receive(\.searchResponse, .failure(.search), timeout: 0) {
+      await store.receive(\.preloadRewardedAds)
+      await store.receive(\.searchResponse, .failure(.search)) {
         $0.isLoading = false
         $0.alert = AlertState(
           title: {

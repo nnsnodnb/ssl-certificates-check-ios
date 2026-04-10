@@ -28,7 +28,7 @@ struct TestLicenseListReducerFetchLicensesResponse { // swiftlint:disable:this t
       )
 
       await store.send(.fetchLicenses)
-      await store.receive(\.fetchLicensesResponse.success, licenses, timeout: 0) {
+      await store.receive(\.fetchLicensesResponse.success, licenses) {
         $0.licenses = .init(uniqueElements: licenses)
       }
     }
