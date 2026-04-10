@@ -1,5 +1,5 @@
 {
-  "originHash" : "73a37f3204381d75de480d1e2f6ccc067566b991d90f869d0299f4834a3c0f3a",
+  "originHash" : "e2e08f939f03481a50dc01f137bd6b6f58eb9becde854723c96ff0a99b21f817",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/combine-schedulers",
       "state" : {
-        "revision" : "9fa31f4403da54855f1e2aeaeff478f4f0e40b13",
-        "version" : "1.0.2"
+        "revision" : "fd16d76fd8b9a976d88bfb6cacc05ca8d19c91b6",
+        "version" : "1.1.0"
       }
     },
     {
