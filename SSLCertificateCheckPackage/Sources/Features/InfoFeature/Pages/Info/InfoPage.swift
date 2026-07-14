@@ -23,7 +23,7 @@ package struct InfoPage: View {
   // MARK: - Body
   package var body: some View {
     NavigationStack(
-      path: $store.scope(state: \.path, action: \.path),
+      path: $store.scope(\.path, action: \.path),
       root: {
         form
           .navigationTitle("App Information")
@@ -37,10 +37,10 @@ package struct InfoPage: View {
         }
       }
     )
-    .sheet(item: $store.scope(state: \.$paywall, action: \.paywall)) { store in
+    .sheet(item: $store.scope(\.$paywall, action: \.paywall)) { store in
       PaywallPage(store: store)
     }
-    .alert($store.scope(state: \.$alert, action: \.alert))
+    .alert($store.scope(\.$alert, action: \.alert))
     .onAppear {
       store.send(.onAppear)
     }

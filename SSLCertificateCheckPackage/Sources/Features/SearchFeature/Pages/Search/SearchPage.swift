@@ -45,10 +45,10 @@ package struct SearchPage: View {
     .onAppear {
       store.send(.onAppear)
     }
-    .sheet(item: $store.scope(state: \.$info, action: \.info)) { store in
+    .sheet(item: $store.scope(\.$info, action: \.info)) { store in
       InfoPage(store: store)
     }
-    .alert($store.scope(state: \.$alert, action: \.alert))
+    .alert($store.scope(\.$alert, action: \.alert))
     .onOpenURL(perform: { url in
       store.send(.universalLinksURLChanged(url))
     })
@@ -228,11 +228,11 @@ private extension View {
       destination: { destination in
         switch destination {
         case .searchResult:
-          if let store = store.scope(state: \.searchResult?.value, action: \.searchResult) {
+          if let store = store.scope(\.searchResult?.value, action: \.searchResult) {
             SearchResultPage(store: store)
           }
         case .searchResultDetail:
-          if let store = store.scope(state: \.searchResultDetail?.value, action: \.searchResultDetail) {
+          if let store = store.scope(\.searchResultDetail?.value, action: \.searchResultDetail) {
             SearchResultDetailPage(store: store)
           }
         }
