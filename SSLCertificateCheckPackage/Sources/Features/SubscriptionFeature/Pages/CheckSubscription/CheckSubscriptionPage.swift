@@ -9,10 +9,10 @@ import ComposableArchitecture
 import MemberwiseInit
 import SwiftUI
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct CheckSubscriptionPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   let store: StoreOf<CheckSubscriptionReducer>
 
   public var body: some View {

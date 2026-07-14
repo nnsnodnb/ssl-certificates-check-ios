@@ -12,7 +12,7 @@ import Foundation
 import MemberwiseInit
 
 @Reducer
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct CheckSubscriptionReducer: Sendable {
   // MARK: - State
   @ObservableState

@@ -12,10 +12,10 @@ import SubscriptionFeature
 import SwiftUI
 import X509Parser
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct SearchResultDetailPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   @Bindable public var store: StoreOf<SearchResultDetailReducer>
 
   private let dateFormatter: DateFormatter = {

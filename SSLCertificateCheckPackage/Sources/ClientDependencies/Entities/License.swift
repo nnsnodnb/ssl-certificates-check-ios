@@ -8,7 +8,7 @@
 import Foundation
 import MemberwiseInit
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct License: Identifiable, Hashable, Sendable {
   // MARK: - Properties
   public let id: String

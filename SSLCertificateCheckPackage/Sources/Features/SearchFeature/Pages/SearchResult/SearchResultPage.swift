@@ -11,7 +11,7 @@ import SwiftUI
 import UIComponents
 import X509Parser
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct SearchResultPage: View {
   // MARK: - Properties
   public let store: StoreOf<SearchResultReducer>

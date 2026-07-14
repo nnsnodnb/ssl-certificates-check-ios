@@ -13,11 +13,11 @@ import Logger
 import MemberwiseInit
 
 @Reducer
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct LicenseListReducer: Sendable {
   // MARK: - State
   @ObservableState
-  @MemberwiseInit(.package)
+  @MemberwiseInit(.public)
   public struct State: Equatable {
     // MARK: - Properties
     public var licenses: IdentifiedArrayOf<License> = []

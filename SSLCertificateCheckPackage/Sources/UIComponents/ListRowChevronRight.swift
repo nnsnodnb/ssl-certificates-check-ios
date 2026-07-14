@@ -9,7 +9,7 @@ import MemberwiseInit
 import SFSafeSymbols
 import SwiftUI
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct ListRowChevronRight: View {
   // MARK: - Body
   public var body: some View {

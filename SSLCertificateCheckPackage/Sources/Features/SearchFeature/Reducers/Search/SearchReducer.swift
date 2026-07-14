@@ -15,7 +15,7 @@ import MemberwiseInit
 import X509Parser
 
 @Reducer
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct SearchReducer: Sendable {
   // MARK: - State
   @ObservableState

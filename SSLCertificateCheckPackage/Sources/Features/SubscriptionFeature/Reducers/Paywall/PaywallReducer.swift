@@ -12,7 +12,7 @@ import MemberwiseInit
 import RevenueCat
 
 @Reducer
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct PaywallReducer: Sendable {
   // MARK: - State
   @ObservableState

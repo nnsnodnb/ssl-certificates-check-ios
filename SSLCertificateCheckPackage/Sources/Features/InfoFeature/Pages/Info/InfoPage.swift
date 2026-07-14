@@ -14,10 +14,10 @@ import SubscriptionFeature
 import SwiftUI
 import UIComponents
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct InfoPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   @Bindable private var store: StoreOf<InfoReducer>
 
   // MARK: - Body

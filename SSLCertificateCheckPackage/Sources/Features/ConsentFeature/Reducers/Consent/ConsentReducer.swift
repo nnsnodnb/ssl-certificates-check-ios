@@ -12,11 +12,11 @@ import Foundation
 import MemberwiseInit
 
 @Reducer
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct ConsentReducer: Sendable {
   // MARK: - State
   @ObservableState
-  @MemberwiseInit(.package)
+  @MemberwiseInit(.public)
   public struct State: Equatable, Sendable {
   }
 

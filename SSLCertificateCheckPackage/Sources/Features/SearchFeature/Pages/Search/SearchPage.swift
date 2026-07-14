@@ -12,10 +12,10 @@ import SFSafeSymbols
 import StoreKit
 import SwiftUI
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct SearchPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   @Bindable private var store: StoreOf<SearchReducer>
 
   @FocusState private var isFocused: Bool

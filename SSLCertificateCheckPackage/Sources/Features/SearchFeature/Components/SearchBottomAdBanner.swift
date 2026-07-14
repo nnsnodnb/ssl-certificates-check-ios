@@ -32,10 +32,10 @@ public struct SearchBottomAdBanner: UIViewRepresentable {
 
 // MARK: - Coordinator
 public extension SearchBottomAdBanner {
-  @MemberwiseInit(.package)
+  @MemberwiseInit(.public)
   final class Coordinator: NSObject, BannerViewDelegate {
     // MARK: - Properties
-    @Init(.package)
+    @Init(.public)
     private let parent: SearchBottomAdBanner
   }
 }

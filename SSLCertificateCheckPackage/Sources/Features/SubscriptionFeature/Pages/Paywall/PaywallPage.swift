@@ -10,10 +10,10 @@ import MemberwiseInit
 import RevenueCatUI
 import SwiftUI
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct PaywallPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   @Bindable public var store: StoreOf<PaywallReducer>
 
   public var body: some View {

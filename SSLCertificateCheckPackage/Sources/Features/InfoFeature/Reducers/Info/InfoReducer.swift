@@ -13,7 +13,7 @@ import MemberwiseInit
 import SubscriptionFeature
 
 @Reducer
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct InfoReducer: Sendable {
   // MARK: - Destination
   @Reducer

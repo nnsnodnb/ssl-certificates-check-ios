@@ -12,7 +12,7 @@ import SwiftUI
 @MemberwiseInit
 public struct LicenseDetailPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   private let license: License
 
   // MARK: - Body

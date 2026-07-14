@@ -9,7 +9,7 @@ import ComposableArchitecture
 import MemberwiseInit
 import SwiftUI
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct ConsentPage: View {
   // MARK: - Properties
   public let store: StoreOf<ConsentReducer>

@@ -10,10 +10,10 @@ import ComposableArchitecture
 import MemberwiseInit
 import SwiftUI
 
-@MemberwiseInit(.package)
+@MemberwiseInit(.public)
 public struct LicenseListPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   private let store: StoreOf<LicenseListReducer>
 
   // MARK: - Body
