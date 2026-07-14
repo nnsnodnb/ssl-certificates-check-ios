@@ -10,12 +10,12 @@ import MemberwiseInit
 import SwiftUI
 
 @MemberwiseInit(.package)
-package struct CheckSubscriptionPage: View {
+public struct CheckSubscriptionPage: View {
   // MARK: - Properties
   @Init(.package)
   let store: StoreOf<CheckSubscriptionReducer>
 
-  package var body: some View {
+  public var body: some View {
     Color(UIColor.systemBackground.withAlphaComponent(0.000001))
       .ignoresSafeArea(.all)
       .overlay {

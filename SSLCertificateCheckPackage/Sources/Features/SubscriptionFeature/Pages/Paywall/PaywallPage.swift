@@ -11,12 +11,12 @@ import RevenueCatUI
 import SwiftUI
 
 @MemberwiseInit(.package)
-package struct PaywallPage: View {
+public struct PaywallPage: View {
   // MARK: - Properties
   @Init(.package)
-  @Bindable package var store: StoreOf<PaywallReducer>
+  @Bindable public var store: StoreOf<PaywallReducer>
 
-  package var body: some View {
+  public var body: some View {
     PaywallView()
       .onRestoreCompleted { customerInfo in
         store.send(.restoreCompleted(customerInfo))

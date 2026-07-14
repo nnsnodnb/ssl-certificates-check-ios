@@ -11,17 +11,17 @@ import Foundation
 import UserMessagingPlatform
 
 @DependencyClient
-package struct ConsentInformationClient: Sendable {
-  package var requestConsent: @Sendable () async throws -> Bool
-  package var load: @Sendable () async throws -> Void
-  package var loadAndPresentIfRequired: @Sendable () async throws -> Void
-  package var visiblePrivacyOptionsRequirements: @Sendable () -> Bool = { false }
-  package var presentPrivacyOptions: @Sendable () async throws -> Void
+public struct ConsentInformationClient: Sendable {
+  public var requestConsent: @Sendable () async throws -> Bool
+  public var load: @Sendable () async throws -> Void
+  public var loadAndPresentIfRequired: @Sendable () async throws -> Void
+  public var visiblePrivacyOptionsRequirements: @Sendable () -> Bool = { false }
+  public var presentPrivacyOptions: @Sendable () async throws -> Void
 }
 
 // MARK: - DependencyKey
 extension ConsentInformationClient: DependencyKey {
-  package static let liveValue: ConsentInformationClient = .init(
+  public static let liveValue: ConsentInformationClient = .init(
     requestConsent: {
       let parameters = RequestParameters()
 #if DEBUG
@@ -60,7 +60,7 @@ extension ConsentInformationClient: DependencyKey {
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var consentInformation: ConsentInformationClient {
     get {
       self[ConsentInformationClient.self]

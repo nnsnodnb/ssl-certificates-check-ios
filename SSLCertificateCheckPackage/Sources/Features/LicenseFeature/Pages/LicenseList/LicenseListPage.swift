@@ -11,13 +11,13 @@ import MemberwiseInit
 import SwiftUI
 
 @MemberwiseInit(.package)
-package struct LicenseListPage: View {
+public struct LicenseListPage: View {
   // MARK: - Properties
   @Init(.package)
   private let store: StoreOf<LicenseListReducer>
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     list
       .navigationTitle("Licenses")
       .interactiveDismissDisabled(true)

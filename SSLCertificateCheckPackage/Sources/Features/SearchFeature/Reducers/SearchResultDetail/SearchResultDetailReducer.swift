@@ -11,26 +11,26 @@ import SubscriptionFeature
 import X509Parser
 
 @Reducer
-package struct SearchResultDetailReducer {
+public struct SearchResultDetailReducer {
   // MARK: - State
   @ObservableState
-  package struct State: Equatable {
+  public struct State: Equatable {
     // MARK: - Properties
-    package let x509: X509
-    @Presents package var paywall: PaywallReducer.State?
+    public let x509: X509
+    @Presents public var paywall: PaywallReducer.State?
     @Shared(.inMemory("key_premium_subscription_is_active"))
-    package var isPremiumActive = false
+    public var isPremiumActive = false
   }
 
   // MARK: - Action
-  package enum Action {
+  public enum Action {
     case appear
     case showPaywall
     case paywall(PresentationAction<PaywallReducer.Action>)
   }
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .appear:

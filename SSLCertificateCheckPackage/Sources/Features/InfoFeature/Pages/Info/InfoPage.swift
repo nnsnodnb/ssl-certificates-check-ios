@@ -15,13 +15,13 @@ import SwiftUI
 import UIComponents
 
 @MemberwiseInit(.package)
-package struct InfoPage: View {
+public struct InfoPage: View {
   // MARK: - Properties
   @Init(.package)
   @Bindable private var store: StoreOf<InfoReducer>
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     NavigationStack(
       path: $store.scope(\.path, action: \.path),
       root: {

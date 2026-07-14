@@ -10,23 +10,23 @@ import DependenciesMacros
 import Foundation
 
 @DependencyClient
-package struct LicenseClient {
+public struct LicenseClient: Sendable {
   // MARK: - Properties
-  package var fetchLicenses: @Sendable () async throws -> [License]
+  public var fetchLicenses: @Sendable () async throws -> [License]
 }
 
 // MARK: - DependencyKey
 extension LicenseClient: DependencyKey {
-  package static let liveValue: LicenseClient = .init(
+  public static let liveValue: LicenseClient = .init(
     fetchLicenses: {
       LicensesPlugin.licenses.map { License(id: $0.id, name: $0.name, licenseText: $0.licenseText) }
     }
   )
-  package static let testValue: LicenseClient = .init()
+  public static let testValue: LicenseClient = .init()
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var license: LicenseClient {
     get {
       self[LicenseClient.self]

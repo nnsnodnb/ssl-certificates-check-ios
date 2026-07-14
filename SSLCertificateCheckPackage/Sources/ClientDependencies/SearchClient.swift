@@ -12,24 +12,24 @@ import Foundation
 import X509Parser
 
 @DependencyClient
-package struct SearchClient: Sendable {
+public struct SearchClient: Sendable {
   // MARK: - Properties
-  package var fetchCertificates: @Sendable (URL) async throws -> [X509]
+  public var fetchCertificates: @Sendable (URL) async throws -> [X509]
 }
 
 // MARK: - DependencyKey
 extension SearchClient: DependencyKey {
-  package static let liveValue: SearchClient = .init(
+  public static let liveValue: SearchClient = .init(
     fetchCertificates: { try await Implementation.fetchCertificates(fromURL: $0) }
   )
-  package static let testValue: SearchClient = .init()
+  public static let testValue: SearchClient = .init()
 }
 
 // MARK: - Implementation
 private extension SearchClient {
   struct Implementation {
     // MARK: - Error
-    package enum Error: Swift.Error {
+    public enum Error: Swift.Error {
       case unknown
     }
 
@@ -89,7 +89,7 @@ private extension SearchClient {
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var search: SearchClient {
     get {
       self[SearchClient.self]

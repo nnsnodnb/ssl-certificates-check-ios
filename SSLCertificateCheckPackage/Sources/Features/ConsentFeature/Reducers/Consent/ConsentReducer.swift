@@ -13,22 +13,22 @@ import MemberwiseInit
 
 @Reducer
 @MemberwiseInit(.package)
-package struct ConsentReducer: Sendable {
+public struct ConsentReducer: Sendable {
   // MARK: - State
   @ObservableState
   @MemberwiseInit(.package)
-  package struct State: Equatable, Sendable {
+  public struct State: Equatable, Sendable {
   }
 
   // MARK: - Action
-  package enum Action: Sendable {
+  public enum Action: Sendable {
     case showConsent
     case completed
     case delegate(Delegate)
 
     // MARK: - Delegate
     @CasePathable
-    package enum Delegate: Sendable {
+    public enum Delegate: Sendable {
       case completedConsent
     }
   }
@@ -38,7 +38,7 @@ package struct ConsentReducer: Sendable {
   private var consentInformation
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
       case .showConsent:

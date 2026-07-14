@@ -12,19 +12,19 @@ import SearchFeature
 import SubscriptionFeature
 
 @Reducer
-package struct RootReducer: Sendable {
+public struct RootReducer: Sendable {
   // MARK: - State
   @ObservableState
-  package struct State: Equatable, Sendable {
-    package let requestStartRewardAdUnitID: String
-    package let searchPageBottomBannerAdUnitID: String
-    package var checkSubscription: CheckSubscriptionReducer.State?
-    package var consent: ConsentReducer.State?
-    package var search: SearchReducer.State?
+  public struct State: Equatable {
+    public let requestStartRewardAdUnitID: String
+    public let searchPageBottomBannerAdUnitID: String
+    public var checkSubscription: CheckSubscriptionReducer.State?
+    public var consent: ConsentReducer.State?
+    public var search: SearchReducer.State?
   }
 
   // MARK: - Action
-  package enum Action: Sendable {
+  public enum Action {
     case showCheckSubscription
     case showConsent
     case checkSubscription(CheckSubscriptionReducer.Action)
@@ -33,7 +33,7 @@ package struct RootReducer: Sendable {
   }
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .showCheckSubscription:

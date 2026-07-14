@@ -10,13 +10,13 @@ import MemberwiseInit
 import SwiftUI
 
 @MemberwiseInit
-package struct LicenseDetailPage: View {
+public struct LicenseDetailPage: View {
   // MARK: - Properties
   @Init(.package)
   private let license: License
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     Form {
       if let licenseText = license.licenseText {
         ScrollView {

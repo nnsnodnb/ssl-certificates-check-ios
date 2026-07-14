@@ -13,16 +13,16 @@ import MemberwiseInit
 
 @Reducer
 @MemberwiseInit(.package)
-package struct CheckSubscriptionReducer: Sendable {
+public struct CheckSubscriptionReducer: Sendable {
   // MARK: - State
   @ObservableState
-  package struct State: Equatable, Sendable {
+  public struct State: Equatable, Sendable {
     @Shared(.inMemory("key_premium_subscription_is_active"))
-    package var isPremiumActive = false
-    package var wasSendCompleted = false
+    public var isPremiumActive = false
+    public var wasSendCompleted = false
 
     // MARK: - Initialize
-    package init(
+    public init(
       isPremiumActive: Bool = false,
       wasSendCompleted: Bool = false,
     ) {
@@ -32,13 +32,13 @@ package struct CheckSubscriptionReducer: Sendable {
   }
 
   // MARK: - Action
-  package enum Action {
+  public enum Action {
     case onAppear
     case gotIsPremiumActive(Bool)
     case delegate(Delegate)
 
     @CasePathable
-    package enum Delegate {
+    public enum Delegate {
       case completed
     }
   }
@@ -48,7 +48,7 @@ package struct CheckSubscriptionReducer: Sendable {
   private var revenueCat
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .onAppear:
