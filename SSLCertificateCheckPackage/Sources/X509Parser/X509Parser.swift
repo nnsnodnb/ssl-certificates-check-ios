@@ -10,14 +10,14 @@ import CryptoKit
 import Foundation
 import X509
 
-package struct X509Parser {
+public struct X509Parser {
   // MARK: - Error
-  package enum Error: Swift.Error {
+  public enum Error: Swift.Error {
     case notExistsCertificates
     case unknown
   }
 
-  package static func parse(serverTrust: SecTrust) throws -> [X509] {
+  public static func parse(serverTrust: SecTrust) throws -> [X509] {
     var error: CFError?
     guard SecTrustEvaluateWithError(serverTrust, &error) else {
       throw error ?? Error.unknown
@@ -33,7 +33,7 @@ package struct X509Parser {
     return x509Certificates
   }
 
-  package static func parse(from derData: Data) throws -> X509 {
+  public static func parse(from derData: Data) throws -> X509 {
     let count = derData.count
     let derEncoded = derData.withUnsafeBytes {
       let address = $0.bindMemory(to: UInt8.self).baseAddress

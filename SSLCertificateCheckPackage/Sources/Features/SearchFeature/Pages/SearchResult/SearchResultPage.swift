@@ -11,13 +11,13 @@ import SwiftUI
 import UIComponents
 import X509Parser
 
-@MemberwiseInit(.package)
-package struct SearchResultPage: View {
+@MemberwiseInit(.public)
+public struct SearchResultPage: View {
   // MARK: - Properties
-  package let store: StoreOf<SearchResultReducer>
+  public let store: StoreOf<SearchResultReducer>
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     List {
       ForEach(store.certificates) { certificate in
         if let commonName = certificate.subject.commonName {

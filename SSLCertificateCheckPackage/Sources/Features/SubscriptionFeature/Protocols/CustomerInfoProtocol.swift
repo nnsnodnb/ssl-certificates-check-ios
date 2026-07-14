@@ -7,6 +7,6 @@
 
 import Foundation
 
-package protocol CustomerInfoProtocol: Equatable, Sendable {
+public protocol CustomerInfoProtocol: Equatable, Sendable {
   var isPremiumActive: Bool { get }
 }

@@ -13,24 +13,24 @@ import Logger
 import MemberwiseInit
 
 @Reducer
-@MemberwiseInit(.package)
-package struct LicenseListReducer {
+@MemberwiseInit(.public)
+public struct LicenseListReducer: Sendable {
   // MARK: - State
   @ObservableState
-  @MemberwiseInit(.package)
-  package struct State: Equatable {
+  @MemberwiseInit(.public)
+  public struct State: Equatable {
     // MARK: - Properties
-    package var licenses: IdentifiedArrayOf<License> = []
+    public var licenses: IdentifiedArrayOf<License> = []
   }
 
   // MARK: - Action
-  package enum Action: Equatable {
+  public enum Action: Equatable {
     case fetchLicenses
     case fetchLicensesResponse(Result<[License], Error>)
 
     // MARK: - Error
     @CasePathable
-    package enum Error: Swift.Error {
+    public enum Error: Swift.Error {
       case fetchLicenses
     }
   }
@@ -40,7 +40,7 @@ package struct LicenseListReducer {
   private var license
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .fetchLicenses:

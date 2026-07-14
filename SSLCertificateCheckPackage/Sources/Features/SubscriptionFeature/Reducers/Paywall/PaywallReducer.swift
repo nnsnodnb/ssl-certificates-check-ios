@@ -12,31 +12,31 @@ import MemberwiseInit
 import RevenueCat
 
 @Reducer
-@MemberwiseInit(.package)
-package struct PaywallReducer: Sendable {
+@MemberwiseInit(.public)
+public struct PaywallReducer: Sendable {
   // MARK: - State
   @ObservableState
-  package struct State: Equatable {
-    @Presents package var alert: AlertState<Action.Alert>?
+  public struct State: Equatable {
+    @Presents public var alert: AlertState<Action.Alert>?
     @Shared(.inMemory("key_premium_subscription_is_active"))
-    package var isPremiumActive = false
+    public var isPremiumActive = false
 
     // MARK: - Initialize
-    package init(alert: AlertState<Action.Alert>? = nil, isPremiumActive: Bool = false) {
+    public init(alert: AlertState<Action.Alert>? = nil, isPremiumActive: Bool = false) {
       self.alert = alert
       self.$isPremiumActive.withLock { $0 = isPremiumActive }
     }
   }
 
   // MARK: - Action
-  package enum Action {
+  public enum Action {
     case restoreCompleted(any CustomerInfoProtocol)
     case restoreFailure
     case alert(PresentationAction<Alert>)
 
     // MARK: - Alert
     @CasePathable
-    package enum Alert: Equatable {
+    public enum Alert: Equatable {
       case okay
       case close
     }
@@ -47,7 +47,7 @@ package struct PaywallReducer: Sendable {
   private var dismiss
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case let .restoreCompleted(customerInfo):

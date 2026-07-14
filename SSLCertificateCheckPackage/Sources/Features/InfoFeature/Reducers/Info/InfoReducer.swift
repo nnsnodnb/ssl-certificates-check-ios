@@ -13,30 +13,30 @@ import MemberwiseInit
 import SubscriptionFeature
 
 @Reducer
-@MemberwiseInit(.package)
-package struct InfoReducer: Sendable {
+@MemberwiseInit(.public)
+public struct InfoReducer: Sendable {
   // MARK: - Destination
   @Reducer
-  package enum Path {
+  public enum Path {
     case licenseList(LicenseListReducer)
   }
 
   // MARK: - State
   @ObservableState
-  package struct State: Equatable {
+  public struct State: Equatable {
     // MARK: - Properties
-    package let version: String
-    @Presents package var paywall: PaywallReducer.State?
-    package var visiblePrivacyOptionsRequirements = false
-    package var isLoadingConsentForm = false
-    package var path: StackState<Path.State> = .init()
-    package var url: URL?
-    @Presents package  var alert: AlertState<Action.Alert>?
+    public let version: String
+    @Presents public var paywall: PaywallReducer.State?
+    public var visiblePrivacyOptionsRequirements = false
+    public var isLoadingConsentForm = false
+    public var path: StackState<Path.State> = .init()
+    public var url: URL?
+    @Presents public  var alert: AlertState<Action.Alert>?
     @Shared(.inMemory("key_premium_subscription_is_active"))
-    package var isPremiumActive = false
+    public var isPremiumActive = false
 
     // MARK: - Link
-    package enum Link {
+    public enum Link {
       case gitHub
       case xTwitter
       case terms
@@ -44,7 +44,7 @@ package struct InfoReducer: Sendable {
       case userdataExternalTransmission
 
       // MARK: - Properties
-      package var url: URL {
+      public var url: URL {
         switch self {
         case .gitHub:
           return URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
@@ -61,7 +61,7 @@ package struct InfoReducer: Sendable {
     }
 
     // MARK: - Initialize
-    package init(
+    public init(
       version: String,
       paywall: PaywallReducer.State? = nil,
       visiblePrivacyOptionsRequirements: Bool = false,
@@ -81,7 +81,7 @@ package struct InfoReducer: Sendable {
   }
 
   // MARK: - Action
-  package enum Action {
+  public enum Action {
     case onAppear
     case close
     case openPaywall
@@ -103,7 +103,7 @@ package struct InfoReducer: Sendable {
     case licenseList(PresentationAction<LicenseListReducer.Action>)
 
     // MARK: - Alert
-    package enum Alert: Equatable {
+    public enum Alert: Equatable {
       case openURL(URL)
       case close
     }
@@ -118,7 +118,7 @@ package struct InfoReducer: Sendable {
   private var revenueCat
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .onAppear:

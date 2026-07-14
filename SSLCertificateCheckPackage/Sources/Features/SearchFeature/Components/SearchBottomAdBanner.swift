@@ -9,11 +9,11 @@ import GoogleMobileAds
 import MemberwiseInit
 import SwiftUI
 
-package struct SearchBottomAdBanner: UIViewRepresentable {
+public struct SearchBottomAdBanner: UIViewRepresentable {
   // MARK: - Properties
-  package let adUnitID: String
+  public let adUnitID: String
 
-  package func makeUIView(context: Context) -> BannerView {
+  public func makeUIView(context: Context) -> BannerView {
     let adSize = AdSizeLargeBanner // AdSizeMediumRectangle
     let banner = BannerView(adSize: adSize)
     banner.adUnitID = adUnitID
@@ -22,20 +22,20 @@ package struct SearchBottomAdBanner: UIViewRepresentable {
     return banner
   }
 
-  package func updateUIView(_ uiView: BannerView, context: Context) {
+  public func updateUIView(_ uiView: BannerView, context: Context) {
   }
 
-  package func makeCoordinator() -> Coordinator {
+  public func makeCoordinator() -> Coordinator {
     .init(parent: self)
   }
 }
 
 // MARK: - Coordinator
-package extension SearchBottomAdBanner {
-  @MemberwiseInit(.package)
+public extension SearchBottomAdBanner {
+  @MemberwiseInit(.public)
   final class Coordinator: NSObject, BannerViewDelegate {
     // MARK: - Properties
-    @Init(.package)
+    @Init(.public)
     private let parent: SearchBottomAdBanner
   }
 }

@@ -11,12 +11,12 @@ import Foundation
 import GoogleMobileAds
 
 @DependencyClient
-package struct RewardedInterstitialAdClient: Sendable {
-  package var load: @Sendable () async throws -> Void
-  package var show: @Sendable () async throws -> Int
+public struct RewardedInterstitialAdClient: Sendable {
+  public var load: @Sendable () async throws -> Void
+  public var show: @Sendable () async throws -> Int
 
   // MARK: - Error
-  package enum Error: Swift.Error {
+  public enum Error: Swift.Error {
     case notReady
     case interruption
   }
@@ -24,7 +24,7 @@ package struct RewardedInterstitialAdClient: Sendable {
 
 // MARK: - DependencyKey
 extension RewardedInterstitialAdClient: DependencyKey {
-  package static let liveValue: Self = .init(
+  public static let liveValue: Self = .init(
     load: {
       try await Implementation.shared.load()
     },
@@ -127,7 +127,7 @@ private extension RewardedInterstitialAdClient {
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var rewardedInterstitialAd: RewardedInterstitialAdClient {
     get {
       self[RewardedInterstitialAdClient.self]

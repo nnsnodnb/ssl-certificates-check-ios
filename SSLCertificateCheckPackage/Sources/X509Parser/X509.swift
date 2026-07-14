@@ -8,39 +8,39 @@
 import Foundation
 import MemberwiseInit
 
-@MemberwiseInit(.package)
-package struct X509: Hashable, Sendable, Identifiable {
+@MemberwiseInit(.public)
+public struct X509: Hashable, Sendable, Identifiable {
   // MARK: - Properties
-  package var id: String { serialNumber }
+  public var id: String { serialNumber }
 
-  package let version: String
-  package let serialNumber: String
-  package let notValidBefore: Date
-  package let notValidAfter: Date
-  package let issuer: DistinguishedNames
-  package let subject: DistinguishedNames
-  package let sha256Fingerprint: SHA256Fingerprint
+  public let version: String
+  public let serialNumber: String
+  public let notValidBefore: Date
+  public let notValidAfter: Date
+  public let issuer: DistinguishedNames
+  public let subject: DistinguishedNames
+  public let sha256Fingerprint: SHA256Fingerprint
 }
 
 // MARK: - DistinguishedNames
-package extension X509 {
+public extension X509 {
   struct DistinguishedNames: Hashable, Sendable {
     // MARK: - Properties
-    package let commonName: String?
-    package let organization: String?
-    package let organizationalUnit: String?
-    package let country: String?
-    package let stateOrProvinceName: String?
-    package let locality: String?
-    package let all: String
+    public let commonName: String?
+    public let organization: String?
+    public let organizationalUnit: String?
+    public let country: String?
+    public let stateOrProvinceName: String?
+    public let locality: String?
+    public let all: String
 
     // MARK: - Error
-    package enum Error: Swift.Error {
+    public enum Error: Swift.Error {
       case invalidFormat
     }
 
     // MARK: - Initialize
-    package init(attributes: [String]) throws {
+    public init(attributes: [String]) throws {
       let attributes = attributes.map { $0.replacingOccurrences(of: "\\", with: "") }
       // CN
       if let element = attributes.lazy.first(where: { $0.starts(with: "CN=") }) {
@@ -87,18 +87,18 @@ package extension X509 {
 }
 
 // MARK: - SHA256Fingerprint
-package extension X509 {
-  @MemberwiseInit(.package)
+public extension X509 {
+  @MemberwiseInit(.public)
   struct SHA256Fingerprint: Hashable, Sendable {
     // MARK: - Properties
-    package let certificate: String
-    package let publicKey: String
+    public let certificate: String
+    public let publicKey: String
   }
 }
 
 #if DEBUG
 // swiftlint:disable force_try
-package extension X509 {
+public extension X509 {
   static var stub: Self {
     .init(
       version: "3",

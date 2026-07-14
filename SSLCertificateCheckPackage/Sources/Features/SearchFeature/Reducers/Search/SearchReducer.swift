@@ -15,11 +15,11 @@ import MemberwiseInit
 import X509Parser
 
 @Reducer
-@MemberwiseInit(.package)
-package struct SearchReducer {
+@MemberwiseInit(.public)
+public struct SearchReducer: Sendable {
   // MARK: - State
   @ObservableState
-  package struct State: Equatable {
+  public struct State: Equatable {
     // MARK: - Properties
     @Presents var info: InfoReducer.State?
     var searchButtonDisabled = true
@@ -35,16 +35,16 @@ package struct SearchReducer {
     var destinations: [Destination] = []
     @Presents var alert: AlertState<Action.Alert>?
     @Shared(.inMemory("key_premium_subscription_is_active"))
-    package var isPremiumActive = false
+    public var isPremiumActive = false
 
     // MARK: - Destination
-    package enum Destination {
+    public enum Destination {
       case searchResult
       case searchResultDetail
     }
 
     // MARK: - Initialize
-    package init(
+    public init(
       info: InfoReducer.State? = nil,
       searchButtonDisabled: Bool = true,
       text: String = "",
@@ -79,14 +79,14 @@ package struct SearchReducer {
   }
 
   // MARK: - Action
-  package enum Action {
+  public enum Action {
     case onAppear
     case preloadRewardedAds
     case textChanged(String)
     case pasteURLChanged(URL)
     case universalLinksURLChanged(URL)
     case openInfo
-    case openAds
+    case showBeforeAdsAlertIfNeeded
     case search(URL)
     case toggleIntroductionShareExtension
     case checkFirstExperience
@@ -100,12 +100,13 @@ package struct SearchReducer {
     case alert(PresentationAction<Alert>)
 
     // MARK: - Alert
-    package enum Alert: Equatable {
+    public enum Alert: Equatable {
+      case watch(URL)
     }
 
     // MARK: - Error
     @CasePathable
-    package enum Error: Swift.Error {
+    public enum Error: Swift.Error {
       case search
       case checkFirstExperience
     }
@@ -124,7 +125,7 @@ package struct SearchReducer {
   private var rewardedInterstitialAd
 
   // MARK: - Body
-  package var body: some ReducerOf<Self> {
+  public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
       case .onAppear:
@@ -185,29 +186,32 @@ package struct SearchReducer {
         state.info = .init(version: "v\(version)")
         Logger.info("Open Info")
         return .none
-      case .openAds:
+      case .showBeforeAdsAlertIfNeeded:
         guard !state.searchButtonDisabled,
-              let url = state.searchableURL else {
-          return .none
-        }
+              let url = state.searchableURL else { return .none }
         if state.isPremiumActive {
           return .send(.search(url))
         }
-        Logger.info("Start load Ads")
-        return .run(
-          operation: { send in
-            let result = try await rewardedInterstitialAd.show()
-            guard result > 0 else {
-              await send(.preloadRewardedAds)
-              return
-            }
-            await send(.search(url))
-            await send(.preloadRewardedAds)
+        state.alert = AlertState(
+          title: {
+            TextState("You can obtain the certificate data by watching an ad.")
           },
-          catch: { _, send in
-            await send(.preloadRewardedAds)
-          }
+          actions: {
+            ButtonState(
+              role: .cancel,
+              label: {
+                TextState("Cancel")
+              },
+            )
+            ButtonState(
+              action: .watch(url),
+              label: {
+                TextState("Continue")
+              },
+            )
+          },
         )
+        return .none
       case let .search(url):
         guard !state.searchButtonDisabled else {
           return .none
@@ -303,8 +307,23 @@ package struct SearchReducer {
         return .none
       case .searchResultDetail:
         return .none
+      case let .alert(.presented(.watch(url))):
+        Logger.info("Start load Ads")
+        return .run(
+          operation: { send in
+            let result = try await rewardedInterstitialAd.show()
+            guard result > 0 else {
+              await send(.preloadRewardedAds)
+              return
+            }
+            await send(.search(url))
+            await send(.preloadRewardedAds)
+          },
+          catch: { _, send in
+            await send(.preloadRewardedAds)
+          }
+        )
       case .alert:
-        state.alert = nil
         return .none
       }
     }
@@ -323,5 +342,6 @@ package struct SearchReducer {
           SearchResultDetailReducer()
         }
     }
+    .ifLet(\.$alert, action: \.alert)
   }
 }

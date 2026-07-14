@@ -11,13 +11,13 @@ import Foundation
 import RevenueCat
 
 @DependencyClient
-package struct RevenueCatClient: Sendable {
-  package var isPremiumActiveStream: @Sendable () async throws -> AsyncStream<Bool>
-  package var isPremiumActive: @Sendable () async throws -> Bool
-  package var buyMeACoffee: @Sendable () async throws -> Void
+public struct RevenueCatClient: Sendable {
+  public var isPremiumActiveStream: @Sendable () async throws -> AsyncStream<Bool>
+  public var isPremiumActive: @Sendable () async throws -> Bool
+  public var buyMeACoffee: @Sendable () async throws -> Void
 
   // MARK: - Error
-  package enum Error: Swift.Error {
+  public enum Error: Swift.Error {
     case internalError
     case userCancelled
     case purchaseError
@@ -26,7 +26,7 @@ package struct RevenueCatClient: Sendable {
 
 // MARK: - DependencyKey
 extension RevenueCatClient: DependencyKey {
-  package static let liveValue: RevenueCatClient = .init(
+  public static let liveValue: RevenueCatClient = .init(
     isPremiumActiveStream: {
       await Implementation.shared.stream()
     },
@@ -112,7 +112,7 @@ extension RevenueCatClient {
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var revenueCat: RevenueCatClient {
     get {
       self[RevenueCatClient.self]

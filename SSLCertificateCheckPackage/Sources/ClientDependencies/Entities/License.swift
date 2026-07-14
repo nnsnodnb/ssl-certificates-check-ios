@@ -8,10 +8,10 @@
 import Foundation
 import MemberwiseInit
 
-@MemberwiseInit(.package)
-package struct License: Identifiable, Hashable, Sendable {
+@MemberwiseInit(.public)
+public struct License: Identifiable, Hashable, Sendable {
   // MARK: - Properties
-  package let id: String
-  package let name: String
-  package let licenseText: String?
+  public let id: String
+  public let name: String
+  public let licenseText: String?
 }

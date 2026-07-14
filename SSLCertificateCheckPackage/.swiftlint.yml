@@ -78,6 +78,7 @@ line_length: 130
 
 disabled_rules:
   - nesting
+  - trailing_comma
 
 custom_rules:
   deprecated_composable_architecture_view_store:

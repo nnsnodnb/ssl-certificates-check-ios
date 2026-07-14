@@ -9,13 +9,13 @@ import ComposableArchitecture
 import MemberwiseInit
 import SwiftUI
 
-@MemberwiseInit(.package)
-package struct ConsentPage: View {
+@MemberwiseInit(.public)
+public struct ConsentPage: View {
   // MARK: - Properties
-  package let store: StoreOf<ConsentReducer>
+  public let store: StoreOf<ConsentReducer>
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     Color(UIColor.systemBackground.withAlphaComponent(0.000001))
       .ignoresSafeArea(.all)
       .onAppear {

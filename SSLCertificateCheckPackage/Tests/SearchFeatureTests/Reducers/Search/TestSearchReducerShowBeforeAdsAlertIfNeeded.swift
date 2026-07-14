@@ -1,5 +1,5 @@
 //
-//  TestSearchReducerOpenAds.swift
+//  TestSearchReducerShowBeforeAdsAlertIfNeeded.swift
 //  SSLCertificateCheckPackage
 //
 //  Created by Yuya Oka on 2026/02/18.
@@ -14,7 +14,7 @@ import Testing
 import X509Parser
 
 @MainActor
-struct TestSearchReducerOpenAds {
+struct TestSearchReducerShowBeforeAdsAlertIfNeeded {
   @Test
   func testEmptyText() async throws {
     let store = TestStore(
@@ -24,7 +24,7 @@ struct TestSearchReducerOpenAds {
       },
     )
 
-    await store.send(.openAds)
+    await store.send(.showBeforeAdsAlertIfNeeded)
   }
 
   @Test
@@ -40,7 +40,7 @@ struct TestSearchReducerOpenAds {
       },
     )
 
-    await store.send(.openAds)
+    await store.send(.showBeforeAdsAlertIfNeeded)
   }
 
   @Test
@@ -51,11 +51,13 @@ struct TestSearchReducerOpenAds {
       $0.rewardedInterstitialAd.show = { 1 }
       $0.search.fetchCertificates = { _ in [x509] }
     } operation: {
+      let url = URL(string: "https://example.com")!
+
       let store = TestStore(
         initialState: SearchReducer.State(
           searchButtonDisabled: false,
           text: "example.com",
-          searchableURL: URL(string: "https://example.com"),
+          searchableURL: url,
           isPremiumActive: false,
         ),
         reducer: {
@@ -63,15 +65,26 @@ struct TestSearchReducerOpenAds {
         },
       )
 
-      await store.send(.openAds)
-      await store.receive(\.search) {
-        $0.isLoading = true
-      }
-      await store.receive(\.preloadRewardedAds)
-      await store.receive(\.searchResponse, .success([x509])) {
-        $0.isLoading = false
-        $0.destinations = [.searchResult]
-        $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
+      await store.send(.showBeforeAdsAlertIfNeeded) {
+        $0.alert = AlertState(
+          title: {
+            TextState("You can obtain the certificate data by watching an ad.")
+          },
+          actions: {
+            ButtonState(
+              role: .cancel,
+              label: {
+                TextState("Cancel")
+              },
+            )
+            ButtonState(
+              action: .watch(url),
+              label: {
+                TextState("Continue")
+              },
+            )
+          },
+        )
       }
     }
   }
@@ -97,7 +110,7 @@ struct TestSearchReducerOpenAds {
         },
       )
 
-      await store.send(.openAds)
+      await store.send(.showBeforeAdsAlertIfNeeded)
       await store.receive(\.search, URL(string: "https://example.com")!) {
         $0.isLoading = true
       }
@@ -105,54 +118,6 @@ struct TestSearchReducerOpenAds {
         $0.isLoading = false
         $0.destinations = [.searchResult]
         $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
-      }
-    }
-  }
-
-  @Test
-  func testValidTextFailureResponse() async throws {
-    enum Error: Swift.Error {
-      case testError
-    }
-
-    await withDependencies {
-      $0.rewardedInterstitialAd.load = {}
-      $0.rewardedInterstitialAd.show = { 1 }
-      $0.search.fetchCertificates = { _ in throw Error.testError }
-    } operation: {
-      let store = TestStore(
-        initialState: SearchReducer.State(
-          searchButtonDisabled: false,
-          text: "example.com",
-          searchableURL: URL(string: "https://example.com"),
-        ),
-        reducer: {
-          SearchReducer()
-        },
-      )
-
-      await store.send(.openAds)
-      await store.receive(\.search, URL(string: "https://example.com")!) {
-        $0.isLoading = true
-      }
-      await store.receive(\.preloadRewardedAds)
-      await store.receive(\.searchResponse, .failure(.search)) {
-        $0.isLoading = false
-        $0.alert = AlertState(
-          title: {
-            TextState("Failed to obtain certificate")
-          },
-          actions: {
-            ButtonState(
-              label: {
-                TextState("Close")
-              }
-            )
-          },
-          message: {
-            TextState("Please check or re-run the URL.")
-          }
-        )
       }
     }
   }

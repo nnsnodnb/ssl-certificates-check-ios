@@ -14,14 +14,14 @@ import SubscriptionFeature
 import SwiftUI
 import UIComponents
 
-@MemberwiseInit(.package)
-package struct InfoPage: View {
+@MemberwiseInit(.public)
+public struct InfoPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   @Bindable private var store: StoreOf<InfoReducer>
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     NavigationStack(
       path: $store.scope(\.path, action: \.path),
       root: {

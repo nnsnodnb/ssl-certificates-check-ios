@@ -145,6 +145,7 @@ extension PackageDescription.Target.PluginUsage {
 
 let package = Package(
   name: .packageName,
+  defaultLocalization: "en",
   platforms: [
     .iOS(.v18),
   ],

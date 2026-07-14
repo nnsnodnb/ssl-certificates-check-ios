@@ -9,13 +9,13 @@ import ComposableArchitecture
 import MemberwiseInit
 import SwiftUI
 
-@MemberwiseInit(.package)
-package struct CheckSubscriptionPage: View {
+@MemberwiseInit(.public)
+public struct CheckSubscriptionPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   let store: StoreOf<CheckSubscriptionReducer>
 
-  package var body: some View {
+  public var body: some View {
     Color(UIColor.systemBackground.withAlphaComponent(0.000001))
       .ignoresSafeArea(.all)
       .overlay {

@@ -12,10 +12,10 @@ import SFSafeSymbols
 import StoreKit
 import SwiftUI
 
-@MemberwiseInit(.package)
-package struct SearchPage: View {
+@MemberwiseInit(.public)
+public struct SearchPage: View {
   // MARK: - Properties
-  @Init(.package)
+  @Init(.public)
   @Bindable private var store: StoreOf<SearchReducer>
 
   @FocusState private var isFocused: Bool
@@ -23,7 +23,7 @@ package struct SearchPage: View {
   private var requestReview
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     NavigationStack(
       path: $store.destinations.sending(\.navigationPathChanged),
       root: {
@@ -196,7 +196,7 @@ private extension View {
         Button(
           action: {
             keyboardClose()
-            store.send(.openAds)
+            store.send(.showBeforeAdsAlertIfNeeded)
           },
           label: {
             Group {

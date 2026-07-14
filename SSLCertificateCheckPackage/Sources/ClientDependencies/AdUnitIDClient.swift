@@ -10,29 +10,29 @@ import DependenciesMacros
 import Foundation
 
 @DependencyClient
-package struct AdUnitIDClient: Sendable {
+public struct AdUnitIDClient: Sendable {
   // MARK: - Properties
-  package var requestStartRewardAdUnitID: @Sendable () throws -> String
-  package var searchPageBottomBannerAdUnitID: @Sendable () throws -> String
+  public var requestStartRewardAdUnitID: @Sendable () throws -> String
+  public var searchPageBottomBannerAdUnitID: @Sendable () throws -> String
 }
 
 // MARK: - DependencyKey
 extension AdUnitIDClient: DependencyKey {
-  package static let liveValue: Self = .init(
+  public static let liveValue: Self = .init(
     requestStartRewardAdUnitID: { throw Error.mustSetAdIDFromRootPage },
     searchPageBottomBannerAdUnitID: { throw Error.mustSetAdIDFromRootPage },
   )
 }
 
 // MARK: - Error
-package extension AdUnitIDClient {
+public extension AdUnitIDClient {
   enum Error: Swift.Error {
     case mustSetAdIDFromRootPage
   }
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var adUnitID: AdUnitIDClient {
     get {
       self[AdUnitIDClient.self]

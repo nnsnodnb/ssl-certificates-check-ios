@@ -12,11 +12,11 @@ import SubscriptionFeature
 import SwiftUI
 import X509Parser
 
-@MemberwiseInit(.package)
-package struct SearchResultDetailPage: View {
+@MemberwiseInit(.public)
+public struct SearchResultDetailPage: View {
   // MARK: - Properties
-  @Init(.package)
-  @Bindable package var store: StoreOf<SearchResultDetailReducer>
+  @Init(.public)
+  @Bindable public var store: StoreOf<SearchResultDetailReducer>
 
   private let dateFormatter: DateFormatter = {
     let dateFormatter = DateFormatter()
@@ -28,7 +28,7 @@ package struct SearchResultDetailPage: View {
   }()
 
   // MARK: - Body
-  package var body: some View {
+  public var body: some View {
     form
       .navigationTitle(store.x509.subject.commonName ?? "")
       .navigationBarTitleDisplayMode(.inline)

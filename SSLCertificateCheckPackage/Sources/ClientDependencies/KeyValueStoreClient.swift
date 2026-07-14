@@ -11,23 +11,23 @@ import Foundation
 import SwiftUI
 
 @DependencyClient
-package struct KeyValueStoreClient {
+public struct KeyValueStoreClient: Sendable {
   // MARK: - Properties
   // swiftlint:disable identifier_name
-  package var getWasRequestReviewFinishFirstSearchExperience: @Sendable () async throws -> Bool
-  package var setWasRequestReviewFinishFirstSearchExperience: @Sendable (Bool) async throws -> Void
+  public var getWasRequestReviewFinishFirstSearchExperience: @Sendable () async throws -> Bool
+  public var setWasRequestReviewFinishFirstSearchExperience: @Sendable (Bool) async throws -> Void
   // swiftlint:enable identifier_name
 }
 
 // MARK: - Key
-package extension KeyValueStoreClient {
+public extension KeyValueStoreClient {
   enum Key: String, CustomDebugStringConvertible {
     // swiftlint:disable identifier_name
     case wasRequestReviewFinishFirstSearchExperience
     // swiftlint:enable identifier_name
 
     // MARK: - Properties
-    package var debugDescription: String {
+    public var debugDescription: String {
       switch self {
       case .wasRequestReviewFinishFirstSearchExperience:
         return "初めての検索詳細を見た経験によるAppReviewの有無"
@@ -38,7 +38,7 @@ package extension KeyValueStoreClient {
 
 // MARK: - DependencyKey
 extension KeyValueStoreClient: DependencyKey {
-  package static let liveValue: KeyValueStoreClient = .init(
+  public static let liveValue: KeyValueStoreClient = .init(
     getWasRequestReviewFinishFirstSearchExperience: {
       await AppStorageActor.shared.getWasRequestReviewFinishFirstSearchExperience()
     },
@@ -46,7 +46,7 @@ extension KeyValueStoreClient: DependencyKey {
       await AppStorageActor.shared.setWasRequestReviewFinishFirstSearchExperience(value: $0)
     }
   )
-  package static let testValue: KeyValueStoreClient = .init()
+  public static let testValue: KeyValueStoreClient = .init()
 }
 
 // MARK: - UserDefaultsActor
@@ -72,7 +72,7 @@ private extension KeyValueStoreClient {
 }
 
 // MARK: - DependencyValues
-package extension DependencyValues {
+public extension DependencyValues {
   var keyValueStore: KeyValueStoreClient {
     get {
       self[KeyValueStoreClient.self]
