@@ -39,7 +39,7 @@ public struct RootPage: View {
   }
 
   @ViewBuilder private var searchPage: some View {
-    if let store = store.scope(state: \.search, action: \.search) {
+    if let store = store.scope(\.search, action: \.search) {
       SearchPage(store: store)
     } else {
       checkSubscriptionPage
@@ -47,7 +47,7 @@ public struct RootPage: View {
   }
 
   @ViewBuilder private var checkSubscriptionPage: some View {
-    if let store = store.scope(state: \.checkSubscription, action: \.checkSubscription) {
+    if let store = store.scope(\.checkSubscription, action: \.checkSubscription) {
       ZStack {
         CheckSubscriptionPage(store: store)
         consentPage
@@ -62,7 +62,7 @@ public struct RootPage: View {
   }
 
   @ViewBuilder private var consentPage: some View {
-    if let store = store.scope(state: \.consent, action: \.consent) {
+    if let store = store.scope(\.consent, action: \.consent) {
       ConsentPage(store: store)
     }
   }
