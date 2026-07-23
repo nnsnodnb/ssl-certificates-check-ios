@@ -169,7 +169,7 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.19.3")),
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-      .upToNextMajor(from: "1.26.0"),
+      .upToNextMajor(from: "1.26.1"),
       traits: [
         "ComposableArchitecture2Deprecations",
         // "ComposableArchitecture2DeprecationOverloads",
