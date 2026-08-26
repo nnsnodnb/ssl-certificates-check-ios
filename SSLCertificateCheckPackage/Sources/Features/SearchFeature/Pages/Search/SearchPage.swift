@@ -133,7 +133,7 @@ private extension SearchPage {
                 .frame(maxWidth: .infinity, alignment: .leading)
               Image(.imgShareExtension)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .scaledToFit()
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
             }
           }
