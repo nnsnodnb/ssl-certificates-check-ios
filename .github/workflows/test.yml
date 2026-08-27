@@ -48,65 +48,17 @@ jobs:
         run: |
           echo "TEST_RESULTS_DIR=$(mktemp -d)" >> "${GITHUB_OUTPUT}"
 
-      - name: Xcode test for ApplicationTests
+      - name: Xcode test for SSLCertificateCheckKitTests
         run: |
           set -o pipefail && \
             xcodebuild test \
-              -scheme ApplicationTests \
+              -scheme SSLCertificateCheckKitTests \
               -workspace SSLCertificateCheck.xcworkspace \
               -parallel-testing-enabled=YES \
               -destination "${TEST_DESTINATION}" \
               -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ApplicationTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Xcode test for ConsentFeatureTests
-        run: |
-          set -o pipefail && \
-            xcodebuild test \
-              -scheme ConsentFeatureTests \
-              -workspace SSLCertificateCheck.xcworkspace \
-              -parallel-testing-enabled=YES \
-              -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ConsentFeatureTests.xcresult" \
-              -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Xcode test for InfoFeatureTests
-        run: |
-          set -o pipefail && \
-            xcodebuild test \
-              -scheme InfoFeatureTests \
-              -workspace SSLCertificateCheck.xcworkspace \
-              -parallel-testing-enabled=YES \
-              -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-InfoFeatureTests.xcresult" \
-              -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Xcode test for LicenseFeatureTests
-        run: |
-          set -o pipefail && \
-            xcodebuild test \
-              -scheme LicenseFeatureTests \
-              -workspace SSLCertificateCheck.xcworkspace \
-              -parallel-testing-enabled=YES \
-              -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-LicenseFeatureTests.xcresult" \
-              -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Xcode test for SearchFeatureTests
-        run: |
-          set -o pipefail && \
-            xcodebuild test \
-            -scheme SearchFeatureTests \
-            -workspace SSLCertificateCheck.xcworkspace \
-            -parallel-testing-enabled=YES \
-            -destination "${TEST_DESTINATION}" \
-            -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-SearchFeatureTests.xcresult" \
-            -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcbeautify
 
       - name: Xcode test for X509ParserTests
         run: |
@@ -117,18 +69,6 @@ jobs:
             -parallel-testing-enabled=YES \
             -destination "${TEST_DESTINATION}" \
             -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-X509ParserTests.xcresult" \
-            -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Xcode test for SubscriptionFeatureTests
-        run: |
-          set -o pipefail && \
-            xcodebuild test \
-            -scheme SubscriptionFeatureTests \
-            -workspace SSLCertificateCheck.xcworkspace \
-            -parallel-testing-enabled=YES \
-            -destination "${TEST_DESTINATION}" \
-            -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-SubscriptionFeatureTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
             -disableAutomaticPackageResolution | xcbeautify
 
