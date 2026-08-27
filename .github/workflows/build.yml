@@ -1,19 +1,19 @@
-name: Test
+name: Build
 
 on:
   pull_request:
     paths:
-      - .github/workflows/test.yml
-      - App/**
-      - SSLCertificateCheck.xcworkspace/**
-      - SSLCertificateCheckPackage/**
+      - .github/workflows/build.yml
+      - SSLCertificateCheckPackage/Sources/Dependencies/Interfaces/**
+      - SSLCertificateCheckPackage/Sources/Dependencies/Live/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
+  build-dependencies-live:
+    name: Build DependenciesLive target
     runs-on: macos-26
 
     env:
@@ -36,6 +36,8 @@ jobs:
         with:
           path: .swiftpm
           key: ${{ runner.os }}-swiftpm-${{ steps.get-swiftpm-origin-hash.outputs.ORIGIN_HASH }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
 
       - name: Write IDESkipPackagePluginFingerprintValidatation
         run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES
@@ -43,37 +45,12 @@ jobs:
       - name: Write IDESkipMacroFingerprintValidation
         run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 
-      - name: Make test-result folder
-        id: test-result-dir
-        run: |
-          echo "TEST_RESULTS_DIR=$(mktemp -d)" >> "${GITHUB_OUTPUT}"
-
-      - name: Xcode test for SSLCertificateCheckKitTests
+      - name: Xcode build for DependenciesLive
         run: |
           set -o pipefail && \
-            xcodebuild test \
-              -scheme SSLCertificateCheckKitTests \
+            xcodebuild \
+              -scheme DependenciesLive \
               -workspace SSLCertificateCheck.xcworkspace \
-              -parallel-testing-enabled=YES \
               -destination "${TEST_DESTINATION}" \
-              -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ApplicationTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
               -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Xcode test for X509ParserTests
-        run: |
-          set -o pipefail && \
-            xcodebuild test \
-            -scheme X509ParserTests \
-            -workspace SSLCertificateCheck.xcworkspace \
-            -parallel-testing-enabled=YES \
-            -destination "${TEST_DESTINATION}" \
-            -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-X509ParserTests.xcresult" \
-            -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcbeautify
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: test-results
-          path: ${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}

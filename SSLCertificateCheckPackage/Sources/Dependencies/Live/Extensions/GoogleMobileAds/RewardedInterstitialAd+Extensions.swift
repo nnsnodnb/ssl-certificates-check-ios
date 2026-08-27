@@ -1,0 +1,23 @@
+//
+//  RewardedInterstitialAd+Extensions.swift
+//  SSLCertificateCheckPackage
+//
+//  Created by Yuya Oka on 2026/02/17.
+//
+
+import DependenciesInterfaces
+import Foundation
+import GoogleMobileAds
+
+// MARK: - RewardedInterstitialAdProtocol
+@MainActor
+extension RewardedInterstitialAd: RewardedInterstitialAdProtocol {
+  public func canPresent() throws {
+    try canPresent(from: nil)
+  }
+
+  public func present(delegate: (any FullScreenContentDelegate)?, userDidEarnRewardHandler: @escaping () -> Void) {
+    fullScreenContentDelegate = delegate
+    present(from: nil, userDidEarnRewardHandler: userDidEarnRewardHandler)
+  }
+}
