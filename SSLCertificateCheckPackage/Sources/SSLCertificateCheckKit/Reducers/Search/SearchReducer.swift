@@ -38,41 +38,6 @@ public struct SearchReducer: Sendable {
       case searchResult
       case searchResultDetail
     }
-
-    // MARK: - Initialize
-    // TODO: 削除してもよいか確認する
-    public init(
-      info: InfoReducer.State? = nil,
-      searchButtonDisabled: Bool = true,
-      text: String = "",
-      isShareExtensionImageShow: Bool = false,
-      searchableURL: URL? = nil,
-      searchResult: Identified<[X509], SearchResultReducer.State?>? = nil,
-      searchResultDetail: Identified<X509, SearchResultDetailReducer.State?>? = nil,
-      isCheckFirstExperience: Bool = false,
-      isRequestReview: Bool = false,
-      isLoading: Bool = false,
-      destinations: [Destination] = [],
-      alert: AlertState<Action.Alert>? = nil,
-      isPremiumActive: Bool = false,
-    ) {
-      self.info = info
-      self.searchButtonDisabled = searchButtonDisabled
-      self.text = text
-      self.isShareExtensionImageShow = isShareExtensionImageShow
-      self.searchableURL = searchableURL
-      self.searchResult = searchResult
-      self.searchResultDetail = searchResultDetail
-      self.isCheckFirstExperience = isCheckFirstExperience
-      self.isRequestReview = isRequestReview
-      self.isLoading = isLoading
-      self.destinations = destinations
-      self.alert = alert
-      self._isPremiumActive = Shared(
-        wrappedValue: isPremiumActive,
-        .inMemory("key_premium_subscription_is_active"),
-      )
-    }
   }
 
   // MARK: - Action
