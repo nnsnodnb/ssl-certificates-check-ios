@@ -180,6 +180,7 @@ private extension SearchResultDetailPage {
   }
 }
 
+#if DEBUG
 #Preview {
   SearchResultDetailPage(
     store: .init(
@@ -190,3 +191,4 @@ private extension SearchResultDetailPage {
     ),
   )
 }
+#endif

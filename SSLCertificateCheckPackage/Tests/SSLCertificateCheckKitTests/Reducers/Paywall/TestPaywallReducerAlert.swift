@@ -7,7 +7,7 @@
 
 import ComposableArchitecture
 import DependenciesTestSupport
-@testable import SubscriptionFeature
+@testable import SSLCertificateCheckKit
 import Testing
 
 @MainActor

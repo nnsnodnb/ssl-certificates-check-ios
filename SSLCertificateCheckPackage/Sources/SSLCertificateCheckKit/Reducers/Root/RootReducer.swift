@@ -7,16 +7,20 @@
 
 import ComposableArchitecture
 import Foundation
+import MemberwiseInit
 
 @Reducer
+@MemberwiseInit(.public)
 public struct RootReducer: Sendable {
   // MARK: - State
   @ObservableState
+  @MemberwiseInit(.public)
   public struct State: Equatable {
-    public let requestStartRewardAdUnitID: String
-    public let searchPageBottomBannerAdUnitID: String
+    @Init(.public, default: nil)
     public var checkSubscription: CheckSubscriptionReducer.State?
+    @Init(.public, default: nil)
     public var consent: ConsentReducer.State?
+    @Init(.public, default: nil)
     public var search: SearchReducer.State?
   }
 

@@ -6,7 +6,7 @@
 //
 
 import ComposableArchitecture
-@testable import SubscriptionFeature
+@testable import SSLCertificateCheckKit
 import Testing
 
 @MainActor

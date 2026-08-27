@@ -1,8 +1,8 @@
 //
 //  BundleClient.swift
+//  SSLCertificateCheckPackage
 //
-//
-//  Created by Yuya Oka on 2023/10/14.
+//  Created by Yuya Oka on 2026/08/27.
 //
 
 import Dependencies

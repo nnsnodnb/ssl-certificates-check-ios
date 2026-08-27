@@ -5,8 +5,8 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
-import ClientDependencies
 import ComposableArchitecture
+import DependenciesInterfaces
 import Foundation
 
 @Reducer

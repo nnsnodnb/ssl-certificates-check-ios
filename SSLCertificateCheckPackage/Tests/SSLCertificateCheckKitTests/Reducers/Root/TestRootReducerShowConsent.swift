@@ -14,10 +14,7 @@ struct TestRootReducerShowConsent {
   @Test
   func testShowConsent() async throws {
     let store = TestStore(
-      initialState: RootReducer.State(
-        requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/1712485313",
-        searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
-      ),
+      initialState: RootReducer.State(),
       reducer: {
         RootReducer()
       },

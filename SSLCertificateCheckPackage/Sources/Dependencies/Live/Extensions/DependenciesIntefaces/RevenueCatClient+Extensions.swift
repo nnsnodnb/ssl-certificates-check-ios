@@ -1,32 +1,17 @@
 //
-//  RevenueCatClient.swift
+//  RevenueCatClient+Extensions.swift
 //  SSLCertificateCheckPackage
 //
-//  Created by Yuya Oka on 2026/02/19.
+//  Created by Yuya Oka on 2026/08/27.
 //
 
-import Dependencies
-import DependenciesMacros
+import ConcurrencyExtras
+import DependenciesInterfaces
 import Foundation
 import RevenueCat
 
-@DependencyClient
-public struct RevenueCatClient: Sendable {
-  public var isPremiumActiveStream: @Sendable () async throws -> AsyncStream<Bool>
-  public var isPremiumActive: @Sendable () async throws -> Bool
-  public var buyMeACoffee: @Sendable () async throws -> Void
-
-  // MARK: - Error
-  public enum Error: Swift.Error {
-    case internalError
-    case userCancelled
-    case purchaseError
-  }
-}
-
-// MARK: - DependencyKey
-extension RevenueCatClient: DependencyKey {
-  public static let liveValue: RevenueCatClient = .init(
+public extension RevenueCatClient {
+  static let revenueCat: Self = .init(
     isPremiumActiveStream: {
       await Implementation.shared.stream()
     },
@@ -40,7 +25,7 @@ extension RevenueCatClient: DependencyKey {
 }
 
 // MARK: - Implementation
-extension RevenueCatClient {
+private extension RevenueCatClient {
   final actor Implementation: GlobalActor {
     // MARK: - Properties
     static let shared = Implementation()
@@ -107,18 +92,6 @@ extension RevenueCatClient {
         continuation.value?.yield(isActive)
         _isPremiumActive.setValue(isActive)
       }
-    }
-  }
-}
-
-// MARK: - DependencyValues
-public extension DependencyValues {
-  var revenueCat: RevenueCatClient {
-    get {
-      self[RevenueCatClient.self]
-    }
-    set {
-      self[RevenueCatClient.self] = newValue
     }
   }
 }

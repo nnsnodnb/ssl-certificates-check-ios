@@ -5,6 +5,7 @@
 //  Created by Yuya Oka on 2026/02/17.
 //
 
+import DependenciesInterfaces
 import Foundation
 import GoogleMobileAds
 

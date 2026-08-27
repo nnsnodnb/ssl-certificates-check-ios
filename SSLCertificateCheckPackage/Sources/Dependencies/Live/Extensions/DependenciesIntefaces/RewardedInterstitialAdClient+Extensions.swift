@@ -1,35 +1,23 @@
 //
-//  RewardedInterstitialAdClient
+//  RewardedInterstitialAdClient+Extensions.swift
 //  SSLCertificateCheckPackage
 //
-//  Created by Yuya Oka on 2026/02/17.
+//  Created by Yuya Oka on 2026/08/27.
 //
 
+import ConcurrencyExtras
 import Dependencies
-import DependenciesMacros
+import DependenciesInterfaces
 import Foundation
 import GoogleMobileAds
 
-@DependencyClient
-public struct RewardedInterstitialAdClient: Sendable {
-  public var load: @Sendable () async throws -> Void
-  public var show: @Sendable () async throws -> Int
-
-  // MARK: - Error
-  public enum Error: Swift.Error {
-    case notReady
-    case interruption
-  }
-}
-
-// MARK: - DependencyKey
-extension RewardedInterstitialAdClient: DependencyKey {
-  public static let liveValue: Self = .init(
+public extension RewardedInterstitialAdClient {
+  static let google: Self = .init(
     load: {
       try await Implementation.shared.load()
     },
     show: {
-      return try await Implementation.shared.show()
+      try await Implementation.shared.show()
     },
   )
 }
@@ -122,18 +110,6 @@ private extension RewardedInterstitialAdClient {
       }
       try await load()
       return try await show()
-    }
-  }
-}
-
-// MARK: - DependencyValues
-public extension DependencyValues {
-  var rewardedInterstitialAd: RewardedInterstitialAdClient {
-    get {
-      self[RewardedInterstitialAdClient.self]
-    }
-    set {
-      self[RewardedInterstitialAdClient.self] = newValue
     }
   }
 }

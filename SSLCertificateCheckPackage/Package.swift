@@ -18,6 +18,12 @@ let package = Package(
       ],
     ),
     .library(
+      name: "DependenciesLive",
+      targets: [
+        "DependenciesLive",
+      ],
+    ),
+    .library(
       name: "Share",
       targets: [
         "Share",
@@ -51,16 +57,14 @@ let package = Package(
       name: "SSLCertificateCheckKit",
       dependencies: [
         .betterSafariView,
-        .clientDependencies,
         .composableArchitecture,
         .dependencies,
-        .firebaseAnalytics,
+        .dependenciesInterfaces,
         .firebaseCrashlytics,
-        .googleMobileAds,
         .logger,
         .memberwiseInit,
+        .revenueCatUI,
         .sfSafeSymbols,
-        .x509Parser,
       ],
     ),
     // AppExtensions
@@ -70,21 +74,28 @@ let package = Package(
     ),
     // Misc
     .target(
-      name: "ClientDependencies",
+      name: "DependenciesInterfaces",
       dependencies: [
-        .composableArchitecture,
         .dependencies,
         .dependenciesMacros,
-        .googleMobileAds,
-        .googleUserMessagingPlatform,
-        .memberwiseInit,
-        .revenueCat,
-        .revenueCatUI,
         .x509Parser,
       ],
+      path: "Sources/Dependencies/Interfaces",
       plugins: [
         .licensesPlugin,
       ],
+    ),
+    .target(
+      name: "DependenciesLive",
+      dependencies: [
+        .dependencies,
+        .dependenciesInterfaces,
+        .firebaseAnalytics,
+        .googleMobileAds,
+        .googleUserMessagingPlatform,
+        .revenueCat,
+      ],
+      path: "Sources/Dependencies/Live",
     ),
     .target(
       name: "Logger",
@@ -103,7 +114,7 @@ let package = Package(
     .testTarget(
       name: "SSLCertificateCheckKitTests",
       dependencies: [
-        .clientDependencies,
+        .dependenciesInterfaces,
         .dependencies,
         .dependenciesTestSupport,
         .sslCertificateCheckKit,
@@ -149,6 +160,10 @@ extension PackageDescription.Target.Dependency {
       name: "Dependencies",
       package: "swift-dependencies",
     )
+  }
+
+  static var dependenciesInterfaces: Self {
+    .target(name: "DependenciesInterfaces")
   }
 
   static var dependenciesMacros: Self {

@@ -48,6 +48,7 @@ private extension SearchResultPage {
   }
 }
 
+#if DEBUG
 #Preview {
   SearchResultPage(
     store: .init(
@@ -62,3 +63,4 @@ private extension SearchResultPage {
     ),
   )
 }
+#endif

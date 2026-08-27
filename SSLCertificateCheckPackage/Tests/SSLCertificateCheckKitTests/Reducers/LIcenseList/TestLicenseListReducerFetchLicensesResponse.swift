@@ -5,8 +5,8 @@
 //  Created by Yuya Oka on 2023/10/15.
 //
 
-import ClientDependencies
 import ComposableArchitecture
+import DependenciesInterfaces
 @testable import SSLCertificateCheckKit
 import Testing
 
@@ -14,23 +14,16 @@ import Testing
 struct TestLicenseListReducerFetchLicensesResponse { // swiftlint:disable:this type_name
   @Test
   func testSuccess() async throws {
-    let licenses: [License] = [
-      .init(id: "dummy", name: "Dummy OSS", licenseText: "Dummy Text")
-    ]
-    await withDependencies {
-      $0.license.fetchLicenses = { licenses }
-    } operation: {
-      let store = TestStore(
-        initialState: LicenseListReducer.State(),
-        reducer: {
-          LicenseListReducer()
-        },
-      )
+    let store = TestStore(
+      initialState: LicenseListReducer.State(),
+      reducer: {
+        LicenseListReducer()
+      },
+    )
 
-      await store.send(.fetchLicenses)
-      await store.receive(\.fetchLicensesResponse.success, licenses) {
-        $0.licenses = .init(uniqueElements: licenses)
-      }
+    await store.send(.fetchLicenses)
+    await store.receive(\.fetchLicensesResponse.success, LicensesPlugin.licenses) {
+      $0.licenses = .init(uniqueElements: LicensesPlugin.licenses)
     }
   }
 }

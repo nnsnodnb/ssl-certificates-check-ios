@@ -8,7 +8,6 @@
 import ComposableArchitecture
 import Dependencies
 import Foundation
-import RevenueCat
 
 @Reducer
 public struct PaywallReducer: Sendable {

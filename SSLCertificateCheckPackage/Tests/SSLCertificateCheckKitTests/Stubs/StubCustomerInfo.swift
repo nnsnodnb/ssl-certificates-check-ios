@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import SubscriptionFeature
+@testable import SSLCertificateCheckKit
 
 struct StubCustomerInfo: CustomerInfoProtocol {
   // MARK: - Properties

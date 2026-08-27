@@ -5,10 +5,13 @@
 //  Created by Yuya Oka on 2023/10/13.
 //
 
-import Application
+import Dependencies
+import DependenciesLive
+import FirebaseAnalytics
 import class FirebaseCore.FirebaseApp
 import class GoogleMobileAds.MobileAds
 import class RevenueCat.Purchases
+import SSLCertificateCheckKit
 import SwiftUI
 
 @main
@@ -16,12 +19,22 @@ struct AdHocApp: App {
   // MARK: - Body
   var body: some Scene {
     WindowGroup {
-      RootPage(
-        dependency: .init(
-          requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/6978759866",
-          searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
+      prepareDependencies {
+        $0.adClient = .google
+        $0.adUnitID = .develop
+        $0.consentInformation = .google
+        $0.rewardedInterstitialAd = .google
+        $0.revenueCat = .revenueCat
+
+        return RootPage(
+          store: .init(
+            initialState: RootReducer.State(),
+            reducer: {
+              RootReducer()
+            },
+          ),
         )
-      )
+      }
     }
   }
 
@@ -32,5 +45,6 @@ struct AdHocApp: App {
       _ = await MobileAds.shared.start()
     }
     Purchases.configure(withAPIKey: "appl_tCBoNHVYLrNNHLlPSrarLoDORLz")
+    Analytics.setUserID(Purchases.shared.appUserID)
   }
 }

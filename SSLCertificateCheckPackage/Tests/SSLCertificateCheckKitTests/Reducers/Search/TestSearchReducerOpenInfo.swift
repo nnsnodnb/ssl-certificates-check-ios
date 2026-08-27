@@ -5,7 +5,6 @@
 //  Created by Yuya Oka on 2023/10/22.
 //
 
-import ClientDependencies
 import ComposableArchitecture
 import DependenciesTestSupport
 @testable import SSLCertificateCheckKit

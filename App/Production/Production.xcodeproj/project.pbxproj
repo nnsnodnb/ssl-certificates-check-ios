@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF22C3DC30400AA400C90FCB /* DependenciesLive in Frameworks */ = {isa = PBXBuildFile; productRef = CF22C3DB30400AA400C90FCB /* DependenciesLive */; };
 		CF45F2D22AD85E9B004CAE8D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF45F2D12AD85E9B004CAE8D /* GoogleService-Info.plist */; };
 		CF7E0ED12AD835E7003244D1 /* ProductionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7E0ED02AD835E7003244D1 /* ProductionApp.swift */; };
 		CF7E0ED52AD835E8003244D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7E0ED42AD835E8003244D1 /* Assets.xcassets */; };
@@ -73,6 +74,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF7E0EE02AD83847003244D1 /* SSLCertificateCheckPackage in Frameworks */,
+				CF22C3DC30400AA400C90FCB /* DependenciesLive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +170,7 @@
 			name = Production;
 			packageProductDependencies = (
 				CF7E0EDF2AD83847003244D1 /* SSLCertificateCheckPackage */,
+				CF22C3DB30400AA400C90FCB /* DependenciesLive */,
 			);
 			productName = Production;
 			productReference = CF7E0ECD2AD835E7003244D1 /* Production.app */;
@@ -585,6 +588,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CF22C3DB30400AA400C90FCB /* DependenciesLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DependenciesLive;
+		};
 		CF7E0EDF2AD83847003244D1 /* SSLCertificateCheckPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SSLCertificateCheckPackage;

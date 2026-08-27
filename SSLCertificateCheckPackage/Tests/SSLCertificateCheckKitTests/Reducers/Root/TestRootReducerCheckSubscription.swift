@@ -15,8 +15,6 @@ struct TestRootReducerCheckSubscription {
   func testDelegateCompleted() async throws {
     let store = TestStore(
       initialState: RootReducer.State(
-        requestStartRewardAdUnitID: "ca-app-pub-3417597686353524/1636683434",
-        searchPageBottomBannerAdUnitID: "ca-app-pub-3417597686353524/1523645555",
         checkSubscription: .init(),
       ),
       reducer: {

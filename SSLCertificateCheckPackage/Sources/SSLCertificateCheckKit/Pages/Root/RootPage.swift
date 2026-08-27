@@ -7,22 +7,18 @@
 
 import ComposableArchitecture
 import Dependencies
-import GoogleMobileAds
+import DependenciesInterfaces
 import MemberwiseInit
 import SwiftUI
 import XCTestDynamicOverlay
 
 @MemberwiseInit(.public)
-public struct RootDependency: Sendable {
-  // MARK: - Properties
-  public let requestStartRewardAdUnitID: String
-  public let searchPageBottomBannerAdUnitID: String
-}
-
 public struct RootPage: View {
   // MARK: - Properties
+  @Init(.public)
   public let store: StoreOf<RootReducer>
 
+  // MARK: - Dependencies
   @Dependency(\.consentInformation)
   private var consentInformation
 
@@ -63,34 +59,21 @@ public struct RootPage: View {
       ConsentPage(store: store)
     }
   }
-
-  // MARK: - Initialize
-  public init(dependency: RootDependency) {
-    self.store = .init(
-      initialState: RootReducer.State(
-        requestStartRewardAdUnitID: dependency.requestStartRewardAdUnitID,
-        searchPageBottomBannerAdUnitID: dependency.searchPageBottomBannerAdUnitID,
-      ),
-      reducer: {
-        RootReducer()
-      },
-      withDependencies: {
-        $0.adUnitID = .init(
-          requestStartRewardAdUnitID: { dependency.requestStartRewardAdUnitID },
-          searchPageBottomBannerAdUnitID: { dependency.searchPageBottomBannerAdUnitID },
-        )
-      },
-    )
-  }
 }
 
 struct RootPage_Previews: PreviewProvider {
   static var previews: some View {
     RootPage(
-      dependency: .init(
-        requestStartRewardAdUnitID: "ca-app-pub-3940256099942544/6978759866",
-        searchPageBottomBannerAdUnitID: "ca-app-pub-3940256099942544/2435281174",
-      )
+      store: .init(
+        initialState: RootReducer.State(),
+        reducer: {
+          RootReducer()
+        },
+        withDependencies: {
+          $0.adUnitID.requestStartRewardAdUnitID = { "ca-app-pub-3940256099942544/6978759866" }
+          $0.adUnitID.searchPageBottomBannerAdUnitID = { "ca-app-pub-3940256099942544/2435281174" }
+        },
+      ),
     )
   }
 }

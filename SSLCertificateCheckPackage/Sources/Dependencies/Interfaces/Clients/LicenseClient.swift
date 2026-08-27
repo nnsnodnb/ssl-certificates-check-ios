@@ -1,8 +1,8 @@
 //
 //  LicenseClient.swift
+//  SSLCertificateCheckPackage
 //
-//
-//  Created by Yuya Oka on 2023/10/14.
+//  Created by Yuya Oka on 2026/08/27.
 //
 
 import Dependencies
@@ -12,17 +12,17 @@ import Foundation
 @DependencyClient
 public struct LicenseClient: Sendable {
   // MARK: - Properties
-  public var fetchLicenses: @Sendable () async throws -> [License]
+  public var fetchLicenses: @Sendable () async throws -> [LicensesPlugin.License]
 }
 
 // MARK: - DependencyKey
 extension LicenseClient: DependencyKey {
   public static let liveValue: LicenseClient = .init(
-    fetchLicenses: {
-      LicensesPlugin.licenses.map { License(id: $0.id, name: $0.name, licenseText: $0.licenseText) }
-    }
+    fetchLicenses: { LicensesPlugin.licenses },
   )
-  public static let testValue: LicenseClient = .init()
+  public static let testValue: LicenseClient = .init(
+    fetchLicenses: { LicensesPlugin.licenses },
+  )
 }
 
 // MARK: - DependencyValues

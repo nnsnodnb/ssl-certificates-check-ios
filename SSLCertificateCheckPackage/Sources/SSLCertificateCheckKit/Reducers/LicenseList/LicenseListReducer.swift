@@ -6,8 +6,8 @@
 //
 
 import CasePaths
-import ClientDependencies
 import ComposableArchitecture
+import DependenciesInterfaces
 import Foundation
 import Logger
 
@@ -17,13 +17,13 @@ public struct LicenseListReducer: Sendable {
   @ObservableState
   public struct State: Equatable {
     // MARK: - Properties
-    public var licenses: IdentifiedArrayOf<License> = []
+    public var licenses: IdentifiedArrayOf<LicensesPlugin.License> = []
   }
 
   // MARK: - Action
   public enum Action: Equatable {
     case fetchLicenses
-    case fetchLicensesResponse(Result<[License], Error>)
+    case fetchLicensesResponse(Result<[LicensesPlugin.License], Error>)
 
     // MARK: - Error
     @CasePathable

@@ -5,12 +5,12 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
-import ClientDependencies
+import DependenciesInterfaces
 import SwiftUI
 
 public struct LicenseDetailPage: View {
   // MARK: - Properties
-  public let license: License
+  public let license: LicensesPlugin.License
 
   // MARK: - Body
   public var body: some View {
@@ -33,11 +33,7 @@ public struct LicenseDetailPage: View {
 #Preview {
   NavigationStack {
     LicenseDetailPage(
-      license: .init(
-        id: "dummy",
-        name: "Dummy",
-        licenseText: "Dummy license text"
-      )
+      license: LicensesPlugin.licenses[0],
     )
   }
 }
