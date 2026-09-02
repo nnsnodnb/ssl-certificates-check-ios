@@ -27,8 +27,21 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
+      - name: Check commit author
+        id: commit
+        run: |
+          AUTHOR_EMAIL=$(git log -n 1 --format='%ae')
+          echo "Author: $AUTHOR_EMAIL"
+
+          if [[ "$AUTHOR_EMAIL" == "41898282+github-actions[bot]@users.noreply.github.com" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Get SwiftPM originHash
         id: get-swiftpm-origin-hash
+        if: ${{ steps.commit.outputs.skip != 'true' }}
         run: |
           ORIGIN_HASH="$(jq -c -r '.originHash' "${PACKAGE_RESOLVED}")"
           echo "ORIGIN_HASH=${ORIGIN_HASH}" >> "${GITHUB_OUTPUT}"
@@ -36,17 +49,20 @@ jobs:
       - name: Cache Swift Packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: cache-swiftpm
+        if: ${{ steps.commit.outputs.skip != 'true' }}
         timeout-minutes: 20
         with:
           path: .swiftpm
           key: ${{ runner.os }}-swiftpm-${{ steps.get-swiftpm-origin-hash.outputs.ORIGIN_HASH }}
 
       - name: Restore Package.resolved to its base
+        if: ${{ steps.commit.outputs.skip != 'true' }}
         run: |
           git fetch --no-tags origin "${GITHUB_BASE_REF}"
           git checkout "FETCH_HEAD" -- "${PACKAGE_RESOLVED}"
 
       - name: Recompute Package.resolved
+        if: ${{ steps.commit.outputs.skip != 'true' }}
         env:
           SCHEME: "${{ env.SCHEME }}Package"
         run: |
@@ -57,6 +73,7 @@ jobs:
             -clonedSourcePackagesDirPath .swiftpm
 
       - name: Git commit & push if needed
+        if: ${{ steps.commit.outputs.skip != 'true' }}
         run: |
           if [ -z "$(git status --porcelain "${PACKAGE_RESOLVED}")" ]; then
             echo "no change in ${PACKAGE_RESOLVED}; skipping commit/push"
