@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - .github/workflows/build.yml
+      - SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved
+      - SSLCertificateCheckPackage/Package.swift
       - SSLCertificateCheckPackage/Sources/Dependencies/Interfaces/**
       - SSLCertificateCheckPackage/Sources/Dependencies/Live/**
 
