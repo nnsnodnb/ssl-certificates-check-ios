@@ -89,6 +89,8 @@ public struct InfoReducer: Sendable {
   // MARK: - Properties
   @Dependency(\.consentInformation)
   private var consentInformation
+  @Dependency(\.dismiss)
+  private var dismiss
   @Dependency(\.openURL)
   private var openURL
   @Dependency(\.revenueCat)
@@ -102,7 +104,11 @@ public struct InfoReducer: Sendable {
         state.visiblePrivacyOptionsRequirements = consentInformation.visiblePrivacyOptionsRequirements()
         return state.visiblePrivacyOptionsRequirements ? .send(.loadConsentForm) : .none
       case .close:
-        return .none
+        return .run(
+          operation: { _ in
+            await dismiss()
+          },
+        )
       case .openPaywall:
         state.paywall = .init()
         return .none

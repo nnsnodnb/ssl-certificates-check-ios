@@ -9,6 +9,7 @@ import ComposableArchitecture
 import Foundation
 @testable import SSLCertificateCheckKit
 import Testing
+import X509Parser
 
 @MainActor
 struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this type_name
@@ -33,7 +34,9 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
   @Test
   func testValidURLWhenOpenedInfo() async throws {
     let store = TestStore(
-      initialState: SearchReducer.State(info: .init(version: "v1.0.0-test")),
+      initialState: SearchReducer.State(
+        destination: .info(.init(version: "v1.0.0-test")),
+      ),
       reducer: {
         SearchReducer()
       },
@@ -41,7 +44,7 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
 
     let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
     await store.send(.universalLinksURLChanged(url)) {
-      $0.info = nil
+      $0.destination = nil
     }
     await store.receive(\.textChanged, "example.com") {
       $0.text = "example.com"
@@ -52,8 +55,14 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
 
   @Test
   func testValidURLWhenOpenedSearchResult() async throws {
+    let x509 = X509.stub
+    var path: StackState<SearchReducer.Path.State> = .init()
+    path.append(.searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509]))))
+
     let store = TestStore(
-      initialState: SearchReducer.State(destinations: [.searchResult]),
+      initialState: SearchReducer.State(
+        path: path,
+      ),
       reducer: {
         SearchReducer()
       },
@@ -61,7 +70,7 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
 
     let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
     await store.send(.universalLinksURLChanged(url)) {
-      $0.destinations = []
+      $0.path = .init()
     }
     await store.receive(\.textChanged, "example.com") {
       $0.text = "example.com"
