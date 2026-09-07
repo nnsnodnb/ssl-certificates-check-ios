@@ -6,6 +6,8 @@
 //
 
 import ComposableArchitecture
+import ConcurrencyExtras
+import DependenciesTestSupport
 @testable import SSLCertificateCheckKit
 import Testing
 
@@ -13,13 +15,21 @@ import Testing
 struct TestInfoReducerDismiss {
   @Test
   func testNoneEffect() async throws {
-    let store = TestStore(
-      initialState: InfoReducer.State(version: "v1.0.0-test"),
-      reducer: {
-        InfoReducer()
-      },
-    )
+    let calledDismiss: LockIsolated<Bool> = .init(false)
 
-    await store.send(.close)
+    await withDependencies {
+      $0.dismiss = DismissEffect { calledDismiss.setValue(true) }
+    } operation: {
+      let store = TestStore(
+        initialState: InfoReducer.State(version: "v1.0.0-test"),
+        reducer: {
+          InfoReducer()
+        },
+      )
+
+      await store.send(.close)
+    }
+
+    #expect(calledDismiss.value)
   }
 }

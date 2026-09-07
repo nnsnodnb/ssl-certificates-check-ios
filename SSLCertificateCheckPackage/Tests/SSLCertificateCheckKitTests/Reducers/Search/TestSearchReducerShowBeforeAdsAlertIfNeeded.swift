@@ -65,24 +65,26 @@ struct TestSearchReducerShowBeforeAdsAlertIfNeeded {
       )
 
       await store.send(.showBeforeAdsAlertIfNeeded) {
-        $0.alert = AlertState(
-          title: {
-            TextState("You can obtain the certificate data by watching an ad.")
-          },
-          actions: {
-            ButtonState(
-              role: .cancel,
-              label: {
-                TextState("Cancel")
-              },
-            )
-            ButtonState(
-              action: .watch(url),
-              label: {
-                TextState("Continue")
-              },
-            )
-          },
+        $0.destination = .alert(
+          AlertState(
+            title: {
+              TextState("You can obtain the certificate data by watching an ad.")
+            },
+            actions: {
+              ButtonState(
+                role: .cancel,
+                label: {
+                  TextState("Cancel")
+                },
+              )
+              ButtonState(
+                action: .watch(url),
+                label: {
+                  TextState("Continue")
+                },
+              )
+            },
+          )
         )
       }
     }
@@ -115,8 +117,7 @@ struct TestSearchReducerShowBeforeAdsAlertIfNeeded {
       }
       await store.receive(\.searchResponse, .success([x509])) {
         $0.isLoading = false
-        $0.destinations = [.searchResult]
-        $0.searchResult = .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509])
+        $0.path[id: 0] = .searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509])))
       }
     }
   }

@@ -33,15 +33,17 @@ struct TestSearchReducerCheckFirstExperience {
   )
   func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsFalse() async throws {
     let x509 = X509.stub
+    var path: StackState<SearchReducer.Path.State> = .init()
+    path.append(.searchResult(.init(domain: "example.com", certificates: [x509])))
+    path.append(.searchResultDetail(.init(x509: x509)))
+
     let store = TestStore(
       initialState: SearchReducer.State(
         searchButtonDisabled: false,
         text: "example.com",
         searchableURL: URL(string: "https://example.com"),
-        searchResult: .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509]),
-        searchResultDetail: .init(SearchResultDetailReducer.State(x509: x509), id: x509),
         isCheckFirstExperience: true,
-        destinations: [.searchResult, .searchResultDetail]
+        path: path,
       ),
       reducer: {
         SearchReducer()
@@ -64,15 +66,17 @@ struct TestSearchReducerCheckFirstExperience {
   )
   func testIsCheckFirstExperienceIsTrueWasRequestReviewFinishFirstSearchExperienceIsTrue() async throws {
     let x509 = X509.stub
+    var path: StackState<SearchReducer.Path.State> = .init()
+    path.append(.searchResult(.init(domain: "example.com", certificates: [x509])))
+    path.append(.searchResultDetail(.init(x509: x509)))
+
     let store = TestStore(
       initialState: SearchReducer.State(
         searchButtonDisabled: false,
         text: "example.com",
         searchableURL: URL(string: "https://example.com"),
-        searchResult: .init(SearchResultReducer.State(certificates: .init(uniqueElements: [x509])), id: [x509]),
-        searchResultDetail: .init(SearchResultDetailReducer.State(x509: x509), id: x509),
         isCheckFirstExperience: true,
-        destinations: [.searchResult, .searchResultDetail]
+        path: path,
       ),
       reducer: {
         SearchReducer()

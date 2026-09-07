@@ -146,6 +146,7 @@ public struct SearchReducer: Sendable {
               let host = plainURL.host() else {
           return .none
         }
+        state.path = .init()
         state.destination = nil
         return .send(.textChanged(host))
       case .openInfo:

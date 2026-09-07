@@ -26,7 +26,7 @@ struct TestSearchReducerOpenInfo {
     )
 
     await store.send(.openInfo) {
-      $0.info = .init(version: "v1.0.0-test")
+      $0.destination = .info(.init(version: "v1.0.0-test"))
     }
   }
 }
