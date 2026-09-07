@@ -24,7 +24,7 @@ public struct SearchResultPage: View {
         }
       }
     }
-    .navigationTitle("Results")
+    .navigationTitle(store.domain)
   }
 }
 
@@ -50,17 +50,22 @@ private extension SearchResultPage {
 
 #if DEBUG
 #Preview {
-  SearchResultPage(
-    store: .init(
-      initialState: SearchResultReducer.State(
-        certificates: .init(
-          uniqueElements: [.stub]
-        )
-      ),
-      reducer: {
-        SearchResultReducer()
-      },
-    ),
+  NavigationStack(
+    root: {
+      SearchResultPage(
+        store: .init(
+          initialState: SearchResultReducer.State(
+            domain: "example.com",
+            certificates: .init(
+              uniqueElements: [.stub]
+            )
+          ),
+          reducer: {
+            SearchResultReducer()
+          },
+        ),
+      )
+    },
   )
 }
 #endif

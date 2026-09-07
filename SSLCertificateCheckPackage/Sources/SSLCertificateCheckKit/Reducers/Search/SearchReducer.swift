@@ -13,11 +13,30 @@ import X509Parser
 
 @Reducer
 public struct SearchReducer: Sendable {
+  // MARK: - Path
+  @Reducer
+  public enum Path {
+    case searchResult(SearchResultReducer)
+    case searchResultDetail(SearchResultDetailReducer)
+  }
+
+  // MARK: - Destination
+  @Reducer
+  public enum Destination {
+    case info(InfoReducer)
+    case alert(AlertState<Alert>)
+
+    // MARK: - Alert
+    @CasePathable
+    public enum Alert: Equatable {
+      case watch(URL)
+    }
+  }
+
   // MARK: - State
   @ObservableState
   public struct State: Equatable {
     // MARK: - Properties
-    @Presents var info: InfoReducer.State?
     var searchButtonDisabled = true
     var text: String = ""
     var isShareExtensionImageShow = false
@@ -28,16 +47,11 @@ public struct SearchReducer: Sendable {
     var isCheckFirstExperience = false
     var isRequestReview = false
     var isLoading = false
-    var destinations: [Destination] = []
-    @Presents var alert: AlertState<Action.Alert>?
+//    var destinations: [Destination] = []
+    var path: StackState<Path.State> = .init()
+    @Presents var destination: Destination.State?
     @Shared(.inMemory("key_premium_subscription_is_active"))
     public var isPremiumActive = false
-
-    // MARK: - Destination
-    public enum Destination {
-      case searchResult
-      case searchResultDetail
-    }
   }
 
   // MARK: - Action
@@ -55,16 +69,8 @@ public struct SearchReducer: Sendable {
     case displayedRequestReview
     case searchResponse(Result<[X509], Error>)
     case checkFirstExperienceResponse(Result<Bool, Error>)
-    case navigationPathChanged([State.Destination])
-    case info(PresentationAction<InfoReducer.Action>)
-    case searchResult(SearchResultReducer.Action)
-    case searchResultDetail(SearchResultDetailReducer.Action)
-    case alert(PresentationAction<Alert>)
-
-    // MARK: - Alert
-    public enum Alert: Equatable {
-      case watch(URL)
-    }
+    case path(StackActionOf<Path>)
+    case destination(PresentationAction<Destination.Action>)
 
     // MARK: - Error
     @CasePathable
@@ -140,12 +146,11 @@ public struct SearchReducer: Sendable {
               let host = plainURL.host() else {
           return .none
         }
-        state.info = nil
-        state.destinations = []
+        state.destination = nil
         return .send(.textChanged(host))
       case .openInfo:
         let version = bundle.shortVersionString()
-        state.info = .init(version: "v\(version)")
+        state.destination = .info(.init(version: "v\(version)"))
         Logger.info("Open Info")
         return .none
       case .showBeforeAdsAlertIfNeeded:
@@ -154,24 +159,26 @@ public struct SearchReducer: Sendable {
         if state.isPremiumActive {
           return .send(.search(url))
         }
-        state.alert = AlertState(
-          title: {
-            TextState("You can obtain the certificate data by watching an ad.")
-          },
-          actions: {
-            ButtonState(
-              role: .cancel,
-              label: {
-                TextState("Cancel")
-              },
-            )
-            ButtonState(
-              action: .watch(url),
-              label: {
-                TextState("Continue")
-              },
-            )
-          },
+        state.destination = .alert(
+          AlertState(
+            title: {
+              TextState("You can obtain the certificate data by watching an ad.")
+            },
+            actions: {
+              ButtonState(
+                role: .cancel,
+                label: {
+                  TextState("Cancel")
+                },
+              )
+              ButtonState(
+                action: .watch(url),
+                label: {
+                  TextState("Continue")
+                },
+              )
+            },
+          )
         )
         return .none
       case let .search(url):
@@ -209,29 +216,29 @@ public struct SearchReducer: Sendable {
         }
       case let .searchResponse(.success(certificates)):
         state.isLoading = false
-        state.destinations.append(.searchResult)
-        state.searchResult = .init(
-          SearchResultReducer.State(certificates: .init(uniqueElements: certificates)),
-          id: certificates
-        )
+        guard let url = state.searchableURL,
+              let host = url.host(percentEncoded: false) else { return .none }
+        state.path.append(.searchResult(.init(domain: host, certificates: .init(uniqueElements: certificates))))
         Logger.info("Open SearchResult")
         return .none
       case .searchResponse(.failure):
         state.isLoading = false
-        state.alert = AlertState(
-          title: {
-            TextState("Failed to obtain certificate")
-          },
-          actions: {
-            ButtonState(
-              label: {
-                TextState("Close")
-              }
-            )
-          },
-          message: {
-            TextState("Please check or re-run the URL.")
-          }
+        state.destination = .alert(
+          AlertState(
+            title: {
+              TextState("Failed to obtain certificate")
+            },
+            actions: {
+              ButtonState(
+                label: {
+                  TextState("Close")
+                }
+              )
+            },
+            message: {
+              TextState("Please check or re-run the URL.")
+            }
+          )
         )
         return .none
       case let .checkFirstExperienceResponse(.success(result)):
@@ -241,35 +248,15 @@ public struct SearchReducer: Sendable {
       case .checkFirstExperienceResponse(.failure):
         // do not enter
         return .none
-      case let .navigationPathChanged(destinations):
-        state.destinations = destinations
-        if destinations.isEmpty {
-          state.searchResult = nil
-        } else if destinations.endIndex == 1 {
-          state.searchResultDetail = nil
-        }
+      case let .path(.element(id: _, action: .searchResult(.delegate(.goSearchResultDetail(x509))))):
+        state.path.append(.searchResultDetail(.init(x509: x509)))
         return .none
-      case .info(.dismiss), .info(.presented(.close)):
-        state.info = nil
-        Logger.info("Dismiss Info")
-        return .none
-      case .info(.presented):
-        return .none
-      case let .searchResult(.selectCertificate(x509)):
-        guard state.searchResult != nil else {
-          return .none
-        }
-        state.destinations.append(.searchResultDetail)
-        state.searchResultDetail = .init(.init(x509: x509), id: x509)
-        return .none
-      case .searchResult:
-        return .none
-      case .searchResultDetail(.appear):
+      case .path(.element(id: _, action: .searchResultDetail(.appear))):
         state.isCheckFirstExperience = true
         return .none
-      case .searchResultDetail:
+      case .path:
         return .none
-      case let .alert(.presented(.watch(url))):
+      case let .destination(.presented(.alert(.watch(url)))):
         Logger.info("Start load Ads")
         return .run(
           operation: { send in
@@ -285,25 +272,17 @@ public struct SearchReducer: Sendable {
             await send(.preloadRewardedAds)
           }
         )
-      case .alert:
+      case .destination:
         return .none
       }
     }
-    .ifLet(\.$info, action: \.info) {
-      InfoReducer()
-    }
-    .ifLet(\.searchResult, action: \.searchResult) {
-      EmptyReducer()
-        .ifLet(\.value, action: \.self) {
-          SearchResultReducer()
-        }
-    }
-    .ifLet(\.searchResultDetail, action: \.searchResultDetail) {
-      EmptyReducer()
-        .ifLet(\.value, action: \.self) {
-          SearchResultDetailReducer()
-        }
-    }
-    .ifLet(\.$alert, action: \.alert)
+    .forEach(\.path, action: \.path)
+    .ifLet(\.$destination, action: \.destination)
   }
 }
+
+// MARK: - SearchReducer.Path.State Equatable
+extension SearchReducer.Path.State: Equatable {}
+
+// MARK: - SearchReducer.Path.Destination Equatable
+extension SearchReducer.Destination.State: Equatable {}

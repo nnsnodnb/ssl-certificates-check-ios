@@ -15,19 +15,29 @@ public struct SearchResultReducer {
   @ObservableState
   public struct State: Equatable {
     // MARK: - Properties
+    public let domain: String
     public let certificates: IdentifiedArrayOf<X509>
   }
 
   // MARK: - Action
-  public enum Action: Equatable {
+  public enum Action {
     case selectCertificate(X509)
+    case delegate(Delegate)
+
+    // MARK: - Delegate
+    @CasePathable
+    public enum Delegate {
+      case goSearchResultDetail(X509)
+    }
   }
 
   // MARK: - Body
   public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
-      case .selectCertificate:
+      case let .selectCertificate(x509):
+        return .send(.delegate(.goSearchResultDetail(x509)))
+      case .delegate:
         return .none
       }
     }

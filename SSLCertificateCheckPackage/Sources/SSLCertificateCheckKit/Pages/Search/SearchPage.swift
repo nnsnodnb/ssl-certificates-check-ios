@@ -23,7 +23,7 @@ public struct SearchPage: View {
   // MARK: - Body
   public var body: some View {
     NavigationStack(
-      path: $store.destinations.sending(\.navigationPathChanged),
+      path: $store.scope(\.path, action: \.path),
       root: {
         form
           .navigationTitle("Check TLS/SSL Certificates")
@@ -34,19 +34,33 @@ public struct SearchPage: View {
               isFocused = false
             }
           )
-          .navigationDestination(store: store)
           .onAppear {
             store.send(.checkFirstExperience)
           }
-      }
+      },
+      destination: { store in
+        switch store.case {
+        case let .searchResult(store):
+          SearchResultPage(store: store)
+        case let .searchResultDetail(store):
+          SearchResultDetailPage(store: store)
+        }
+      },
     )
     .onAppear {
       store.send(.onAppear)
     }
-    .sheet(item: $store.scope(\.$info, action: \.info)) { store in
+    .sheet(item: $store.scope(\.$destination, action: \.destination).info) { store in
       InfoPage(store: store)
     }
-    .alert($store.scope(\.$alert, action: \.alert))
+    .alert(
+      $store.scope(\.destination, action: \.destination).alert,
+      action: { action in
+        if let action {
+          store.send(.destination(.presented(.alert(action))))
+        }
+      }
+    )
     .onOpenURL(perform: { url in
       store.send(.universalLinksURLChanged(url))
     })
@@ -218,24 +232,6 @@ private extension View {
         .padding(.trailing, 8)
       }
     }
-  }
-
-  func navigationDestination(store: StoreOf<SearchReducer>) -> some View {
-    navigationDestination(
-      for: SearchReducer.State.Destination.self,
-      destination: { destination in
-        switch destination {
-        case .searchResult:
-          if let store = store.scope(\.searchResult?.value, action: \.searchResult) {
-            SearchResultPage(store: store)
-          }
-        case .searchResultDetail:
-          if let store = store.scope(\.searchResultDetail?.value, action: \.searchResultDetail) {
-            SearchResultDetailPage(store: store)
-          }
-        }
-      }
-    )
   }
 }
 
