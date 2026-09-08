@@ -229,7 +229,6 @@ private extension View {
           Text("Close")
             .bold()
         }
-        .padding(.trailing, 8)
       }
     }
   }
