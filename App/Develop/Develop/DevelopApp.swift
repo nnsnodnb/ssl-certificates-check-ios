@@ -8,6 +8,7 @@
 import Dependencies
 import DependenciesLive
 import FirebaseAnalytics
+import FirebaseCrashlytics
 import class FirebaseCore.FirebaseApp
 import class GoogleMobileAds.MobileAds
 import class RevenueCat.Purchases
