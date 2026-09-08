@@ -18,10 +18,6 @@ public struct X509Parser {
   }
 
   public static func parse(serverTrust: SecTrust) throws -> [X509] {
-    var error: CFError?
-    guard SecTrustEvaluateWithError(serverTrust, &error) else {
-      throw error ?? Error.unknown
-    }
     guard let serverCertificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate] else {
       throw Error.notExistsCertificates
     }

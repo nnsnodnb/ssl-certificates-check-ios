@@ -82,7 +82,8 @@ private extension SearchClient {
       ) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         let serverTrust = challenge.protectionSpace.serverTrust
         serverTrustCompletion(serverTrust)
-        return (.performDefaultHandling, nil)
+        // 有効期限切れの証明書も使用できるようにする
+        return (.useCredential, nil)
       }
     }
   }
