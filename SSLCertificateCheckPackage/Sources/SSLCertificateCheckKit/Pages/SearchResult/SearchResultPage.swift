@@ -110,10 +110,7 @@ public struct SearchResultPage: View {
         HStack(alignment: .center, spacing: 0) {
           VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 8) {
-              Image(store.certificates.last == certificate ? .icRootCertificate : .icIntermediateCertificate)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 32, alignment: .top)
+              rowCertificateImage(certificate: certificate)
               Text(certificate.subject.commonName ?? "Unknown")
             }
             Text("Issued by: \(certificate.issuer.commonName ?? "Unknown")")
@@ -127,6 +124,15 @@ public struct SearchResultPage: View {
     )
     .tint(.primary)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
+  }
+
+  @ViewBuilder
+  func rowCertificateImage(certificate: X509) -> some View {
+    let isRootCertificate = certificate.subject.commonName == certificate.issuer.commonName
+    Image(isRootCertificate ? .icRootCertificate : .icIntermediateCertificate)
+      .resizable()
+      .scaledToFit()
+      .frame(height: 32, alignment: .top)
   }
 }
 
