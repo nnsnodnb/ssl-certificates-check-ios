@@ -28,31 +28,31 @@ public struct SearchResultPage: View {
       .navigationTitle(store.domain)
   }
 
-  var list: some View {
+  private var list: some View {
     List {
       summarySection
       certificatesSection
     }
   }
 
-  var summarySection: some View {
+  private var summarySection: some View {
     Section {
       HStack(alignment: .top, spacing: 12) {
         Image(.icIntermediateCertificate)
           .resizable()
           .scaledToFit()
           .frame(height: 48)
-        if let commonName = store.certificates.first?.subject.commonName {
+        if let certificate = store.searchedDNSCertificate {
           VStack(alignment: .leading, spacing: 8) {
-            Text(commonName)
+            Text(certificate.subject.commonName ?? "Unknown")
               .bold()
             HStack(alignment: .center, spacing: 8) {
-              Image(systemSymbol: .checkmarkCircleFill)
+              Image(systemSymbol: store.isValidCertificate ? .checkmarkCircleFill : .xmarkCircleFill)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 18, height: 18)
-                .foregroundStyle(Color.green)
-              Text("This certificate is valid.")
+                .foregroundStyle(store.isValidCertificate ? Color.green : Color.red)
+              Text("This certificate is \(store.isValidCertificate ? "" : "in")valid.")
                 .font(.system(size: 14))
             }
           }
@@ -88,7 +88,7 @@ public struct SearchResultPage: View {
     }
   }
 
-  var certificatesSection: some View {
+  private var certificatesSection: some View {
     Section(
       content: {
         ForEach(store.certificates) { certificate in
@@ -103,7 +103,7 @@ public struct SearchResultPage: View {
     )
   }
 
-  func row(certificate: X509, action: @escaping () -> Void) -> some View {
+  private func row(certificate: X509, action: @escaping () -> Void) -> some View {
     Button(
       action: action,
       label: {
@@ -127,7 +127,7 @@ public struct SearchResultPage: View {
   }
 
   @ViewBuilder
-  func rowCertificateImage(certificate: X509) -> some View {
+  private func rowCertificateImage(certificate: X509) -> some View {
     let isRootCertificate = certificate.subject == certificate.issuer
     Image(isRootCertificate ? .icRootCertificate : .icIntermediateCertificate)
       .resizable()
