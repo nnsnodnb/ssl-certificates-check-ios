@@ -14,7 +14,7 @@ struct TestX509Parser {
   func testParse() throws {
     let derURL = Bundle.module.url(forResource: "example-com", withExtension: "der")!
     let derData = try Data(contentsOf: derURL)
-    let x509 = try X509Parser.parse(from: derData)
+    let x509 = try X509Parser.parse(from: derData, isValid: true)
 
     #expect(x509.version == "3")
     #expect(x509.serialNumber == "0c:1f:cb:18:45:18:c7:e3:86:67:41:23:6d:6b:73:f1")

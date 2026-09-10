@@ -23,15 +23,16 @@ public struct X509Parser {
     guard let serverCertificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate] else {
       throw Error.notExistsCertificates
     }
+    let isValid = SecTrustEvaluateWithError(serverTrust, nil)
     let x509Certificates = try serverCertificates.map { certificate in
       let data = SecCertificateCopyData(certificate) as Data
-      let x509 = try Self.parse(from: data)
+      let x509 = try Self.parse(from: data, isValid: isValid)
       return x509
     }
     return x509Certificates
   }
 
-  public static func parse(from derData: Data) throws -> X509 {
+  public static func parse(from derData: Data, isValid: Bool) throws -> X509 {
     let certificate = try Certificate(derEncoded: [UInt8](derData))
     // TODO: extensions, signature, signatureAlgorithm
     let version = certificate.version.description.replacingOccurrences(of: "X509v", with: "")
@@ -62,8 +63,9 @@ public struct X509Parser {
       subject: subject,
       sha256Fingerprint: .init(
         certificate: certificateSHA256Fingerprint,
-        publicKey: publicKeySHA256Fingerprint
-      )
+        publicKey: publicKeySHA256Fingerprint,
+      ),
+      isValid: isValid,
     )
     return x509
   }

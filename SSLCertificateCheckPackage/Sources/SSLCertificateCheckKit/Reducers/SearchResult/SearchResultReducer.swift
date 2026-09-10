@@ -17,6 +17,8 @@ public struct SearchResultReducer {
     // MARK: - Properties
     public let domain: String
     public let certificates: IdentifiedArrayOf<X509>
+    @ObservationStateIgnored public var searchedDNSCertificate: X509? { certificates.first }
+    @ObservationStateIgnored public var isValidCertificate: Bool { searchedDNSCertificate?.isValid ?? false }
   }
 
   // MARK: - Action
