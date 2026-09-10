@@ -30,12 +30,7 @@ public struct X509Parser {
   }
 
   public static func parse(from derData: Data) throws -> X509 {
-    let count = derData.count
-    let derEncoded = derData.withUnsafeBytes {
-      let address = $0.bindMemory(to: UInt8.self).baseAddress
-      return [UInt8](UnsafeBufferPointer(start: address, count: count))
-    }
-    let certificate = try Certificate(derEncoded: derEncoded)
+    let certificate = try Certificate(derEncoded: [UInt8](derData))
     // TODO: extensions, signature, signatureAlgorithm
     let version = certificate.version.description.replacingOccurrences(of: "X509v", with: "")
     let serialNumber = Data(certificate.serialNumber.bytes).hexadecimalString(separator: ":")
