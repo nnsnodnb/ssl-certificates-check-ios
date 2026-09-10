@@ -109,6 +109,9 @@ let package = Package(
         .memberwiseInit,
         .x509,
       ],
+      resources: [
+        .process("Resources/"),
+      ],
     ),
     // Tests
     .testTarget(

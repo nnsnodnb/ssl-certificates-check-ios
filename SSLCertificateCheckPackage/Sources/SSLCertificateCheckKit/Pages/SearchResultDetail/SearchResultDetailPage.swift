@@ -82,7 +82,6 @@ private extension SearchResultDetailPage {
         if let locality = distinguishedNames.locality {
           item(title: "Locality", content: locality)
         }
-        item(title: nil, content: distinguishedNames.all)
       },
       header: {
         Text(title)
