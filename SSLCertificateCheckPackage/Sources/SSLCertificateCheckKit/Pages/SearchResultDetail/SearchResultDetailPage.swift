@@ -82,6 +82,12 @@ private extension SearchResultDetailPage {
         if let locality = distinguishedNames.locality {
           item(title: "Locality", content: locality)
         }
+        if let domainComponent = distinguishedNames.domainComponent {
+          item(title: "Domain Component", content: domainComponent)
+        }
+        if let emailAddress = distinguishedNames.emailAddress {
+          item(title: "Email address", content: emailAddress)
+        }
       },
       header: {
         Text(title)
