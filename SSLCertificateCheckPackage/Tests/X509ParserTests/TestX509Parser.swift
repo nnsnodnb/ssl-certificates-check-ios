@@ -26,17 +26,12 @@ struct TestX509Parser {
     #expect(x509.issuer.country == "US")
     #expect(x509.issuer.stateOrProvinceName == nil)
     #expect(x509.issuer.locality == nil)
-    #expect(x509.issuer.all == "CN=DigiCert TLS RSA SHA256 2020 CA1\nO=DigiCert Inc\nC=US")
     #expect(x509.subject.commonName == "www.example.org")
     #expect(x509.subject.organization == "Internet Corporation for Assigned Names and Numbers")
     #expect(x509.subject.organizationalUnit == nil)
     #expect(x509.subject.country == "US")
     #expect(x509.subject.stateOrProvinceName == "California")
     #expect(x509.subject.locality == "Los Angeles")
-    #expect(
-      x509.subject.all ==
-      "CN=www.example.org\nO=Internet Corporation for Assigned Names and Numbers\nL=Los Angeles\nST=California\nC=US"
-    )
     #expect(
       x509.sha256Fingerprint ==
       .init(

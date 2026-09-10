@@ -168,5 +168,6 @@ import Playgrounds
   guard let url = Bundle.module.url(forResource: "expired-badssl-com", withExtension: "der") else { return }
   let derData = try Data(contentsOf: url)
   let certificate = try Certificate(derEncoded: [UInt8](derData))
+  _ = certificate
 }
 #endif
