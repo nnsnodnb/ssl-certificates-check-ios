@@ -31,7 +31,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.18.0")),
+    .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.19.1")),
     .package(url: "https://github.com/maiyama18/LicensesPlugin.git", .upToNextMajor(from: "0.2.0")),
     .package(url: "https://github.com/stleamist/BetterSafariView.git", .upToNextMajor(from: "2.4.2")),
     .package(url: "https://github.com/RevenueCat/purchases-ios-spm.git", .upToNextMajor(from: "5.88.0")),
