@@ -128,7 +128,7 @@ public struct SearchResultPage: View {
 
   @ViewBuilder
   func rowCertificateImage(certificate: X509) -> some View {
-    let isRootCertificate = certificate.subject.commonName == certificate.issuer.commonName
+    let isRootCertificate = certificate.subject == certificate.issuer
     Image(isRootCertificate ? .icRootCertificate : .icIntermediateCertificate)
       .resizable()
       .scaledToFit()
