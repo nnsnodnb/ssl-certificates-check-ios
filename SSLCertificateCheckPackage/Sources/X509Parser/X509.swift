@@ -28,7 +28,7 @@ public extension X509 {
     // MARK: - Properties
     public let commonName: String?
     public let organization: String?
-    public let organizationalUnit: String?
+    public let organizationalUnits: [String]
     public let country: String?
     public let stateOrProvinceName: String?
     public let locality: String?
@@ -59,7 +59,7 @@ public extension X509 {
       issuer: .init(
         commonName: "DigiCert TLS RSA SHA256 2020 CA1",
         organization: "DigiCert Inc",
-        organizationalUnit: "DigiCert Inc",
+        organizationalUnits: ["DigiCert Inc"],
         country: "US",
         stateOrProvinceName: nil,
         locality: nil,
@@ -70,7 +70,7 @@ public extension X509 {
       subject: .init(
         commonName: "www.example.org",
         organization: "Internet C2 Corporation for Assigned Names and Numbers",
-        organizationalUnit: nil,
+        organizationalUnits: [],
         country: "US",
         stateOrProvinceName: "California",
         locality: "Los Angeles",

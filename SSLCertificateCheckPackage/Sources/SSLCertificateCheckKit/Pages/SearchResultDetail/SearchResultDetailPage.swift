@@ -70,8 +70,11 @@ private extension SearchResultDetailPage {
         if let organization = distinguishedNames.organization {
           item(title: "Organization", content: organization)
         }
-        if let organizationalUnit = distinguishedNames.organizationalUnit {
-          item(title: "Organizational unit", content: organizationalUnit)
+        if !distinguishedNames.organizationalUnits.isEmpty {
+          item(
+            title: "Organizational unit",
+            content: distinguishedNames.organizationalUnits.joined(separator: "\n"),
+          )
         }
         if let country = distinguishedNames.country {
           item(title: "Country", content: country)

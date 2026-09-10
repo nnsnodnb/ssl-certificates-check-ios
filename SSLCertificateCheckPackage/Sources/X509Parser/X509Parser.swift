@@ -83,7 +83,7 @@ public struct X509Parser {
 
     var commonName: String?
     var organization: String?
-    var organizationalUnit: String?
+    var organizationalUnits: [String] = []
     var country: String?
     var stateOrProvinceName: String?
     var locality: String?
@@ -108,7 +108,8 @@ public struct X509Parser {
         case .RDNAttributeType.organizationName:
           organization = try Self.decodedString(from: fieldNodes[1])
         case .RDNAttributeType.organizationalUnitName:
-          organizationalUnit = try Self.decodedString(from: fieldNodes[1])
+          let organizationalUnit = try Self.decodedString(from: fieldNodes[1])
+          organizationalUnits.append(organizationalUnit)
         case .RDNAttributeType.countryName:
           country = try Self.decodedString(from: fieldNodes[1])
         case .RDNAttributeType.stateOrProvinceName:
@@ -130,7 +131,7 @@ public struct X509Parser {
     return X509.DistinguishedNames(
       commonName: commonName,
       organization: organization,
-      organizationalUnit: organizationalUnit,
+      organizationalUnits: organizationalUnits,
       country: country,
       stateOrProvinceName: stateOrProvinceName,
       locality: locality,
