@@ -34,7 +34,13 @@ public struct SearchPage: View {
             store: store,
             keyboardClose: {
               isFocused = false
-            }
+            },
+          )
+          .keyboardSafeAreaInset(
+            keyboardClose: {
+              isFocused = false
+            },
+            isFocused: isFocused,
           )
           .onAppear {
             store.send(.checkFirstExperience)
@@ -226,11 +232,34 @@ private extension View {
         )
       }
       ToolbarItemGroup(placement: .keyboard) {
-        Spacer()
-        Button(action: keyboardClose) {
-          Text("Close")
-            .bold()
+        if #available(iOS 26.0, *) {
+          EmptyView()
+        } else {
+          Spacer()
+          Button(action: keyboardClose) {
+            Text("Close")
+              .bold()
+          }
         }
+      }
+    }
+  }
+
+  func keyboardSafeAreaInset(keyboardClose: @escaping () -> Void, isFocused: Bool) -> some View {
+    safeAreaInset(edge: .bottom) {
+      if #available(iOS 26.0, *), isFocused {
+        HStack(alignment: .center, spacing: 0) {
+          Spacer()
+            .frame(maxWidth: .infinity)
+          Button(action: keyboardClose) {
+            Text("Close")
+              .bold()
+              .foregroundStyle(Color(.label))
+              .padding()
+          }
+          .glassEffect()
+        }
+        .padding(8)
       }
     }
   }
