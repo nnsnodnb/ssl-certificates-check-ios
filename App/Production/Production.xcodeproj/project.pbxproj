@@ -204,7 +204,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1510;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					CF7E0ECC2AD835E7003244D1 = {
 						CreatedOnToolsVersion = 15.0;
@@ -331,6 +331,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 15;
+				DEVELOPMENT_TEAM = 99649YXF6E;
 				DYLIB_CURRENT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -402,6 +403,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 15;
+				DEVELOPMENT_TEAM = 99649YXF6E;
 				DYLIB_CURRENT_VERSION = 1;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -439,7 +441,6 @@
 				CODE_SIGN_ENTITLEMENTS = Production/Production.entitlements;
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Production/Preview Content\"";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Production/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
@@ -468,7 +469,6 @@
 				CODE_SIGN_ENTITLEMENTS = Production/Production.entitlements;
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Production/Preview Content\"";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Production/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
@@ -497,7 +497,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -531,7 +530,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShareExtensionProduction/Info.plist;
