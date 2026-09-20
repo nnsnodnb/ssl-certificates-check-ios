@@ -21,6 +21,7 @@ public struct InfoPage: View {
       root: {
         form
           .navigationTitle("App Information")
+          .navigationScrollEdgeEffectSoft()
           .toolbar(store: store)
           .safari(store: $store)
       },
@@ -29,7 +30,7 @@ public struct InfoPage: View {
         case let .licenseList(store):
           LicenseListPage(store: store)
         }
-      }
+      },
     )
     .sheet(item: $store.scope(\.$paywall, action: \.paywall)) { store in
       PaywallPage(store: store)
@@ -268,12 +269,16 @@ private extension View {
 }
 
 #Preview {
-  InfoPage(
-    store: .init(
-      initialState: InfoReducer.State(version: "v1.0.0"),
-      reducer: {
-        InfoReducer()
-      },
-    )
+  NavigationStack(
+    root: {
+      InfoPage(
+        store: .init(
+          initialState: InfoReducer.State(version: "v1.0.0"),
+          reducer: {
+            InfoReducer()
+          },
+        )
+      )
+    },
   )
 }

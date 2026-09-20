@@ -27,13 +27,16 @@ public struct LicenseDetailPage: View {
     }
     .formStyle(.columns)
     .navigationTitle(license.name)
+    .navigationScrollEdgeEffectSoft()
   }
 }
 
 #Preview {
-  NavigationStack {
-    LicenseDetailPage(
-      license: LicensesPlugin.licenses[0],
-    )
-  }
+  NavigationStack(
+    root: {
+      LicenseDetailPage(
+        license: LicensesPlugin.licenses[0],
+      )
+    },
+  )
 }
