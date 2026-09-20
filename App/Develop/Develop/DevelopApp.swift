@@ -51,7 +51,7 @@ struct DevelopApp: App {
     Purchases.configure(withAPIKey: "appl_tCBoNHVYLrNNHLlPSrarLoDORLz")
     Task {
       let userID = "$RCAnonymousID:ccff33d798344877aa1f363be90eb38f"
-      _ = try await Purchases.shared.logIn(userID)
+      _ = try? await Purchases.shared.logIn(userID)
     }
     Analytics.setUserID(Purchases.shared.appUserID)
   }

@@ -28,6 +28,7 @@ public struct SearchResultDetailPage: View {
     form
       .navigationTitle(store.x509.subject.commonName ?? "")
       .navigationBarTitleDisplayMode(.inline)
+      .navigationScrollEdgeEffectSoft()
       .onAppear {
         store.send(.appear)
       }
@@ -190,13 +191,17 @@ private extension SearchResultDetailPage {
 
 #if DEBUG
 #Preview {
-  SearchResultDetailPage(
-    store: .init(
-      initialState: SearchResultDetailReducer.State(x509: .stub),
-      reducer: {
-        SearchResultDetailReducer()
-      },
-    ),
+  NavigationStack(
+    root: {
+      SearchResultDetailPage(
+        store: .init(
+          initialState: SearchResultDetailReducer.State(x509: .stub),
+          reducer: {
+            SearchResultDetailReducer()
+          },
+        ),
+      )
+    },
   )
 }
 #endif

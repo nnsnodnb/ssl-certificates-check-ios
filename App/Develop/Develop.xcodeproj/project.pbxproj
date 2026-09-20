@@ -207,7 +207,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					CF7E0EB22AD835C7003244D1 = {
 						CreatedOnToolsVersion = 15.0;
@@ -335,6 +335,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 15;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 99649YXF6E;
 				DYLIB_CURRENT_VERSION = 1;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -421,6 +422,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 15;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 99649YXF6E;
 				DYLIB_CURRENT_VERSION = 1;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -470,7 +472,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Develop/Develop.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "\"Develop/Preview Content\"";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Develop/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
@@ -499,7 +500,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Develop/Develop.entitlements;
 				DEVELOPMENT_ASSET_PATHS = "\"Develop/Preview Content\"";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Develop/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CertsCheck;
@@ -527,7 +527,6 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -558,7 +557,6 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 99649YXF6E;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 99649YXF6E;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShareExtensionDevelop/Info.plist;

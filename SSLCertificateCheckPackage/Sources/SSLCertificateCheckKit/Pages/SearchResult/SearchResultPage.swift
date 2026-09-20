@@ -26,6 +26,7 @@ public struct SearchResultPage: View {
   public var body: some View {
     list
       .navigationTitle(store.domain)
+      .navigationScrollEdgeEffectSoft()
   }
 
   private var list: some View {

@@ -16,6 +16,7 @@ public struct LicenseListPage: View {
   public var body: some View {
     list
       .navigationTitle("Licenses")
+      .navigationScrollEdgeEffectSoft()
       .interactiveDismissDisabled(true)
       .task(priority: .high) {
         guard store.licenses.isEmpty else { return }
@@ -45,14 +46,16 @@ private extension LicenseListPage {
 }
 
 #Preview {
-  NavigationStack {
-    LicenseListPage(
-      store: .init(
-        initialState: LicenseListReducer.State(),
-        reducer: {
-          LicenseListReducer()
-        },
-      ),
-    )
-  }
+  NavigationStack(
+    root: {
+      LicenseListPage(
+        store: .init(
+          initialState: LicenseListReducer.State(),
+          reducer: {
+            LicenseListReducer()
+          },
+        ),
+      )
+    },
+  )
 }

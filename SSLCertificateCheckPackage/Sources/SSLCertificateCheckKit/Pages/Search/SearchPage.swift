@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import DependenciesInterfaces
 import SFSafeSymbols
 import StoreKit
 import SwiftUI
@@ -28,6 +29,7 @@ public struct SearchPage: View {
         form
           .navigationTitle("Check TLS/SSL Certificates")
           .navigationBarTitleDisplayMode(.inline)
+          .navigationScrollEdgeEffectSoft()
           .toolbar(
             store: store,
             keyboardClose: {

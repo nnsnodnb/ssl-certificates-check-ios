@@ -34,7 +34,7 @@ private extension SearchClient {
     }
 
     static func fetchCertificates(fromURL url: URL) async throws -> [X509] {
-      return try await withCheckedThrowingContinuation { continuation in
+      try await withCheckedThrowingContinuation { continuation in
         let resumed: LockIsolated<Bool> = .init(false)
 
         @Sendable
@@ -60,7 +60,13 @@ private extension SearchClient {
         }
         let session = URLSession(configuration: .ephemeral, delegate: sessionDelegate, delegateQueue: nil)
         Task {
-          _ = try await session.data(from: url)
+          do {
+            _ = try await session.data(from: url)
+          } catch {
+            safeResume {
+              continuation.resume(throwing: error)
+            }
+          }
         }
       }
     }
