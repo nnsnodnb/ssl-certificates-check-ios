@@ -55,4 +55,4 @@ jobs:
               -workspace SSLCertificateCheck.xcworkspace \
               -destination "${TEST_DESTINATION}" \
               -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcbeautify
+              -disableAutomaticPackageResolution | xcbeautify --renderer github-actions

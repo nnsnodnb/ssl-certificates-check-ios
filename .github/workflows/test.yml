@@ -58,7 +58,7 @@ jobs:
               -destination "${TEST_DESTINATION}" \
               -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-ApplicationTests.xcresult" \
               -clonedSourcePackagesDirPath .swiftpm \
-              -disableAutomaticPackageResolution | xcbeautify
+              -disableAutomaticPackageResolution | xcbeautify --renderer github-actions
 
       - name: Xcode test for X509ParserTests
         run: |
@@ -70,7 +70,7 @@ jobs:
             -destination "${TEST_DESTINATION}" \
             -resultBundlePath "${{ steps.test-result-dir.outputs.TEST_RESULTS_DIR }}/Test-X509ParserTests.xcresult" \
             -clonedSourcePackagesDirPath .swiftpm \
-            -disableAutomaticPackageResolution | xcbeautify
+            -disableAutomaticPackageResolution | xcbeautify --renderer github-actions
 
       - name: Upload artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
