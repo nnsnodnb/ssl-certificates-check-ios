@@ -20,7 +20,6 @@ public struct DetailNilView: View {
   }
 }
 
-
 #Preview {
     DetailNilView()
 }
