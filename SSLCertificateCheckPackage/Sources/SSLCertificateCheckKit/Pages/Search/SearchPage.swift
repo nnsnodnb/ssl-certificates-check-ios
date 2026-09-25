@@ -23,43 +23,48 @@ public struct SearchPage: View {
 
   // MARK: - Body
   public var body: some View {
-    NavigationStack(
-      path: $store.scope(\.path, action: \.path),
-      root: {
-        form
-          .navigationTitle("Check TLS/SSL Certificates")
-          .navigationBarTitleDisplayMode(.inline)
-          .navigationScrollEdgeEffectSoft()
-          .toolbar(
-            store: store,
-            keyboardClose: {
-              isFocused = false
-            },
-          )
-          .keyboardSafeAreaInset(
-            keyboardClose: {
-              isFocused = false
-            },
-            isFocused: isFocused,
-          )
-          .onAppear {
-            store.send(.checkFirstExperience)
-          }
+    SheetOrFullScreenCoverWrap(
+      content: {
+        NavigationStack(
+          path: $store.scope(\.path, action: \.path),
+          root: {
+            form
+              .navigationTitle("Check TLS/SSL Certificates")
+              .navigationBarTitleDisplayMode(.inline)
+              .navigationScrollEdgeEffectSoft()
+              .toolbar(
+                store: store,
+                keyboardClose: {
+                  isFocused = false
+                },
+              )
+              .keyboardSafeAreaInset(
+                keyboardClose: {
+                  isFocused = false
+                },
+                isFocused: isFocused,
+              )
+              .onAppear {
+                store.send(.checkFirstExperience)
+              }
+          },
+          destination: { store in
+            switch store.case {
+            case let .searchResult(store):
+              SearchResultPage(store: store)
+            case let .searchResultDetail(store):
+              SearchResultDetailPage(store: store)
+            }
+          },
+        )
       },
-      destination: { store in
-        switch store.case {
-        case let .searchResult(store):
-          SearchResultPage(store: store)
-        case let .searchResultDetail(store):
-          SearchResultDetailPage(store: store)
-        }
+      item: $store.scope(\.destination, action: \.destination).info,
+      sheet: { store in
+        InfoPage(store: store)
       },
     )
     .onAppear {
       store.send(.onAppear)
-    }
-    .sheet(item: $store.scope(\.$destination, action: \.destination).info) { store in
-      InfoPage(store: store)
     }
     .alert(
       $store.scope(\.destination, action: \.destination).alert,
@@ -232,9 +237,7 @@ private extension View {
         )
       }
       ToolbarItemGroup(placement: .keyboard) {
-        if #available(iOS 26.0, *) {
-          EmptyView()
-        } else {
+        if #unavailable(iOS 26.0) {
           Spacer()
           Button(action: keyboardClose) {
             Text("Close")
