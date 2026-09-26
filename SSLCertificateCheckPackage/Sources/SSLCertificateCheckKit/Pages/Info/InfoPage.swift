@@ -44,6 +44,8 @@ public struct InfoReducer: Sendable {
   public struct State: Equatable {
     // MARK: - Properties
     public let version: String
+    public var columnVisibility: NavigationSplitViewVisibility = .all
+    public var isPortrait = false
     public var visiblePrivacyOptionsRequirements = false
     public var isLoadingConsentForm = false
     public var path: StackState<Path.State> = .init()
@@ -83,6 +85,8 @@ public struct InfoReducer: Sendable {
   public enum Action {
     case onAppear
     case close
+    case changedColumnVisibility(NavigationSplitViewVisibility)
+    case changedIsPortrait(Bool)
     case openPaywall
     case buyMeACoffee
     case loadConsentForm
@@ -124,6 +128,12 @@ public struct InfoReducer: Sendable {
             await dismiss()
           },
         )
+      case let .changedColumnVisibility(columnVisibility):
+        state.columnVisibility = columnVisibility
+        return .none
+      case let .changedIsPortrait(isPortrait):
+        state.isPortrait = isPortrait
+        return .none
       case .openPaywall:
         state.presentDestination = .paywall(.init())
         return .none
@@ -170,15 +180,21 @@ public struct InfoReducer: Sendable {
         let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
         return .send(.confirmOpenForeignBrowserAlert(url))
       case .pushLicenseList:
-        state.detailDestination = .licenseList(.init())
-        return .none
-      case let .safari(.some(link)):
-        state.url = link.url
-        return .none
-      case .safari(.none), .url(.none):
+        if case .licenseList = state.detailDestination {
+          state.path = .init()
+        } else {
+          state.detailDestination = .licenseList(.init())
+        }
         state.url = nil
         return .none
-      case .url(.some):
+      case let .safari(.some(link)):
+        state.columnVisibility = .automatic
+        state.detailDestination = nil
+        state.url = link.url
+        return .none
+      case .safari, .url:
+        state.columnVisibility = .all
+        state.url = nil
         return .none
       case let .confirmOpenForeignBrowserAlert(url):
         state.presentDestination = .alert(
@@ -279,15 +295,29 @@ public struct InfoPage: View {
   // MARK: - Properties
   @Bindable public var store: StoreOf<InfoReducer>
 
+  @Dependency(\.mainQueue)
+  private var mainQueue
+  @Environment(\.horizontalSizeClass)
+  private var horizontalSizeClass
+  @Environment(\.verticalSizeClass)
+  private var verticalSizeClass
+
   // MARK: - Body
   public var body: some View {
     NavigationSplitView(
+      columnVisibility: $store.columnVisibility.sending(\.changedColumnVisibility),
       sidebar: {
         list
           .navigationTitle("App Information")
           .navigationScrollEdgeEffectSoft()
           .toolbar(store: store)
-          .safari(store: $store)
+          .modifier {
+            if horizontalSizeClass == .compact || verticalSizeClass == .compact {
+              $0.safari(store: $store)
+            } else {
+              $0
+            }
+          }
       },
       detail: {
         if let destination = store.scope(\.detailDestination, action: \.detailDestination.presented) {
@@ -306,6 +336,9 @@ public struct InfoPage: View {
               }
             },
           )
+        } else if let url = store.url, horizontalSizeClass == .regular && verticalSizeClass == .regular {
+          SafariView(url: url)
+            .dismissButtonStyle(.close)
         } else {
           DetailNilView()
         }
@@ -319,6 +352,29 @@ public struct InfoPage: View {
       action: { action in
         if let action {
           store.send(.presentDestination(.presented(.alert(action))))
+        }
+      },
+    )
+    .onGeometryChange(
+      for: Bool.self,
+      of: { proxy in
+        proxy.size.width < proxy.size.height
+      },
+      action: { isPortrait in
+        store.send(.changedIsPortrait(isPortrait))
+        // 開いた状態
+        guard horizontalSizeClass == .regular && verticalSizeClass == .regular else {
+          return
+        }
+        if isPortrait && store.detailDestination == nil {
+          // 縦持ちで遷移先がない場合は全カラム
+          Task {
+            try? await mainQueue.sleep(for: .milliseconds(1))
+            store.send(.changedColumnVisibility(.all))
+          }
+        } else if !isPortrait {
+          // 横持ちであれば強制的に全カラム
+          store.send(.changedColumnVisibility(.all))
         }
       },
     )

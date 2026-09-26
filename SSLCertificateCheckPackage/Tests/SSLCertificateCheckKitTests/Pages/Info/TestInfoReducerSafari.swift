@@ -22,6 +22,7 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.gitHub)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
     }
   }
@@ -36,6 +37,7 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.xTwitter)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://x.com/nnsnodnb")!
     }
   }
@@ -50,6 +52,7 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.terms)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Terms")!
     }
   }
@@ -64,6 +67,7 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.privacyPolicy)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Privacy-Policy")!
     }
   }
@@ -78,9 +82,11 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.gitHub)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
     }
     await store.send(.safari(nil)) {
+      $0.columnVisibility = .all
       $0.url = nil
     }
   }
@@ -95,9 +101,11 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.xTwitter)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://x.com/nnsnodnb")!
     }
     await store.send(.safari(nil)) {
+      $0.columnVisibility = .all
       $0.url = nil
     }
   }
@@ -112,9 +120,11 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.terms)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Terms")!
     }
     await store.send(.safari(nil)) {
+      $0.columnVisibility = .all
       $0.url = nil
     }
   }
@@ -129,9 +139,11 @@ struct TestInfoReducerSafari {
     )
 
     await store.send(.safari(.privacyPolicy)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios/wiki/Privacy-Policy")!
     }
     await store.send(.safari(nil)) {
+      $0.columnVisibility = .all
       $0.url = nil
     }
   }
