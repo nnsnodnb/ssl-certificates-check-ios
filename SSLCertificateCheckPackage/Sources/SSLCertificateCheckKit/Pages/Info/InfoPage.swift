@@ -13,10 +13,30 @@ import SwiftUI
 
 @Reducer
 public struct InfoReducer: Sendable {
-  // MARK: - Destination
+  // MARK: - DetailDestination
+  @Reducer
+  public enum DetailDestination {
+    case licenseList(LicenseListReducer)
+  }
+
+  // MARK: - PresentDestination
+  @Reducer
+  public enum PresentDestination {
+    case paywall(PaywallReducer)
+    case alert(AlertState<Alert>)
+
+    // MARK: - Alert
+    @CasePathable
+    public enum Alert: Equatable {
+      case openURL(URL)
+      case close
+    }
+  }
+
+  // MARK: - Path
   @Reducer
   public enum Path {
-    case licenseList(LicenseListReducer)
+    case licenseDetail(LicenseDetailReducer)
   }
 
   // MARK: - State
@@ -24,12 +44,12 @@ public struct InfoReducer: Sendable {
   public struct State: Equatable {
     // MARK: - Properties
     public let version: String
-    @Presents public var paywall: PaywallReducer.State?
     public var visiblePrivacyOptionsRequirements = false
     public var isLoadingConsentForm = false
     public var path: StackState<Path.State> = .init()
     public var url: URL?
-    @Presents public  var alert: AlertState<Action.Alert>?
+    @Presents public var detailDestination: DetailDestination.State?
+    @Presents public var presentDestination: PresentDestination.State?
     @Shared(.inMemory("key_premium_subscription_is_active"))
     public var isPremiumActive = false
 
@@ -77,15 +97,8 @@ public struct InfoReducer: Sendable {
     case path(StackActionOf<Path>)
     case successGifted
     case failureGifted
-    case alert(PresentationAction<Alert>)
-    case paywall(PresentationAction<PaywallReducer.Action>)
-    case licenseList(PresentationAction<LicenseListReducer.Action>)
-
-    // MARK: - Alert
-    public enum Alert: Equatable {
-      case openURL(URL)
-      case close
-    }
+    case detailDestination(PresentationAction<DetailDestination.Action>)
+    case presentDestination(PresentationAction<PresentDestination.Action>)
   }
 
   // MARK: - Properties
@@ -112,7 +125,7 @@ public struct InfoReducer: Sendable {
           },
         )
       case .openPaywall:
-        state.paywall = .init()
+        state.presentDestination = .paywall(.init())
         return .none
       case .buyMeACoffee:
         return .run(
@@ -157,7 +170,7 @@ public struct InfoReducer: Sendable {
         let url = URL(string: "https://itunes.apple.com/jp/app/id6469147491?mt=8&action=write-review")!
         return .send(.confirmOpenForeignBrowserAlert(url))
       case .pushLicenseList:
-        state.path.append(.licenseList(.init()))
+        state.detailDestination = .licenseList(.init())
         return .none
       case let .safari(.some(link)):
         state.url = link.url
@@ -168,24 +181,26 @@ public struct InfoReducer: Sendable {
       case .url(.some):
         return .none
       case let .confirmOpenForeignBrowserAlert(url):
-        state.alert = AlertState(
-          title: {
-            TextState("Open an external browser.")
-          },
-          actions: {
-            ButtonState(
-              role: .cancel,
-              label: {
-                TextState("Cancel")
-              }
-            )
-            ButtonState(
-              action: .openURL(url),
-              label: {
-                TextState("Open")
-              }
-            )
-          }
+        state.presentDestination = .alert(
+          AlertState(
+            title: {
+              TextState("Open an external browser.")
+            },
+            actions: {
+              ButtonState(
+                role: .cancel,
+                label: {
+                  TextState("Cancel")
+                },
+              )
+              ButtonState(
+                action: .openURL(url),
+                label: {
+                  TextState("Open")
+                },
+              )
+            },
+          )
         )
         return .none
       case let .openForeignBrowser(url):
@@ -195,62 +210,67 @@ public struct InfoReducer: Sendable {
       case .path:
         return .none
       case .successGifted:
-        state.alert = .init(
-          title: {
-            TextState("Thank you for the coffee gift!")
-          },
-          actions: {
-            ButtonState(
-              action: .close,
-              label: {
-                TextState("Keep it up!")
-              },
-            )
-          },
-          message: {
-            TextState("I will continue to do my best in development!")
-          },
+        state.presentDestination = .alert(
+          AlertState(
+            title: {
+              TextState("Thank you for the coffee gift!")
+            },
+            actions: {
+              ButtonState(
+                action: .close,
+                label: {
+                  TextState("Keep it up!")
+                },
+              )
+            },
+            message: {
+              TextState("I will continue to do my best in development!")
+            },
+          )
         )
         return .none
       case .failureGifted:
-        state.alert = .init(
-          title: {
-            TextState("The purchase failed.")
-          },
-          actions: {
-            ButtonState(
-              action: .close,
-              label: {
-                TextState("Close")
-              },
-            )
-          },
-          message: {
-            TextState("Thank you for your kindness")
-          },
+        state.presentDestination = .alert(
+          AlertState(
+            title: {
+              TextState("The purchase failed.")
+            },
+            actions: {
+              ButtonState(
+                action: .close,
+                label: {
+                  TextState("Close")
+                },
+              )
+            },
+            message: {
+              TextState("Thank you for your kindness")
+            },
+          )
         )
         return .none
-      case let .alert(.presented(.openURL(url))):
-        state.alert = nil
+      case let .detailDestination(.presented(.licenseList(.delegate(.pushLicenseDetail(license))))):
+        state.path.append(.licenseDetail(.init(license: license)))
+        return .none
+      case .detailDestination:
+        return .none
+      case let .presentDestination(.presented(.alert(.openURL(url)))):
         return .send(.openForeignBrowser(url))
-      case .alert:
-        state.alert = nil
-        return .none
-      case .paywall(.dismiss):
-        state.paywall = nil
-        return .none
-      case .paywall:
-        return .none
-      case .licenseList:
+      case .presentDestination:
         return .none
       }
     }
-    .ifLet(\.$paywall, action: \.paywall) {
-      PaywallReducer()
-    }
+    .ifLet(\.$detailDestination, action: \.detailDestination)
+    .ifLet(\.$presentDestination, action: \.presentDestination)
     .forEach(\.path, action: \.path)
   }
 }
+
+// MARK: - InfoReducer.DetailDestination.State Equatable
+extension InfoReducer.DetailDestination.State: Equatable {}
+
+// MARK: - InfoReducer.PresentDestination.State Equatable
+extension InfoReducer.PresentDestination.State: Equatable {}
 
 // MARK: - InfoReducer.Path.State Equatable
 extension InfoReducer.Path.State: Equatable {}
@@ -261,26 +281,47 @@ public struct InfoPage: View {
 
   // MARK: - Body
   public var body: some View {
-    NavigationStack(
-      path: $store.scope(\.path, action: \.path),
-      root: {
-        form
+    NavigationSplitView(
+      sidebar: {
+        list
           .navigationTitle("App Information")
           .navigationScrollEdgeEffectSoft()
           .toolbar(store: store)
           .safari(store: $store)
       },
-      destination: { store in
-        switch store.case {
-        case let .licenseList(store):
-          LicenseListPage(store: store)
+      detail: {
+        if let destination = store.scope(\.detailDestination, action: \.detailDestination.presented) {
+          NavigationStack(
+            path: $store.scope(\.path, action: \.path),
+            root: {
+              switch destination.case {
+              case let .licenseList(store):
+                LicenseListPage(store: store)
+              }
+            },
+            destination: { store in
+              switch store.case {
+              case let .licenseDetail(store):
+                LicenseDetailPage(store: store)
+              }
+            },
+          )
+        } else {
+          DetailNilView()
         }
       },
     )
-    .sheet(item: $store.scope(\.$paywall, action: \.paywall)) { store in
+    .sheet(item: $store.scope(\.presentDestination, action: \.presentDestination).paywall) { store in
       PaywallPage(store: store)
     }
-    .alert($store.scope(\.$alert, action: \.alert))
+    .alert(
+      $store.scope(\.presentDestination, action: \.presentDestination).alert,
+      action: { action in
+        if let action {
+          store.send(.presentDestination(.presented(.alert(action))))
+        }
+      },
+    )
     .onAppear {
       store.send(.onAppear)
     }
@@ -289,13 +330,38 @@ public struct InfoPage: View {
 
 // MARK: - Private method
 private extension InfoPage {
-  var form: some View {
-    Form {
-      firstSection
-      secondSection
-      thirdSection
-      fourthSection
-    }
+  enum SidebarSelection {
+    case licenses
+  }
+
+  var list: some View {
+    List(
+      selection: Binding<SidebarSelection?>(
+        get: {
+          switch store.detailDestination {
+          case .licenseList:
+            .licenses
+          case .none:
+            nil
+          }
+        },
+        set: { value in
+          switch value {
+          case .licenses:
+            store.send(.pushLicenseList)
+          case .none:
+            store.send(.detailDestination(.dismiss))
+          }
+        },
+      ),
+      content: {
+        firstSection
+        secondSection
+        thirdSection
+        fourthSection
+      },
+    )
+    .listStyle(.insetGrouped)
   }
 
   var firstSection: some View {

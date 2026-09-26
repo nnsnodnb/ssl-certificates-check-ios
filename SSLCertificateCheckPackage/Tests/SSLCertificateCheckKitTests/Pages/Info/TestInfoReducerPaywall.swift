@@ -16,15 +16,15 @@ struct TestInfoReducerPaywall {
     let store = TestStore(
       initialState: InfoReducer.State(
         version: "1.0.0-test",
-        paywall: .init(),
+        presentDestination: .paywall(.init()),
       ),
       reducer: {
         InfoReducer()
       },
     )
 
-    await store.send(.paywall(.dismiss)) {
-      $0.paywall = nil
+    await store.send(.presentDestination(.dismiss)) {
+      $0.presentDestination = nil
     }
   }
 }
