@@ -15,17 +15,11 @@ import X509Parser
 
 @Reducer
 public struct SearchReducer: Sendable {
-  // MARK: - Path
-  @Reducer
-  public enum Path {
-    case searchResult(SearchResultReducer)
-    case searchResultDetail(SearchResultDetailReducer)
-  }
-
   // MARK: - Destination
   @Reducer
   public enum Destination {
     case info(InfoReducer)
+    case searchResult(SearchResultReducer)
     case alert(AlertState<Alert>)
 
     // MARK: - Alert
@@ -44,13 +38,9 @@ public struct SearchReducer: Sendable {
     var isShareExtensionImageShow = false
     var searchPageBottomBannerAdUnitID: String?
     var searchableURL: URL?
-    var searchResult: Identified<[X509], SearchResultReducer.State?>?
-    var searchResultDetail: Identified<X509, SearchResultDetailReducer.State?>?
     var isCheckFirstExperience = false
     var isRequestReview = false
     var isLoading = false
-    //    var destinations: [Destination] = []
-    var path: StackState<Path.State> = .init()
     @Presents var destination: Destination.State?
     @Shared(.inMemory("key_premium_subscription_is_active"))
     public var isPremiumActive = false
@@ -71,7 +61,6 @@ public struct SearchReducer: Sendable {
     case displayedRequestReview
     case searchResponse(Result<[X509], Error>)
     case checkFirstExperienceResponse(Result<Bool, Error>)
-    case path(StackActionOf<Path>)
     case destination(PresentationAction<Destination.Action>)
 
     // MARK: - Error
@@ -148,7 +137,6 @@ public struct SearchReducer: Sendable {
               let host = plainURL.host() else {
           return .none
         }
-        state.path = .init()
         state.destination = nil
         return .send(.textChanged(host))
       case .openInfo:
@@ -221,7 +209,7 @@ public struct SearchReducer: Sendable {
         state.isLoading = false
         guard let url = state.searchableURL,
               let host = url.host(percentEncoded: false) else { return .none }
-        state.path.append(.searchResult(.init(domain: host, certificates: .init(uniqueElements: certificates))))
+        state.destination = .searchResult(.init(domain: host, certificates: .init(uniqueElements: certificates)))
         Logger.info("Open SearchResult")
         return .none
       case .searchResponse(.failure):
@@ -251,13 +239,8 @@ public struct SearchReducer: Sendable {
       case .checkFirstExperienceResponse(.failure):
         // do not enter
         return .none
-      case let .path(.element(id: _, action: .searchResult(.delegate(.goSearchResultDetail(x509))))):
-        state.path.append(.searchResultDetail(.init(x509: x509)))
-        return .none
-      case .path(.element(id: _, action: .searchResultDetail(.appear))):
+      case .destination(.presented(.searchResult(.delegate(.showedSearchResultDetail)))):
         state.isCheckFirstExperience = true
-        return .none
-      case .path:
         return .none
       case let .destination(.presented(.alert(.watch(url)))):
         Logger.info("Start load Ads")
@@ -279,13 +262,9 @@ public struct SearchReducer: Sendable {
         return .none
       }
     }
-    .forEach(\.path, action: \.path)
     .ifLet(\.$destination, action: \.destination)
   }
 }
-
-// MARK: - SearchReducer.Path.State Equatable
-extension SearchReducer.Path.State: Equatable {}
 
 // MARK: - SearchReducer.Path.Destination Equatable
 extension SearchReducer.Destination.State: Equatable {}
@@ -309,7 +288,6 @@ public struct SearchPage: View {
     SheetOrFullScreenCoverWrap(
       content: {
         NavigationStack(
-          path: $store.scope(\.path, action: \.path),
           root: {
             form
               .navigationTitle("Check TLS/SSL Certificates")
@@ -331,14 +309,6 @@ public struct SearchPage: View {
                 store.send(.checkFirstExperience)
               }
           },
-          destination: { store in
-            switch store.case {
-            case let .searchResult(store):
-              SearchResultPage(store: store)
-            case let .searchResultDetail(store):
-              SearchResultDetailPage(store: store)
-            }
-          },
         )
       },
       item: $store.scope(\.destination, action: \.destination).info,
@@ -346,6 +316,9 @@ public struct SearchPage: View {
         InfoPage(store: store)
       },
     )
+    .fullScreenCover(item: $store.scope(\.destination, action: \.destination).searchResult) { store in
+      SearchResultPage(store: store)
+    }
     .onAppear {
       store.send(.onAppear)
     }
@@ -355,7 +328,7 @@ public struct SearchPage: View {
         if let action {
           store.send(.destination(.presented(.alert(action))))
         }
-      }
+      },
     )
     .onOpenURL(perform: { url in
       store.send(.universalLinksURLChanged(url))
@@ -387,7 +360,7 @@ private extension SearchPage {
                 .tint(.white)
                 .scaleEffect(x: 2, y: 2, anchor: .center)
             }
-            .ignoresSafeArea(edges: .bottom)
+            .ignoresSafeArea(edges: .all)
         }
       }
     }

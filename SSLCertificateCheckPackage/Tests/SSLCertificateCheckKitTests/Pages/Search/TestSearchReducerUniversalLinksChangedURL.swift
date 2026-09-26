@@ -56,12 +56,10 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
   @Test
   func testValidURLWhenOpenedSearchResult() async throws {
     let x509 = X509.stub
-    var path: StackState<SearchReducer.Path.State> = .init()
-    path.append(.searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509]))))
 
     let store = TestStore(
       initialState: SearchReducer.State(
-        path: path,
+        destination: .searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509]))),
       ),
       reducer: {
         SearchReducer()
@@ -70,7 +68,7 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
 
     let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
     await store.send(.universalLinksURLChanged(url)) {
-      $0.path = .init()
+      $0.destination = nil
     }
     await store.receive(\.textChanged, "example.com") {
       $0.text = "example.com"

@@ -27,6 +27,13 @@ public struct SearchResultDetailReducer {
     case appear
     case showPaywall
     case paywall(PresentationAction<PaywallReducer.Action>)
+    case delegate(Delegate)
+
+    // MARK: - Delegate
+    @CasePathable
+    public enum Delegate {
+      case appeared
+    }
   }
 
   // MARK: - Body
@@ -34,7 +41,7 @@ public struct SearchResultDetailReducer {
     Reduce { state, action in
       switch action {
       case .appear:
-        return .none
+        return .send(.delegate(.appeared))
       case .showPaywall:
         state.paywall = .init()
         return .none
@@ -42,6 +49,8 @@ public struct SearchResultDetailReducer {
         state.paywall = nil
         return .none
       case .paywall:
+        return .none
+      case .delegate:
         return .none
       }
     }
