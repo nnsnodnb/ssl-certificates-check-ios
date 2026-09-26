@@ -16,6 +16,10 @@ public struct SearchPage: View {
   @Bindable public var store: StoreOf<SearchReducer>
 
   @FocusState private var isFocused: Bool
+  @Environment(\.horizontalSizeClass)
+  private var horizontalSizeClass
+  @Environment(\.verticalSizeClass)
+  private var verticalSizeClass
   @Environment(\.requestReview)
   private var requestReview
   @Dependency(\.adClient)
@@ -91,7 +95,7 @@ private extension SearchPage {
     GeometryReader { proxy in
       Form {
         inputSection
-        introductionShareExtensionSection
+        introductionShareExtensionSection(proxy: proxy)
         if !store.isPremiumActive {
           bottomAdBannerSection(proxy: proxy)
         }
@@ -145,7 +149,7 @@ private extension SearchPage {
     )
   }
 
-  var introductionShareExtensionSection: some View {
+  func introductionShareExtensionSection(proxy: GeometryProxy) -> some View {
     Section {
       VStack(alignment: .leading, spacing: 18) {
         VStack(alignment: .center, spacing: 8) {
@@ -159,6 +163,13 @@ private extension SearchPage {
               Image(.imgShareExtension)
                 .resizable()
                 .scaledToFit()
+                .modifier {
+                  if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+                    $0.frame(maxWidth: proxy.frame(in: .global).size.width * 0.3)
+                  } else {
+                    $0
+                  }
+                }
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
             }
           }
@@ -258,9 +269,9 @@ private extension View {
             Text("Close")
               .bold()
               .foregroundStyle(Color(.label))
-              .padding()
+              .padding(12)
+              .glassEffect()
           }
-          .glassEffect()
         }
         .padding(8)
       }
