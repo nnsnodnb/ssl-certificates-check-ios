@@ -7,15 +7,277 @@
 
 import ComposableArchitecture
 import DependenciesInterfaces
+import Logger
 import SFSafeSymbols
 import StoreKit
 import SwiftUI
+import X509Parser
+
+@Reducer
+public struct SearchReducer: Sendable {
+  // MARK: - Destination
+  @Reducer
+  public enum Destination {
+    case info(InfoReducer)
+    case searchResult(SearchResultReducer)
+    case alert(AlertState<Alert>)
+
+    // MARK: - Alert
+    @CasePathable
+    public enum Alert: Equatable {
+      case watch(URL)
+    }
+  }
+
+  // MARK: - State
+  @ObservableState
+  public struct State: Equatable {
+    // MARK: - Properties
+    var searchButtonDisabled = true
+    var text: String = ""
+    var isShareExtensionImageShow = false
+    var searchPageBottomBannerAdUnitID: String?
+    var searchableURL: URL?
+    var isCheckFirstExperience = false
+    var isRequestReview = false
+    var isLoading = false
+    @Presents var destination: Destination.State?
+    @Shared(.inMemory("key_premium_subscription_is_active"))
+    public var isPremiumActive = false
+  }
+
+  // MARK: - Action
+  public enum Action {
+    case onAppear
+    case preloadRewardedAds
+    case textChanged(String)
+    case pasteURLChanged(URL)
+    case universalLinksURLChanged(URL)
+    case openInfo
+    case showBeforeAdsAlertIfNeeded
+    case search(URL)
+    case toggleIntroductionShareExtension
+    case checkFirstExperience
+    case displayedRequestReview
+    case searchResponse(Result<[X509], Error>)
+    case checkFirstExperienceResponse(Result<Bool, Error>)
+    case destination(PresentationAction<Destination.Action>)
+
+    // MARK: - Error
+    @CasePathable
+    public enum Error: Swift.Error {
+      case search
+      case checkFirstExperience
+    }
+  }
+
+  // MARK: - Properties
+  @Dependency(\.adUnitID)
+  private var adUnitID
+  @Dependency(\.bundle)
+  private var bundle
+  @Dependency(\.search)
+  private var search
+  @Dependency(\.keyValueStore)
+  private var keyValueStore
+  @Dependency(\.rewardedInterstitialAd)
+  private var rewardedInterstitialAd
+
+  // MARK: - Body
+  public var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .onAppear:
+        guard !state.isPremiumActive else { return .none }
+        state.searchPageBottomBannerAdUnitID = try? adUnitID.searchPageBottomBannerAdUnitID()
+        return .send(.preloadRewardedAds)
+      case .preloadRewardedAds:
+        guard !state.isPremiumActive else { return .none }
+        return .run(
+          priority: .background,
+          operation: { _ in
+            try await rewardedInterstitialAd.load()
+          },
+        )
+      case let .textChanged(text):
+        state.text = text
+        guard !state.text.isEmpty,
+              let url = URL(string: "https://\(state.text)"),
+              let host = url.host(),
+              !host.isEmpty,
+              host.split(separator: ".").count > 1 else {
+          state.searchButtonDisabled = true
+          state.searchableURL = nil
+          return .none
+        }
+        state.searchButtonDisabled = false
+        state.searchableURL = url
+        Logger.info("Valid text: \(text)")
+        return .none
+      case let .pasteURLChanged(url):
+        guard url.scheme == "https",
+              let host = url.host() else {
+          return .none
+        }
+        return .send(.textChanged(host))
+      case let .universalLinksURLChanged(url):
+        guard let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let queryItems = urlComponents.queryItems,
+              let encodedURL = queryItems.first(where: { $0.name == "encodedURL" })?.value else {
+          return .none
+        }
+        Logger.debug("Universal Links set encodedURL: \(encodedURL)")
+        guard let data = Data(base64Encoded: encodedURL),
+              let plainURLString = String(data: data, encoding: .utf8) else {
+          return .none
+        }
+        Logger.debug("Universal Links set plainURL: \(plainURLString)")
+        guard let plainURL = URL(string: plainURLString),
+              plainURL.scheme == "https",
+              let host = plainURL.host() else {
+          return .none
+        }
+        state.destination = nil
+        return .send(.textChanged(host))
+      case .openInfo:
+        let version = bundle.shortVersionString()
+        state.destination = .info(.init(version: "v\(version)"))
+        Logger.info("Open Info")
+        return .none
+      case .showBeforeAdsAlertIfNeeded:
+        guard !state.searchButtonDisabled,
+              let url = state.searchableURL else { return .none }
+        if state.isPremiumActive {
+          return .send(.search(url))
+        }
+        state.destination = .alert(
+          AlertState(
+            title: {
+              TextState("You can obtain the certificate data by watching an ad.")
+            },
+            actions: {
+              ButtonState(
+                role: .cancel,
+                label: {
+                  TextState("Cancel")
+                },
+              )
+              ButtonState(
+                action: .watch(url),
+                label: {
+                  TextState("Continue")
+                },
+              )
+            },
+          )
+        )
+        return .none
+      case let .search(url):
+        guard !state.searchButtonDisabled else {
+          return .none
+        }
+        state.isLoading = true
+        Logger.info("Start searching")
+        return .run(
+          operation: { send in
+            let x509 = try await search.fetchCertificates(url)
+            await send(.searchResponse(.success(x509)))
+          },
+          catch: { error, send in
+            await send(.searchResponse(.failure(.search)))
+            Logger.error("Failed searching: \(error)")
+          }
+        )
+      case .toggleIntroductionShareExtension:
+        state.isShareExtensionImageShow.toggle()
+        return .none
+      case .checkFirstExperience:
+        guard state.isCheckFirstExperience else {
+          return .none
+        }
+        state.isCheckFirstExperience = false
+        return .run { send in
+          let result = try await keyValueStore.getWasRequestReviewFinishFirstSearchExperience()
+          await send(.checkFirstExperienceResponse(.success(result)))
+        }
+      case .displayedRequestReview:
+        state.isRequestReview = false
+        return .run { _ in
+          try await keyValueStore.setWasRequestReviewFinishFirstSearchExperience(true)
+        }
+      case let .searchResponse(.success(certificates)):
+        state.isLoading = false
+        guard let url = state.searchableURL,
+              let host = url.host(percentEncoded: false) else { return .none }
+        state.destination = .searchResult(.init(domain: host, certificates: .init(uniqueElements: certificates)))
+        Logger.info("Open SearchResult")
+        return .none
+      case .searchResponse(.failure):
+        state.isLoading = false
+        state.destination = .alert(
+          AlertState(
+            title: {
+              TextState("Failed to obtain certificate")
+            },
+            actions: {
+              ButtonState(
+                label: {
+                  TextState("Close")
+                }
+              )
+            },
+            message: {
+              TextState("Please check or re-run the URL.")
+            }
+          )
+        )
+        return .none
+      case let .checkFirstExperienceResponse(.success(result)):
+        guard !result else { return .none }
+        state.isRequestReview = true
+        return .none
+      case .checkFirstExperienceResponse(.failure):
+        // do not enter
+        return .none
+      case .destination(.presented(.searchResult(.delegate(.showedSearchResultDetail)))):
+        state.isCheckFirstExperience = true
+        return .none
+      case let .destination(.presented(.alert(.watch(url)))):
+        Logger.info("Start load Ads")
+        return .run(
+          operation: { send in
+            let result = try await rewardedInterstitialAd.show()
+            guard result > 0 else {
+              await send(.preloadRewardedAds)
+              return
+            }
+            await send(.search(url))
+            await send(.preloadRewardedAds)
+          },
+          catch: { _, send in
+            await send(.preloadRewardedAds)
+          }
+        )
+      case .destination:
+        return .none
+      }
+    }
+    .ifLet(\.$destination, action: \.destination)
+  }
+}
+
+// MARK: - SearchReducer.Path.Destination Equatable
+extension SearchReducer.Destination.State: Equatable {}
 
 public struct SearchPage: View {
   // MARK: - Properties
   @Bindable public var store: StoreOf<SearchReducer>
 
   @FocusState private var isFocused: Bool
+  @Environment(\.horizontalSizeClass)
+  private var horizontalSizeClass
+  @Environment(\.verticalSizeClass)
+  private var verticalSizeClass
   @Environment(\.requestReview)
   private var requestReview
   @Dependency(\.adClient)
@@ -23,43 +285,42 @@ public struct SearchPage: View {
 
   // MARK: - Body
   public var body: some View {
-    NavigationStack(
-      path: $store.scope(\.path, action: \.path),
-      root: {
-        form
-          .navigationTitle("Check TLS/SSL Certificates")
-          .navigationBarTitleDisplayMode(.inline)
-          .navigationScrollEdgeEffectSoft()
-          .toolbar(
-            store: store,
-            keyboardClose: {
-              isFocused = false
-            },
-          )
-          .keyboardSafeAreaInset(
-            keyboardClose: {
-              isFocused = false
-            },
-            isFocused: isFocused,
-          )
-          .onAppear {
-            store.send(.checkFirstExperience)
-          }
+    SheetOrFullScreenCoverWrap(
+      content: {
+        NavigationStack(
+          root: {
+            form
+              .navigationTitle("Check TLS/SSL Certificates")
+              .navigationBarTitleDisplayMode(.inline)
+              .navigationScrollEdgeEffectSoft()
+              .toolbar(
+                store: store,
+                keyboardClose: {
+                  isFocused = false
+                },
+              )
+              .keyboardSafeAreaInset(
+                keyboardClose: {
+                  isFocused = false
+                },
+                isFocused: isFocused,
+              )
+              .onAppear {
+                store.send(.checkFirstExperience)
+              }
+          },
+        )
       },
-      destination: { store in
-        switch store.case {
-        case let .searchResult(store):
-          SearchResultPage(store: store)
-        case let .searchResultDetail(store):
-          SearchResultDetailPage(store: store)
-        }
+      item: $store.scope(\.destination, action: \.destination).info,
+      sheet: { store in
+        InfoPage(store: store)
       },
     )
+    .fullScreenCover(item: $store.scope(\.destination, action: \.destination).searchResult) { store in
+      SearchResultPage(store: store)
+    }
     .onAppear {
       store.send(.onAppear)
-    }
-    .sheet(item: $store.scope(\.$destination, action: \.destination).info) { store in
-      InfoPage(store: store)
     }
     .alert(
       $store.scope(\.destination, action: \.destination).alert,
@@ -67,7 +328,7 @@ public struct SearchPage: View {
         if let action {
           store.send(.destination(.presented(.alert(action))))
         }
-      }
+      },
     )
     .onOpenURL(perform: { url in
       store.send(.universalLinksURLChanged(url))
@@ -86,7 +347,7 @@ private extension SearchPage {
     GeometryReader { proxy in
       Form {
         inputSection
-        introductionShareExtensionSection
+        introductionShareExtensionSection(proxy: proxy)
         if !store.isPremiumActive {
           bottomAdBannerSection(proxy: proxy)
         }
@@ -99,7 +360,7 @@ private extension SearchPage {
                 .tint(.white)
                 .scaleEffect(x: 2, y: 2, anchor: .center)
             }
-            .ignoresSafeArea(edges: .bottom)
+            .ignoresSafeArea(edges: .all)
         }
       }
     }
@@ -140,7 +401,7 @@ private extension SearchPage {
     )
   }
 
-  var introductionShareExtensionSection: some View {
+  func introductionShareExtensionSection(proxy: GeometryProxy) -> some View {
     Section {
       VStack(alignment: .leading, spacing: 18) {
         VStack(alignment: .center, spacing: 8) {
@@ -154,6 +415,13 @@ private extension SearchPage {
               Image(.imgShareExtension)
                 .resizable()
                 .scaledToFit()
+                .modifier {
+                  if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+                    $0.frame(maxWidth: proxy.frame(in: .global).size.width * 0.3)
+                  } else {
+                    $0
+                  }
+                }
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
             }
           }
@@ -232,9 +500,7 @@ private extension View {
         )
       }
       ToolbarItemGroup(placement: .keyboard) {
-        if #available(iOS 26.0, *) {
-          EmptyView()
-        } else {
+        if #unavailable(iOS 26.0) {
           Spacer()
           Button(action: keyboardClose) {
             Text("Close")
@@ -255,9 +521,9 @@ private extension View {
             Text("Close")
               .bold()
               .foregroundStyle(Color(.label))
-              .padding()
+              .padding(12)
+              .glassEffect()
           }
-          .glassEffect()
         }
         .padding(8)
       }

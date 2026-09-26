@@ -117,7 +117,7 @@ struct TestSearchReducerShowBeforeAdsAlertIfNeeded {
       }
       await store.receive(\.searchResponse, .success([x509])) {
         $0.isLoading = false
-        $0.path[id: 0] = .searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509])))
+        $0.destination = .searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509])))
       }
     }
   }

@@ -10,6 +10,56 @@ import SFSafeSymbols
 import SwiftUI
 import X509Parser
 
+@Reducer
+public struct SearchResultDetailReducer {
+  // MARK: - State
+  @ObservableState
+  public struct State: Equatable {
+    // MARK: - Properties
+    public let x509: X509
+    @Presents public var paywall: PaywallReducer.State?
+    @Shared(.inMemory("key_premium_subscription_is_active"))
+    public var isPremiumActive = false
+  }
+
+  // MARK: - Action
+  public enum Action {
+    case appear
+    case showPaywall
+    case paywall(PresentationAction<PaywallReducer.Action>)
+    case delegate(Delegate)
+
+    // MARK: - Delegate
+    @CasePathable
+    public enum Delegate {
+      case appeared
+    }
+  }
+
+  // MARK: - Body
+  public var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .appear:
+        return .send(.delegate(.appeared))
+      case .showPaywall:
+        state.paywall = .init()
+        return .none
+      case .paywall(.dismiss):
+        state.paywall = nil
+        return .none
+      case .paywall:
+        return .none
+      case .delegate:
+        return .none
+      }
+    }
+    .ifLet(\.$paywall, action: \.paywall) {
+      PaywallReducer()
+    }
+  }
+}
+
 public struct SearchResultDetailPage: View {
   // MARK: - Properties
   @Bindable public var store: StoreOf<SearchResultDetailReducer>
