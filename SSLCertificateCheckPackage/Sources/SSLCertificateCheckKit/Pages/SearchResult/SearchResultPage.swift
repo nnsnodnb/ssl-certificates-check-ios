@@ -9,6 +9,43 @@ import ComposableArchitecture
 import SwiftUI
 import X509Parser
 
+@Reducer
+public struct SearchResultReducer {
+  // MARK: - State
+  @ObservableState
+  public struct State: Equatable {
+    // MARK: - Properties
+    public let domain: String
+    public let certificates: IdentifiedArrayOf<X509>
+    @ObservationStateIgnored public var searchedDNSCertificate: X509? { certificates.first }
+    @ObservationStateIgnored public var isValidCertificate: Bool { searchedDNSCertificate?.isValid ?? false }
+  }
+
+  // MARK: - Action
+  public enum Action {
+    case selectCertificate(X509)
+    case delegate(Delegate)
+
+    // MARK: - Delegate
+    @CasePathable
+    public enum Delegate {
+      case goSearchResultDetail(X509)
+    }
+  }
+
+  // MARK: - Body
+  public var body: some ReducerOf<Self> {
+    Reduce { _, action in
+      switch action {
+      case let .selectCertificate(x509):
+        return .send(.delegate(.goSearchResultDetail(x509)))
+      case .delegate:
+        return .none
+      }
+    }
+  }
+}
+
 public struct SearchResultPage: View {
   // MARK: - Properties
   public let store: StoreOf<SearchResultReducer>
