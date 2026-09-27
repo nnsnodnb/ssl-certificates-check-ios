@@ -450,11 +450,10 @@ private extension SearchPage {
         VStack(alignment: .center, spacing: 8) {
           Text("Advertisement")
             .font(.system(size: 14))
-          adClient.make(adUnitID: adUnitID, size: .largeBanner)
-            .frame(
-              width: max(proxy.frame(in: .global).size.width - 20, 0),
-              height: max(proxy.frame(in: .global).size.width - 20, 0),
-            )
+          let useInnerDisplay = horizontalSizeClass == .regular && verticalSizeClass == .regular
+          let width = max((proxy.frame(in: .global).width - 20), 0) * (useInnerDisplay ? 0.6 : 1)
+          adClient.make(adUnitID: adUnitID, width: width)
+            .frame(maxWidth: .infinity)
         }
       }
       .listRowBackground(Color.clear)
