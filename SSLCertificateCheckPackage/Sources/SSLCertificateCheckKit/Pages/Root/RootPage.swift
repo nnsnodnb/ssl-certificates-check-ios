@@ -8,9 +8,9 @@
 import ComposableArchitecture
 import Dependencies
 import DependenciesInterfaces
+import IssueReporting
 import MemberwiseInit
 import SwiftUI
-import XCTestDynamicOverlay
 
 @Reducer
 @MemberwiseInit(.public)
@@ -84,7 +84,7 @@ public struct RootPage: View {
 
   // MARK: - Body
   public var body: some View {
-    if _XCTIsTesting {
+    if isTesting {
       Text("Run Testing")
     } else {
       searchPage
