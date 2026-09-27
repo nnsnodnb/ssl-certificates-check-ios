@@ -63,6 +63,35 @@ struct TestSearchReducerDestination {
   }
 
   @Test
+  func testPresentedSearchResultDelegateShowedSearchResultDetail() async throws {
+    let url = URL(string: "https://example.com")!
+    let x509 = X509.stub
+
+    let store = TestStore(
+      initialState: SearchReducer.State(
+        searchButtonDisabled: false,
+        text: "example.com",
+        searchableURL: url,
+        isCheckFirstExperience: false,
+        destination: .searchResult(
+          .init(
+            domain: "example.com",
+            certificates: .init(uniqueElements: [x509]),
+            searchResultDetail: .init(x509: x509),
+          )
+        ),
+      ),
+      reducer: {
+        SearchReducer()
+      },
+    )
+
+    await store.send(.destination(.presented(.searchResult(.delegate(.showedSearchResultDetail))))) {
+      $0.isCheckFirstExperience = true
+    }
+  }
+
+  @Test
   func testPresentedAlertWatchIsNotPremiumActive() async throws {
     let x509 = X509.stub
     await withDependencies {
@@ -114,7 +143,7 @@ struct TestSearchReducerDestination {
       await store.receive(\.preloadRewardedAds)
       await store.receive(\.searchResponse, .success([x509])) {
         $0.isLoading = false
-        $0.path[id: 0] = .searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509])))
+        $0.destination = .searchResult(.init(domain: "example.com", certificates: .init(uniqueElements: [x509])))
       }
     }
   }

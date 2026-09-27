@@ -80,6 +80,14 @@ disabled_rules:
   - nesting
   - trailing_comma
 
+file_length:
+  warning: 700
+  error: 1200
+
+type_body_length:
+  warning: 500
+  error: 1000
+
 custom_rules:
   deprecated_composable_architecture_view_store:
     included:

@@ -1,8 +1,8 @@
 //
-//  TestInfoReducerPushLicenseList.swift
+//  TestInfoReducerOpenPaywall.swift
+//  SSLCertificateCheckPackage
 //
-//
-//  Created by Yuya Oka on 2023/10/22.
+//  Created by Yuya Oka on 2026/02/23.
 //
 
 import ComposableArchitecture
@@ -10,9 +10,9 @@ import ComposableArchitecture
 import Testing
 
 @MainActor
-struct TestInfoReducerPushLicenseList {
+struct TestInfoReducerOpenPaywall {
   @Test
-  func testPrepareShowLicenseList() async throws {
+  func testIt() async throws {
     let store = TestStore(
       initialState: InfoReducer.State(version: "v1.0.0-test"),
       reducer: {
@@ -20,8 +20,8 @@ struct TestInfoReducerPushLicenseList {
       },
     )
 
-    await store.send(.pushLicenseList) {
-      $0.path[id: 0] = .licenseList(.init())
+    await store.send(.openPaywall) {
+      $0.presentDestination = .paywall(.init())
     }
   }
 }

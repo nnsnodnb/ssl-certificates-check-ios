@@ -23,24 +23,26 @@ struct TestInfoReducerConfirmOpenForeignBrowserAlert { // swiftlint:disable:this
 
     let url = URL(string: "https://example.com")!
     await store.send(.confirmOpenForeignBrowserAlert(url)) {
-      $0.alert = AlertState(
-        title: {
-          TextState("Open an external browser.")
-        },
-        actions: {
-          ButtonState(
-            role: .cancel,
-            label: {
-              TextState("Cancel")
-            }
-          )
-          ButtonState(
-            action: .openURL(url),
-            label: {
-              TextState("Open")
-            }
-          )
-        }
+      $0.presentDestination = .alert(
+        AlertState(
+          title: {
+            TextState("Open an external browser.")
+          },
+          actions: {
+            ButtonState(
+              role: .cancel,
+              label: {
+                TextState("Cancel")
+              }
+            )
+            ButtonState(
+              action: .openURL(url),
+              label: {
+                TextState("Open")
+              }
+            )
+          }
+        )
       )
     }
   }

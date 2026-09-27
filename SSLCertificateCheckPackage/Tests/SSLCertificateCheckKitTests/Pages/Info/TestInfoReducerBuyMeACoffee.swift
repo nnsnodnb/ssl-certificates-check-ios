@@ -28,21 +28,23 @@ struct TestInfoReducerBuyMeACoffee {
 
     await store.send(.buyMeACoffee)
     await store.receive(\.successGifted) {
-      $0.alert = .init(
-        title: {
-          TextState("Thank you for the coffee gift!")
-        },
-        actions: {
-          ButtonState(
-            action: .close,
-            label: {
-              TextState("Keep it up!")
-            },
-          )
-        },
-        message: {
-          TextState("I will continue to do my best in development!")
-        },
+      $0.presentDestination = .alert(
+        AlertState(
+          title: {
+            TextState("Thank you for the coffee gift!")
+          },
+          actions: {
+            ButtonState(
+              action: .close,
+              label: {
+                TextState("Keep it up!")
+              },
+            )
+          },
+          message: {
+            TextState("I will continue to do my best in development!")
+          },
+        )
       )
     }
   }
@@ -77,21 +79,23 @@ struct TestInfoReducerBuyMeACoffee {
 
       await store.send(.buyMeACoffee)
       await store.receive(\.failureGifted) {
-        $0.alert = .init(
-          title: {
-            TextState("The purchase failed.")
-          },
-          actions: {
-            ButtonState(
-              action: .close,
-              label: {
-                TextState("Close")
-              },
-            )
-          },
-          message: {
-            TextState("Thank you for your kindness")
-          },
+        $0.presentDestination = .alert(
+          AlertState(
+            title: {
+              TextState("The purchase failed.")
+            },
+            actions: {
+              ButtonState(
+                action: .close,
+                label: {
+                  TextState("Close")
+                },
+              )
+            },
+            message: {
+              TextState("Thank you for your kindness")
+            },
+          )
         )
       }
     }

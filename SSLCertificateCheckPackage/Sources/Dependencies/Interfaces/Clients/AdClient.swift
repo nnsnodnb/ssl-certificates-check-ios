@@ -11,7 +11,7 @@ import SwiftUI
 
 @DependencyClient
 public struct AdClient: Sendable {
-  public var make: @MainActor (_ adUnitID: String, _ size: BannerSize) -> AnyView = { _, _ in AnyView(EmptyView()) }
+  public var make: @MainActor (_ adUnitID: String, _ width: CGFloat) -> AnyView = { _, _ in AnyView(EmptyView()) }
 }
 
 // MARK: - DependencyKey

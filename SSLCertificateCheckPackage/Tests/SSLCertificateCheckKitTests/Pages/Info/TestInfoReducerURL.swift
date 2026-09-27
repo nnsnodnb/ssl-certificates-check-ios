@@ -34,6 +34,7 @@ struct TestInfoReducerURL {
     )
 
     await store.send(.safari(.gitHub)) {
+      $0.columnVisibility = .automatic
       $0.url = URL(string: "https://github.com/nnsnodnb/ssl-certificates-check-ios")!
     }
   }

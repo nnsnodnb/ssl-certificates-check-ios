@@ -10,49 +10,31 @@ import DependenciesInterfaces
 import GoogleMobileAds
 import SwiftUI
 
-public struct GoogleBannerView: UIViewRepresentable {
+public struct GoogleBannerView: UIViewControllerRepresentable {
+  // MARK: - Properties
   public let adUnitID: String
-  public let size: BannerSize
+  public let width: CGFloat
 
-  public func makeUIView(context: Context) -> some UIView {
-    let banner = BannerView()
-    banner.adUnitID = adUnitID
-    banner.adSize = switch size {
-    case .banner:
-      AdSizeBanner
-    case .largeBanner:
-      AdSizeLargeBanner
-    case .mediumRectangle:
-      AdSizeMediumRectangle
-    }
-
-    banner.load(Request())
-    banner.delegate = context.coordinator
-
-    return banner
+  // MARK: - Initialize
+  public init(adUnitID: String, width: CGFloat) {
+    self.adUnitID = adUnitID
+    self.width = width
   }
 
-  public func updateUIView(_ uiView: UIViewType, context: Context) {
+  // MARK: - UIViewControllerRepresentable
+  public func makeUIViewController(context: Context) -> BannerViewController {
+    BannerViewController(adUnitID: adUnitID)
   }
 
-  public func makeCoordinator() -> Coordinator {
-    .init(parent: self)
+  public func updateUIViewController(_ viewController: BannerViewController, context: Context) {
+    viewController.setAvailableWidth(width)
   }
-}
 
-// MARK: - Coordinator
-public extension GoogleBannerView {
-  final class Coordinator: NSObject, BannerViewDelegate {
-    // MARK: - Properties
-    private let parent: GoogleBannerView
-
-    // MARK: - Initialize
-    init(parent: GoogleBannerView) {
-      self.parent = parent
-    }
-
-    // MARK: - BannerViewDelegate
-    public func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: any Error) {
-    }
+  public func sizeThatFits(
+    _ proposal: ProposedViewSize,
+    uiViewController: BannerViewController,
+    context: Context,
+  ) -> CGSize? {
+    return .init(width: width, height: width)
   }
 }

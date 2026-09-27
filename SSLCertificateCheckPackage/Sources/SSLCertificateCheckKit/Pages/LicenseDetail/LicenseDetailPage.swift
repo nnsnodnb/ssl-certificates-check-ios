@@ -5,17 +5,36 @@
 //  Created by Yuya Oka on 2023/10/14.
 //
 
+import ComposableArchitecture
 import DependenciesInterfaces
 import SwiftUI
 
+@Reducer
+public struct LicenseDetailReducer: Sendable {
+  // MARK: - State
+  @ObservableState
+  public struct State: Equatable {
+    public let license: LicensesPlugin.License
+  }
+
+  // MARK: - Action
+  public enum Action {
+  }
+
+  // MARK: - Body
+  public var body: some ReducerOf<Self> {
+    EmptyReducer()
+  }
+}
+
 public struct LicenseDetailPage: View {
   // MARK: - Properties
-  public let license: LicensesPlugin.License
+  public let store: StoreOf<LicenseDetailReducer>
 
   // MARK: - Body
   public var body: some View {
     Form {
-      if let licenseText = license.licenseText {
+      if let licenseText = store.license.licenseText {
         ScrollView {
           Text(licenseText)
             .font(.system(size: 14))
@@ -26,7 +45,7 @@ public struct LicenseDetailPage: View {
       }
     }
     .formStyle(.columns)
-    .navigationTitle(license.name)
+    .navigationTitle(store.license.name)
     .navigationScrollEdgeEffectSoft()
   }
 }
@@ -35,7 +54,14 @@ public struct LicenseDetailPage: View {
   NavigationStack(
     root: {
       LicenseDetailPage(
-        license: LicensesPlugin.licenses[0],
+        store: .init(
+          initialState: LicenseDetailReducer.State(
+            license: LicensesPlugin.licenses[0],
+          ),
+          reducer: {
+            LicenseDetailReducer()
+          },
+        ),
       )
     },
   )

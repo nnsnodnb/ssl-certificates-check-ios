@@ -9,9 +9,93 @@ import ComposableArchitecture
 import SwiftUI
 import X509Parser
 
+@Reducer
+public struct SearchResultReducer: Sendable {
+  // MARK: - Destination
+  public enum Destination: Hashable {
+    case searchResultDetail(X509)
+  }
+
+  // MARK: - State
+  @ObservableState
+  public struct State: Equatable {
+    // MARK: - Properties
+    public let domain: String
+    public let certificates: IdentifiedArrayOf<X509>
+    public var columnVisibility: NavigationSplitViewVisibility = .all
+    public var isPortrait = false
+    public var searchResultDetail: SearchResultDetailReducer.State?
+    @ObservationStateIgnored public var searchedDNSCertificate: X509? { certificates.first }
+    @ObservationStateIgnored public var isValidCertificate: Bool { searchedDNSCertificate?.isValid ?? false }
+  }
+
+  // MARK: - Action
+  public enum Action {
+    case close
+    case changedColumnVisibility(NavigationSplitViewVisibility)
+    case changedIsPortrait(Bool)
+    case showDestination(Destination?)
+    case searchResultDetail(SearchResultDetailReducer.Action)
+    case delegate(Delegate)
+
+    // MARK: - Delegate
+    @CasePathable
+    public enum Delegate {
+      case showedSearchResultDetail
+    }
+  }
+
+  @Dependency(\.dismiss)
+  private var dismiss
+
+  // MARK: - Body
+  public var body: some ReducerOf<Self> {
+    Reduce { state, action in
+      switch action {
+      case .close:
+        return .run(
+          operation: { _ in
+            await dismiss()
+          },
+        )
+      case let .changedColumnVisibility(columnVisibility):
+        state.columnVisibility = columnVisibility
+        return .none
+      case let .changedIsPortrait(isPortrait):
+        state.isPortrait = isPortrait
+        return .none
+      case let .showDestination(destination):
+        switch destination {
+        case let .searchResultDetail(x509):
+          state.searchResultDetail = .init(x509: x509)
+        case .none:
+          state.searchResultDetail = nil
+        }
+        return .none
+      case .searchResultDetail(.delegate(.appeared)):
+        return .send(.delegate(.showedSearchResultDetail))
+      case .searchResultDetail:
+        return .none
+      case .delegate:
+        return .none
+      }
+    }
+    .ifLet(\.searchResultDetail, action: \.searchResultDetail) {
+      SearchResultDetailReducer()
+    }
+  }
+}
+
 public struct SearchResultPage: View {
   // MARK: - Properties
-  public let store: StoreOf<SearchResultReducer>
+  @Bindable public var store: StoreOf<SearchResultReducer>
+
+  @Dependency(\.mainQueue)
+  private var mainQueue
+  @Environment(\.horizontalSizeClass)
+  private var horizontalSizeClass
+  @Environment(\.verticalSizeClass)
+  private var verticalSizeClass
 
   private let dateFormatter: DateFormatter = {
     let dateFormatter = DateFormatter()
@@ -24,16 +108,67 @@ public struct SearchResultPage: View {
 
   // MARK: - Body
   public var body: some View {
-    list
-      .navigationTitle(store.domain)
-      .navigationScrollEdgeEffectSoft()
+    NavigationSplitView(
+      columnVisibility: $store.columnVisibility.sending(\.changedColumnVisibility),
+      sidebar: {
+        list
+          .navigationTitle(store.domain)
+          .navigationScrollEdgeEffectSoft()
+          .toolbar(store: store)
+      },
+      detail: {
+        if let store = store.scope(\.searchResultDetail, action: \.searchResultDetail) {
+          SearchResultDetailPage(store: store)
+        } else {
+          DetailNilView()
+        }
+      },
+    )
+    .onGeometryChange(
+      for: Bool.self,
+      of: { proxy in
+        proxy.size.width < proxy.size.height
+      },
+      action: { isPortrait in
+        store.send(.changedIsPortrait(isPortrait))
+        // 開いた状態
+        guard horizontalSizeClass == .regular && verticalSizeClass == .regular else {
+          return
+        }
+        if isPortrait && store.searchResultDetail == nil {
+          // 縦持ちで遷移先がない場合は全カラム
+          Task {
+            try? await mainQueue.sleep(for: .milliseconds(1))
+            store.send(.changedColumnVisibility(.all))
+          }
+        } else if !isPortrait {
+          // 横持ちであれば強制的に全カラム
+          store.send(.changedColumnVisibility(.all))
+        }
+      },
+    )
   }
 
   private var list: some View {
-    List {
-      summarySection
-      certificatesSection
-    }
+    List(
+      selection: Binding<X509?>(
+        get: {
+          store.searchResultDetail?.x509
+        },
+        set: { x509 in
+          if let x509 {
+            store.send(.showDestination(.searchResultDetail(x509)))
+          } else {
+            store.send(.showDestination(nil))
+          }
+        },
+      ),
+      content: {
+        summarySection
+        certificatesSection
+      },
+    )
+    .listStyle(.insetGrouped)
   }
 
   private var summarySection: some View {
@@ -94,7 +229,7 @@ public struct SearchResultPage: View {
       content: {
         ForEach(store.certificates) { certificate in
           row(certificate: certificate) {
-            store.send(.selectCertificate(certificate))
+            store.send(.showDestination(.searchResultDetail(certificate)))
           }
         }
       },
@@ -134,6 +269,29 @@ public struct SearchResultPage: View {
       .resizable()
       .scaledToFit()
       .frame(height: 32, alignment: .top)
+  }
+}
+
+private extension View {
+  func toolbar(store: StoreOf<SearchResultReducer>) -> some View {
+    toolbar {
+      ToolbarItem(placement: .topBarLeading) {
+        if #available(iOS 26.0, *) {
+          Button(role: .cancel) {
+            store.send(.close)
+          }
+        } else {
+          Button(
+            action: {
+              store.send(.close)
+            },
+            label: {
+              Image(systemSymbol: .xmark)
+            },
+          )
+        }
+      }
+    }
   }
 }
 
