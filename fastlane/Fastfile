@@ -10,31 +10,13 @@ platform :ios do
     )
   end
 
-  desc "Fetch Provisioning Profile & Apple Distribution Certificate"
-  lane :setup_adhoc_certificates do
-    keychain
-    match(
-      type: "adhoc",
-    )
-  end
-
-  desc "Fetch Provisioning Profile & Apple Distribution Certificate"
-  lane :setup_appstore_certificates do
-    keychain
-    match(
-      type: "appstore",
-    )
-  end
-
   # Gym
   desc "Gym for AdHoc"
   lane :adhoc do
-    setup_adhoc_certificates
-
     gym(
       export_method: "ad-hoc",
       scheme: "AdHoc",
-      xcargs: "MARKETING_VERSION='#{generate_adhoc_marketing_version}'",
+      xcargs: "MARKETING_VERSION='#{generate_adhoc_marketing_version}' #{generate_gym_flags}",
     )
 
     upload_symbols_to_crashlytics(
@@ -53,16 +35,15 @@ platform :ios do
 
   desc "Gym for AppStore"
   lane :release do
-    setup_appstore_certificates
-
     gym(
       export_method: "app-store",
       scheme: "Production",
+      xcargs: "#{generate_gym_flags}",
     )
 
     upload_symbols_to_crashlytics(
       gsp_path: "App/Production/Production/GoogleService-Info.plist",
-      binary_path: ".swiftpm/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols"
+      binary_path: ".swiftpm/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols",
     )
 
     if is_ci
@@ -103,6 +84,20 @@ platform :ios do
         password: ENV["MATCH_KEYCHAIN_PASSWORD"],
         add_to_search_list: true,
       )
+    end
+  end
+
+  desc "Generate Cloud-managed certificates authentication flags"
+  private_lane :generate_gym_flags do
+    if is_ci
+      [
+        "-allowProvisioningUpdates",
+        "-authenticationKeyPath /tmp/AuthKey.p8",
+        "-authenticationKeyID #{ENV.fetch("APP_STORE_CONNECT_KEY_ID")}",
+        "-authenticationKeyIssuerID #{ENV.fetch("APP_STORE_CONNECT_ISSUER_ID")}",
+      ].join(" ")
+    else
+      "-allowProvisioningUpdates"
     end
   end
 
