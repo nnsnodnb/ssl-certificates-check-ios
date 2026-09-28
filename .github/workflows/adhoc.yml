@@ -14,17 +14,19 @@ jobs:
     runs-on: xcode-27
 
     env:
-      FASTLANE_SKIP_UPDATE_CHECK: 1
       DEVELOPER_DIR: /Applications/Xcode_27.1_beta.app/Contents/Developer
+      APP_NAME: SSLCertificateCheck
+      SCHEME: AdHoc
 
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1.327.0
+      - name: Checkout ci_scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ruby-version: "4.0.7"
-          bundler-cache: true
+          repository: nnsnodnb/xcodebuild-ci-scripts
+          path: ci_scripts
 
       - name: Get SwiftPM originHash
         id: get-swiftpm-origin-hash
@@ -46,25 +48,54 @@ jobs:
       - name: Write IDESkipMacroFingerprintValidation
         run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 
-      - name: Setup AuthKey.json
+      - name: Setup AuthKey
         env:
           APP_STORE_CONNECT_API_KEY_P8_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8_BASE64 }}
-        run: echo "${APP_STORE_CONNECT_API_KEY_P8_BASE64}" | base64 -d > /tmp/AuthKey.p8
+          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "${APP_STORE_CONNECT_API_KEY_P8_BASE64}" | base64 -d > ~/.appstoreconnect/private_keys/AuthKey_"${KEY_ID}".p8
+          chmod 600 ~/.appstoreconnect/private_keys/AuthKey_"${KEY_ID}".p8
 
-      - name: Setup app-distribution-key.json
-        env:
-          APP_DISTRIBUTION_KEY_BASE64: ${{ secrets.APP_DISTRIBUTION_KEY_BASE64 }}
-        run: echo "${APP_DISTRIBUTION_KEY_BASE64}" | base64 -d > /tmp/app-distribution-key.json
+      - name: Xcodebuild showBuildSettings
+        id: show-build-settings
+        run: |
+          ./ci_scripts/get_marketing_version.sh \
+            "${APP_NAME}" \
+            "${SCHEME}"
 
-      - name: Fastlane adhoc
+      - name: Build AdHoc.ipa
         env:
-          FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 20
+          VERSION: ${{ steps.show-build-settings.outputs.marketing_version }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          GIT_PRIVATE_KEY_BASE64: ${{ secrets.GIT_PRIVATE_KEY_BASE64 }}
+          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          FASTLANE_SKIP_UPDATE_CHECK: 1
           MATCH_KEYCHAIN_NAME: "fastlane_keychain"
           MATCH_KEYCHAIN_PASSWORD: ""
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+        run: |
+          MATCH_GIT_PRIVATE_KEY=$(echo -n "${GIT_PRIVATE_KEY_BASE64}" | base64 -d)
+          export MATCH_GIT_PRIVATE_KEY
+          fastlane ios setup_development_certificates
+          ./ci_scripts/archive_export.sh \
+            "${APP_NAME}" \
+            "${SCHEME}" \
+            "${VERSION}" \
+            "${KEY_ID}" \
+            "${ISSUER_ID}" \
+            "./App/AdHoc/AdHoc/GoogleService-Info.plist"
+
+      - name: Upload ipa to Firebase AppDistribution
+        env:
+          APP_ID: 1:721577322193:ios:355e6cf202f5ce2bc9c7f0
+          APP_DISTRIBUTION_KEY_BASE64: ${{ secrets.APP_DISTRIBUTION_KEY_BASE64 }}
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/app-distribution-key.json
-        run: bundle exec fastlane ios adhoc
+        run: |
+          echo "${APP_DISTRIBUTION_KEY_BASE64}" | base64 -d > /tmp/app-distribution-key.json
+          ./ci_scripts/firebase_distribution.sh \
+            "${SCHEME}" \
+            "${APP_ID}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
