@@ -10,50 +10,6 @@ platform :ios do
     )
   end
 
-  # Gym
-  desc "Gym for AdHoc"
-  lane :adhoc do
-    gym(
-      export_method: "ad-hoc",
-      scheme: "AdHoc",
-      xcargs: "MARKETING_VERSION='#{generate_adhoc_marketing_version}' #{generate_gym_flags}",
-    )
-
-    upload_symbols_to_crashlytics(
-      gsp_path: "App/AdHoc/AdHoc/GoogleService-Info.plist",
-      binary_path: ".swiftpm/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols"
-    )
-
-    if is_ci
-      firebase_app_distribution(
-        app: "1:721577322193:ios:355e6cf202f5ce2bc9c7f0",
-        ipa_path: "Products/SSLCertificateCheck.ipa",
-        groups: "owner",
-      )
-    end
-  end
-
-  desc "Gym for AppStore"
-  lane :release do
-    gym(
-      export_method: "app-store",
-      scheme: "Production",
-      xcargs: "#{generate_gym_flags}",
-    )
-
-    upload_symbols_to_crashlytics(
-      gsp_path: "App/Production/Production/GoogleService-Info.plist",
-      binary_path: ".swiftpm/checkouts/firebase-ios-sdk/Crashlytics/upload-symbols",
-    )
-
-    if is_ci
-      deliver(
-        ipa: "Products/SSLCertificateCheck.ipa",
-        precheck_default_rule_level: :error,
-      )
-    end
-  end
-
   # Utility
   desc "Update MARKETING_VERSION & CURRENT_PROJECT_VERSION"
   lane :update_app_version do
@@ -85,29 +41,5 @@ platform :ios do
         add_to_search_list: true,
       )
     end
-  end
-
-  desc "Generate Cloud-managed certificates authentication flags"
-  private_lane :generate_gym_flags do
-    if is_ci
-      [
-        "-allowProvisioningUpdates",
-        "-authenticationKeyPath /tmp/AuthKey.p8",
-        "-authenticationKeyID #{ENV.fetch("APP_STORE_CONNECT_KEY_ID")}",
-        "-authenticationKeyIssuerID #{ENV.fetch("APP_STORE_CONNECT_ISSUER_ID")}",
-      ].join(" ")
-    else
-      "-allowProvisioningUpdates"
-    end
-  end
-
-  desc "Generate MARKETING_VERSION for AdHoc"
-  private_lane :generate_adhoc_marketing_version do
-    version = get_version_number(
-      xcodeproj: "App/AdHoc/AdHoc.xcodeproj",
-      target: "AdHoc",
-    )
-    short_hash = last_git_commit[:abbreviated_commit_hash]
-    "#{version}-#{short_hash}"
   end
 end

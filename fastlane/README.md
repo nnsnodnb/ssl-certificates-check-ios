@@ -23,22 +23,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Fetch Provisioning Profile & Apple Development Certificate
 
-### ios adhoc
-
-```sh
-[bundle exec] fastlane ios adhoc
-```
-
-Gym for AdHoc
-
-### ios release
-
-```sh
-[bundle exec] fastlane ios release
-```
-
-Gym for AppStore
-
 ### ios update_app_version
 
 ```sh
