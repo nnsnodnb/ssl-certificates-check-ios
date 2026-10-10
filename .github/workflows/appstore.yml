@@ -21,12 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Checkout ci_scripts
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: nnsnodnb/xcodebuild-ci-scripts
-          path: ci_scripts
+          submodules: "recursive"
 
       - name: Get SwiftPM originHash
         id: get-swiftpm-origin-hash
