@@ -26,7 +26,7 @@ ruby 4.0.7 (2026-09-15 revision 229531a6cf) +PRISM [arm64-darwin25]
 ## Setup
 
 ```bash
-$ git clone git@github.com:nnsnodnb/ssl-certificates-check-ios.git
+$ git clone --recursive git@github.com:nnsnodnb/ssl-certificates-check-ios.git
 $ cd ssl-certificates-check-ios
 $ xed .
 ```
