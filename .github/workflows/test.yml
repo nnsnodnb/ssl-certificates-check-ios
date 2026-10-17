@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/test.yml
+      - .gitmodules
       - App/**
       - SSLCertificateCheck.xcworkspace/**
       - SSLCertificateCheckPackage/**
