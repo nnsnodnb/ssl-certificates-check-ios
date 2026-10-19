@@ -18,7 +18,6 @@ public struct SearchReducer: Sendable {
   // MARK: - Destination
   @Reducer
   public enum Destination {
-    case info(InfoReducer)
     case searchResult(SearchResultReducer)
     case alert(AlertState<Alert>)
 
@@ -33,15 +32,15 @@ public struct SearchReducer: Sendable {
   @ObservableState
   public struct State: Equatable {
     // MARK: - Properties
-    var searchButtonDisabled = true
-    var text: String = ""
-    var isShareExtensionImageShow = false
-    var searchPageBottomBannerAdUnitID: String?
-    var searchableURL: URL?
-    var isCheckFirstExperience = false
-    var isRequestReview = false
-    var isLoading = false
-    @Presents var destination: Destination.State?
+    public var searchButtonDisabled = true
+    public var text: String = ""
+    public var isShareExtensionImageShow = false
+    public var searchPageBottomBannerAdUnitID: String?
+    public var searchableURL: URL?
+    public var isCheckFirstExperience = false
+    public var isRequestReview = false
+    public var isLoading = false
+    @Presents public var destination: Destination.State?
     @Shared(.inMemory("key_premium_subscription_is_active"))
     public var isPremiumActive = false
   }
@@ -53,7 +52,6 @@ public struct SearchReducer: Sendable {
     case textChanged(String)
     case pasteURLChanged(URL)
     case universalLinksURLChanged(URL)
-    case openInfo
     case showBeforeAdsAlertIfNeeded
     case search(URL)
     case toggleIntroductionShareExtension
@@ -65,7 +63,7 @@ public struct SearchReducer: Sendable {
 
     // MARK: - Error
     @CasePathable
-    public enum Error: Swift.Error {
+    public enum Error: Swift::Error {
       case search
       case checkFirstExperience
     }
@@ -74,8 +72,6 @@ public struct SearchReducer: Sendable {
   // MARK: - Properties
   @Dependency(\.adUnitID)
   private var adUnitID
-  @Dependency(\.bundle)
-  private var bundle
   @Dependency(\.search)
   private var search
   @Dependency(\.keyValueStore)
@@ -139,11 +135,6 @@ public struct SearchReducer: Sendable {
         }
         state.destination = nil
         return .send(.textChanged(host))
-      case .openInfo:
-        let version = bundle.shortVersionString()
-        state.destination = .info(.init(version: "v\(version)"))
-        Logger.info("Open Info")
-        return .none
       case .showBeforeAdsAlertIfNeeded:
         guard !state.searchButtonDisabled,
               let url = state.searchableURL else { return .none }
@@ -285,35 +276,27 @@ public struct SearchPage: View {
 
   // MARK: - Body
   public var body: some View {
-    SheetOrFullScreenCoverWrap(
-      content: {
-        NavigationStack(
-          root: {
-            form
-              .navigationTitle("Check TLS/SSL Certificates")
-              .navigationBarTitleDisplayMode(.inline)
-              .navigationScrollEdgeEffectSoft()
-              .toolbar(
-                store: store,
-                keyboardClose: {
-                  isFocused = false
-                },
-              )
-              .keyboardSafeAreaInset(
-                keyboardClose: {
-                  isFocused = false
-                },
-                isFocused: isFocused,
-              )
-              .onAppear {
-                store.send(.checkFirstExperience)
-              }
-          },
-        )
-      },
-      item: $store.scope(\.destination, action: \.destination).info,
-      sheet: { store in
-        InfoPage(store: store)
+    NavigationStack(
+      root: {
+        form
+          .navigationTitle("Check TLS/SSL Certificates")
+          .navigationBarTitleDisplayMode(.inline)
+          .navigationScrollEdgeEffectSoft()
+          .toolbar(
+            store: store,
+            keyboardClose: {
+              isFocused = false
+            },
+          )
+          .keyboardSafeAreaInset(
+            keyboardClose: {
+              isFocused = false
+            },
+            isFocused: isFocused,
+          )
+          .onAppear {
+            store.send(.checkFirstExperience)
+          }
       },
     )
     .fullScreenCover(item: $store.scope(\.destination, action: \.destination).searchResult) { store in
@@ -465,20 +448,6 @@ private extension SearchPage {
 private extension View {
   func toolbar(store: StoreOf<SearchReducer>, keyboardClose: @escaping () -> Void) -> some View {
     toolbar {
-      ToolbarItem(placement: .topBarLeading) {
-        Button(
-          action: {
-            store.send(.openInfo)
-          },
-          label: {
-            if #available(iOS 26.0, *) {
-              Image(systemSymbol: .info)
-            } else {
-              Image(systemSymbol: .infoCircle)
-            }
-          }
-        )
-      }
       ToolbarItem(placement: .topBarTrailing) {
         Button(
           action: {

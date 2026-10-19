@@ -14,20 +14,6 @@ import X509Parser
 @MainActor
 struct TestSearchReducerDestination {
   @Test
-  func testDismissInfo() async throws {
-    let store = TestStore(
-      initialState: SearchReducer.State(destination: .info(.init(version: "v1.0.0-test"))),
-      reducer: {
-        SearchReducer()
-      },
-    )
-
-    await store.send(.destination(.dismiss)) {
-      $0.destination = nil
-    }
-  }
-
-  @Test
   func testDismissAlert() async throws {
     let store = TestStore(
       initialState: SearchReducer.State(

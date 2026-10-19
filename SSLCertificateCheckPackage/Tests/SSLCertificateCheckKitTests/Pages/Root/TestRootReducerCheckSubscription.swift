@@ -24,6 +24,7 @@ struct TestRootReducerCheckSubscription {
 
     await store.send(.checkSubscription(.delegate(.completed)))
     await store.receive(\.showConsent) {
+      $0.checkSubscription = nil
       $0.consent = .init()
     }
   }

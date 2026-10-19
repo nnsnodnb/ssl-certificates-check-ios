@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import DependenciesTestSupport
 @testable import SSLCertificateCheckKit
 import Testing
 
@@ -13,18 +14,23 @@ import Testing
 struct TestRootReducerConsent {
   @Test
   func testConsentDelegateCompletedConsent() async throws {
-    let store = TestStore(
-      initialState: RootReducer.State(
-        consent: .init(),
-      ),
-      reducer: {
-        RootReducer()
-      },
-    )
+    await withDependencies {
+      $0.bundle.shortVersionString = { "1.0.0-test" }
+    } operation: {
+      let store = TestStore(
+        initialState: RootReducer.State(
+          consent: .init(),
+        ),
+        reducer: {
+          RootReducer()
+        },
+      )
 
-    await store.send(.consent(.delegate(.completedConsent))) {
-      $0.consent = nil
-      $0.search = .init()
+      await store.send(.consent(.delegate(.completedConsent))) {
+        $0.consent = nil
+        $0.search = .init()
+        $0.info = .init(version: "v1.0.0-test")
+      }
     }
   }
 }
