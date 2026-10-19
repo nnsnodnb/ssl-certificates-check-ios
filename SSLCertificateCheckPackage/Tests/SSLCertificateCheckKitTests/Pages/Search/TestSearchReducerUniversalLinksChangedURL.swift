@@ -32,28 +32,6 @@ struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this typ
   }
 
   @Test
-  func testValidURLWhenOpenedInfo() async throws {
-    let store = TestStore(
-      initialState: SearchReducer.State(
-        destination: .info(.init(version: "v1.0.0-test")),
-      ),
-      reducer: {
-        SearchReducer()
-      },
-    )
-
-    let url = URL(string: "https://nnsnodnb.moe/ssl-certificates-check-ios?encodedURL=aHR0cHM6Ly9leGFtcGxlLmNvbQ==")!
-    await store.send(.universalLinksURLChanged(url)) {
-      $0.destination = nil
-    }
-    await store.receive(\.textChanged, "example.com") {
-      $0.text = "example.com"
-      $0.searchButtonDisabled = false
-      $0.searchableURL = URL(string: "https://example.com")
-    }
-  }
-
-  @Test
   func testValidURLWhenOpenedSearchResult() async throws {
     let x509 = X509.stub
 

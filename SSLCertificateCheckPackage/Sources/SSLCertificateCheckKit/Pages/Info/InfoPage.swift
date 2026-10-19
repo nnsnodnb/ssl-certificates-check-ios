@@ -84,7 +84,6 @@ public struct InfoReducer: Sendable {
   // MARK: - Action
   public enum Action {
     case onAppear
-    case close
     case changedColumnVisibility(NavigationSplitViewVisibility)
     case changedIsPortrait(Bool)
     case openPaywall
@@ -108,8 +107,6 @@ public struct InfoReducer: Sendable {
   // MARK: - Properties
   @Dependency(\.consentInformation)
   private var consentInformation
-  @Dependency(\.dismiss)
-  private var dismiss
   @Dependency(\.openURL)
   private var openURL
   @Dependency(\.revenueCat)
@@ -122,12 +119,6 @@ public struct InfoReducer: Sendable {
       case .onAppear:
         state.visiblePrivacyOptionsRequirements = consentInformation.visiblePrivacyOptionsRequirements()
         return state.visiblePrivacyOptionsRequirements ? .send(.loadConsentForm) : .none
-      case .close:
-        return .run(
-          operation: { _ in
-            await dismiss()
-          },
-        )
       case let .changedColumnVisibility(columnVisibility):
         state.columnVisibility = columnVisibility
         return .none
@@ -309,8 +300,8 @@ public struct InfoPage: View {
       sidebar: {
         list
           .navigationTitle("App Information")
+          .toolbarTitleDisplayMode(.inlineLarge)
           .navigationScrollEdgeEffectSoft()
-          .toolbar(store: store)
           .modifier {
             if horizontalSizeClass == .compact || verticalSizeClass == .compact {
               $0.safari(store: $store)
@@ -606,27 +597,6 @@ private extension InfoPage {
 }
 
 private extension View {
-  func toolbar(store: StoreOf<InfoReducer>) -> some View {
-    toolbar {
-      ToolbarItem(placement: .topBarLeading) {
-        if #available(iOS 26.0, *) {
-          Button(role: .cancel) {
-            store.send(.close)
-          }
-        } else {
-          Button(
-            action: {
-              store.send(.close)
-            },
-            label: {
-              Image(systemSymbol: .xmark)
-            }
-          )
-        }
-      }
-    }
-  }
-
   func safari(store: Bindable<StoreOf<InfoReducer>>) -> some View {
     safariView(item: store.url.sending(\.url)) { url in
       SafariView(url: url)

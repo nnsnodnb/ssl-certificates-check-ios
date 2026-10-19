@@ -25,6 +25,8 @@ public struct RootReducer: Sendable {
     public var consent: ConsentReducer.State?
     @Init(.public, default: nil)
     public var search: SearchReducer.State?
+    @Init(.public, default: nil)
+    public var info: InfoReducer.State?
   }
 
   // MARK: - Action
@@ -34,7 +36,12 @@ public struct RootReducer: Sendable {
     case checkSubscription(CheckSubscriptionReducer.Action)
     case consent(ConsentReducer.Action)
     case search(SearchReducer.Action)
+    case info(InfoReducer.Action)
   }
+
+  // MARK: - Dependency
+  @Dependency(\.bundle)
+  private var bundle
 
   // MARK: - Body
   public var body: some ReducerOf<Self> {
@@ -44,6 +51,7 @@ public struct RootReducer: Sendable {
         state.checkSubscription = .init()
         return .none
       case .showConsent:
+        state.checkSubscription = nil
         state.consent = .init()
         return .none
       case .checkSubscription(.delegate(.completed)):
@@ -53,10 +61,14 @@ public struct RootReducer: Sendable {
       case .consent(.delegate(.completedConsent)):
         state.consent = nil
         state.search = .init()
+        let version = bundle.shortVersionString()
+        state.info = .init(version: "v\(version)")
         return .none
       case .consent:
         return .none
       case .search:
+        return .none
+      case .info:
         return .none
       }
     }
@@ -68,6 +80,9 @@ public struct RootReducer: Sendable {
     }
     .ifLet(\.search, action: \.search) {
       SearchReducer()
+    }
+    .ifLet(\.info, action: \.info) {
+      InfoReducer()
     }
   }
 }
@@ -86,32 +101,34 @@ public struct RootPage: View {
   public var body: some View {
     if isTesting {
       Text("Run Testing")
-    } else {
-      searchPage
-    }
-  }
-
-  @ViewBuilder private var searchPage: some View {
-    if let store = store.scope(\.search, action: \.search) {
-      SearchPage(store: store)
-    } else {
-      checkSubscriptionPage
-    }
-  }
-
-  @ViewBuilder private var checkSubscriptionPage: some View {
-    if let store = store.scope(\.checkSubscription, action: \.checkSubscription) {
-      ZStack {
-        CheckSubscriptionPage(store: store)
-        consentPage
+    } else if let store = store.scope(\.checkSubscription, action: \.checkSubscription) {
+      CheckSubscriptionPage(store: store)
+    } else if let store = store.scope(\.consent, action: \.consent) {
+      ConsentPage(store: store)
+    } else if let searchStore = store.scope(\.search, action: \.search),
+              let infoStore = store.scope(\.info, action: \.info) {
+      TabView {
+        Tab("Search", systemSymbol: .magnifyingglass) {
+          SearchPage(store: searchStore)
+        }
+        Tab("Info", systemSymbol: .info) {
+          InfoPage(store: infoStore)
+        }
       }
     } else {
-      Color(UIColor.systemBackground.withAlphaComponent(0.000001))
-        .ignoresSafeArea(.all)
-        .onAppear {
-          store.send(.showCheckSubscription)
-        }
+      initializeView
     }
+  }
+
+  private var initializeView: some View {
+    Color(.systemBackground)
+      .overlay {
+        ProgressView()
+          .progressViewStyle(.circular)
+      }
+      .task {
+        store.send(.showCheckSubscription)
+      }
   }
 
   @ViewBuilder private var consentPage: some View {
