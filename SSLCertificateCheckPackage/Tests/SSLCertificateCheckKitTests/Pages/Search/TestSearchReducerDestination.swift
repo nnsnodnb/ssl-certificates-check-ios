@@ -78,6 +78,27 @@ struct TestSearchReducerDestination {
   }
 
   @Test
+  func testPresentedQRCodeScanDelegateSelectedHost() async throws {
+    let store = TestStore(
+      initialState: SearchReducer.State(
+        destination: .qrCodeScan(.init())
+      ),
+      reducer: {
+        SearchReducer()
+      },
+    )
+
+    await store.send(.destination(.presented(.qrCodeScan(.delegate(.selectedHost("example.com")))))) {
+      $0.destination = nil
+    }
+    await store.receive(\.textChanged, "example.com") {
+      $0.text = "example.com"
+      $0.searchButtonDisabled = false
+      $0.searchableURL = URL(string: "https://example.com")
+    }
+  }
+
+  @Test
   func testPresentedAlertWatchIsNotPremiumActive() async throws {
     let x509 = X509.stub
     await withDependencies {

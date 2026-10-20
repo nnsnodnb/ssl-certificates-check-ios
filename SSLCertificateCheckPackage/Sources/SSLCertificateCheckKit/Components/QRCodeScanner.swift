@@ -10,11 +10,14 @@ import VisionKit
 
 public struct QRCodeScanner: UIViewControllerRepresentable {
   // MARK: - Properties
-  @Binding public var recognizedPayload: String
+  @Binding public var recognizedURL: URL?
+  public let selectedAction: @MainActor (String) -> Void
 
   public func makeUIViewController(context: Context) -> DataScannerViewController {
     let viewController = DataScannerViewController(
       recognizedDataTypes: [.barcode(symbologies: [.qr])],
+      isPinchToZoomEnabled: true,
+      isGuidanceEnabled: false,
       isHighlightingEnabled: true,
     )
     viewController.delegate = context.coordinator
@@ -48,8 +51,9 @@ public extension QRCodeScanner {
       allItems: [RecognizedItem],
     ) {
       guard case let .barcode(barcode) = addedItems.first,
-            let payloadStringValue = barcode.payloadStringValue else { return }
-      parent.recognizedPayload = payloadStringValue
+            let payloadStringValue = barcode.payloadStringValue,
+            let url = URL(string: payloadStringValue) else { return }
+      parent.recognizedURL = url
     }
 
     public func dataScanner(
@@ -57,20 +61,24 @@ public extension QRCodeScanner {
       didRemove removedItems: [RecognizedItem],
       allItems: [RecognizedItem],
     ) {
-      parent.recognizedPayload = ""
+      parent.recognizedURL = nil
     }
 
     public func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
       guard case let .barcode(barcode) = item,
             let payloadStringValue = barcode.payloadStringValue,
-            let url = URL(string: payloadStringValue) else { return }
-      print(url.absoluteString)
+            let url = URL(string: payloadStringValue),
+            let host = url.host() else { return }
+      parent.selectedAction(host)
     }
   }
 }
 
 #Preview {
-  @Previewable @State var payload = ""
+  @Previewable @State var payload: URL?
 
-  QRCodeScanner(recognizedPayload: $payload)
+  QRCodeScanner(
+    recognizedURL: $payload,
+    selectedAction: { _ in },
+  )
 }
