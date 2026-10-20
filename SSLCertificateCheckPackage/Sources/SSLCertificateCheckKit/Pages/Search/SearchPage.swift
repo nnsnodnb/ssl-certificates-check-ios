@@ -19,6 +19,7 @@ public struct SearchReducer: Sendable {
   @Reducer
   public enum Destination {
     case searchResult(SearchResultReducer)
+    case qrCodeScan(QRCodeScanFeature)
     case alert(AlertState<Alert>)
 
     // MARK: - Alert
@@ -50,6 +51,7 @@ public struct SearchReducer: Sendable {
     case onAppear
     case preloadRewardedAds
     case textChanged(String)
+    case showQRCodeScan
     case pasteURLChanged(URL)
     case universalLinksURLChanged(URL)
     case showBeforeAdsAlertIfNeeded
@@ -109,6 +111,9 @@ public struct SearchReducer: Sendable {
         state.searchButtonDisabled = false
         state.searchableURL = url
         Logger.info("Valid text: \(text)")
+        return .none
+      case .showQRCodeScan:
+        state.destination = .qrCodeScan(.init())
         return .none
       case let .pasteURLChanged(url):
         guard url.scheme == "https",
@@ -233,6 +238,9 @@ public struct SearchReducer: Sendable {
       case .destination(.presented(.searchResult(.delegate(.showedSearchResultDetail)))):
         state.isCheckFirstExperience = true
         return .none
+      case let .destination(.presented(.qrCodeScan(.delegate(.selectedHost(host))))):
+        state.destination = nil
+        return .send(.textChanged(host))
       case let .destination(.presented(.alert(.watch(url)))):
         Logger.info("Start load Ads")
         return .run(
@@ -302,6 +310,9 @@ public struct SearchPage: View {
     .fullScreenCover(item: $store.scope(\.destination, action: \.destination).searchResult) { store in
       SearchResultPage(store: store)
     }
+    .fullScreenCover(item: $store.scope(\.destination, action: \.destination).qrCodeScan) { store in
+      QRCodeScanPage(store: store)
+    }
     .onAppear {
       store.send(.onAppear)
     }
@@ -365,21 +376,38 @@ private extension SearchPage {
             .textCase(.lowercase)
             .focused($isFocused)
             .padding(.horizontal, 8)
-            PasteButton(payloadType: URL.self) { urls in
-              guard let url = urls.first else { return }
-              Task { @MainActor in
-                store.send(.pasteURLChanged(url))
-              }
-            }
-            .buttonBorderShape(.capsule)
-            .labelStyle(.iconOnly)
-            .offset(x: 8)
           }
         }
       },
       header: {
         Text("Enter the host you want to check")
           .padding(.top, 16)
+      },
+      footer: {
+        HStack(alignment: .center, spacing: 12) {
+          Button(
+            action: {
+              store.send(.showQRCodeScan)
+            },
+            label: {
+              Label("QR", systemSymbol: .qrcode)
+                .frame(maxHeight: .infinity)
+                .backgroundStyle(Color.purple)
+            },
+          )
+          .buttonBorderShape(.capsule)
+          .buttonStyle(.borderedProminent)
+          PasteButton(payloadType: URL.self) { urls in
+            guard let url = urls.first else { return }
+            Task { @MainActor in
+              store.send(.pasteURLChanged(url))
+            }
+          }
+          .buttonBorderShape(.capsule)
+          .labelStyle(.titleAndIcon)
+        }
+        .padding(.top, 12)
+        .frame(maxWidth: .infinity, alignment: .center)
       },
     )
   }
