@@ -36,6 +36,7 @@ let package = Package(
     .package(url: "https://github.com/stleamist/BetterSafariView.git", .upToNextMajor(from: "2.4.2")),
     .package(url: "https://github.com/RevenueCat/purchases-ios-spm.git", .upToNextMajor(from: "5.97.0")),
     .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "7.0.0")),
+    .package(url: "https://github.com/SVProgressHUD/SVProgressHUD.git", .upToNextMajor(from: "2.3.1")),
     .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", .upToNextMajor(from: "0.65.1")),
     .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.21.0")),
     .package(
@@ -64,6 +65,7 @@ let package = Package(
         .memberwiseInit,
         .revenueCatUI,
         .sfSafeSymbols,
+        .svProgressHUD,
       ],
     ),
     // AppExtensions
@@ -236,6 +238,13 @@ extension PackageDescription.Target.Dependency {
     .product(
       name: "SFSafeSymbols",
       package: "SFSafeSymbols",
+    )
+  }
+
+  static var svProgressHUD: Self {
+    .product(
+      name: "SVProgressHUD",
+      package: "SVProgressHUD",
     )
   }
 

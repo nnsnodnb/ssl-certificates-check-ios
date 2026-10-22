@@ -13,6 +13,7 @@ import class FirebaseCore.FirebaseApp
 import class GoogleMobileAds.MobileAds
 import class RevenueCat.Purchases
 import SSLCertificateCheckKit
+import SVProgressHUD
 import SwiftUI
 
 @main
@@ -53,6 +54,7 @@ struct DevelopApp: App {
       let userID = "$RCAnonymousID:ccff33d798344877aa1f363be90eb38f"
       _ = try? await Purchases.shared.logIn(userID)
     }
+    SVProgressHUD.setDefaultMaskType(.black)
     Analytics.setUserID(Purchases.shared.appUserID)
   }
 }

@@ -346,17 +346,7 @@ private extension SearchPage {
           bottomAdBannerSection(proxy: proxy)
         }
       }
-      .overlay {
-        if store.isLoading {
-          Color.gray.opacity(0.8)
-            .overlay {
-              ProgressView()
-                .tint(.white)
-                .scaleEffect(x: 2, y: 2, anchor: .center)
-            }
-            .ignoresSafeArea(edges: .all)
-        }
-      }
+      .progress(store.isLoading)
     }
   }
 
