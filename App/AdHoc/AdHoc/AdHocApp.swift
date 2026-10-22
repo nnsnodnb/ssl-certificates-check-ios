@@ -13,6 +13,7 @@ import class FirebaseCore.FirebaseApp
 import class GoogleMobileAds.MobileAds
 import class RevenueCat.Purchases
 import SSLCertificateCheckKit
+import SVProgressHUD
 import SwiftUI
 
 @main
@@ -46,6 +47,7 @@ struct AdHocApp: App {
       _ = await MobileAds.shared.start()
     }
     Purchases.configure(withAPIKey: "appl_tCBoNHVYLrNNHLlPSrarLoDORLz")
+    SVProgressHUD.setDefaultMaskType(.black)
     Analytics.setUserID(Purchases.shared.appUserID)
   }
 }
