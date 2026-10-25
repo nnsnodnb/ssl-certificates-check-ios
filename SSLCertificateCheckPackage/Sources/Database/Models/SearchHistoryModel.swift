@@ -19,7 +19,7 @@ public class SearchHistoryModel: Hashable {
   public var createdAt: Date
 
   // MARK: - Initialize
-  public init(id: UUID, domain: String, x509: X509, createdAt: Date = .now) throws {
+  public init(id: UUID, domain: String, x509: [X509], createdAt: Date = .now) throws {
     self.id = id
     self.domain = domain
     self.x509Data = try JSONEncoder().encode(x509)
@@ -33,7 +33,7 @@ public class SearchHistoryModel: Hashable {
     self.createdAt = createdAt
   }
 
-  public func decodeX509() throws -> X509 {
-    try JSONDecoder().decode(X509.self, from: x509Data)
+  public func decodeX509() throws -> [X509] {
+    try JSONDecoder().decode([X509].self, from: x509Data)
   }
 }

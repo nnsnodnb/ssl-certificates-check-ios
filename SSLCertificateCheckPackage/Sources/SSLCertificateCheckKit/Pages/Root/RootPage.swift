@@ -26,6 +26,8 @@ public struct RootReducer: Sendable {
     @Init(.public, default: nil)
     public var search: SearchReducer.State?
     @Init(.public, default: nil)
+    public var historyList: HistoryListReducer.State?
+    @Init(.public, default: nil)
     public var info: InfoReducer.State?
   }
 
@@ -36,6 +38,7 @@ public struct RootReducer: Sendable {
     case checkSubscription(CheckSubscriptionReducer.Action)
     case consent(ConsentReducer.Action)
     case search(SearchReducer.Action)
+    case historyList(HistoryListReducer.Action)
     case info(InfoReducer.Action)
   }
 
@@ -61,12 +64,15 @@ public struct RootReducer: Sendable {
       case .consent(.delegate(.completedConsent)):
         state.consent = nil
         state.search = .init()
+        state.historyList = .init()
         let version = bundle.shortVersionString()
         state.info = .init(version: "v\(version)")
         return .none
       case .consent:
         return .none
       case .search:
+        return .none
+      case .historyList:
         return .none
       case .info:
         return .none
@@ -80,6 +86,9 @@ public struct RootReducer: Sendable {
     }
     .ifLet(\.search, action: \.search) {
       SearchReducer()
+    }
+    .ifLet(\.historyList, action: \.historyList) {
+      HistoryListReducer()
     }
     .ifLet(\.info, action: \.info) {
       InfoReducer()
@@ -106,10 +115,14 @@ public struct RootPage: View {
     } else if let store = store.scope(\.consent, action: \.consent) {
       ConsentPage(store: store)
     } else if let searchStore = store.scope(\.search, action: \.search),
+              let historyListStore = store.scope(\.historyList, action: \.historyList),
               let infoStore = store.scope(\.info, action: \.info) {
       TabView {
         Tab("Search", systemSymbol: .magnifyingglass) {
           SearchPage(store: searchStore)
+        }
+        Tab("History", systemSymbol: .trayFullFill) {
+          HistoryListPage(store: historyListStore)
         }
         Tab("Info", systemSymbol: .info) {
           InfoPage(store: infoStore)

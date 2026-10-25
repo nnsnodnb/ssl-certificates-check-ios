@@ -13,12 +13,16 @@ import Foundation
 @DependencyClient
 public struct DatabaseClient: Sendable {
   public var fetchSearchHistroies: @Sendable () async throws -> [SearchHistory]
+  public var addSearchHistory: @Sendable (SearchHistory) async throws -> Void
+  public var deleteSearchHistory: @Sendable (SearchHistory) async throws -> Void
 }
 
 // MARK: - DependencyKey
 extension DatabaseClient: DependencyKey {
   public static let liveValue: DatabaseClient = .init(
     fetchSearchHistroies: { [] },
+    addSearchHistory: { _ in },
+    deleteSearchHistory: { _ in },
   )
 }
 

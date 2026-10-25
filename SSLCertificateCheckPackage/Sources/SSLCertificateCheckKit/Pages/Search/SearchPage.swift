@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import Database
 import DependenciesInterfaces
 import Logger
 import SFSafeSymbols
@@ -74,12 +75,18 @@ public struct SearchReducer: Sendable {
   // MARK: - Properties
   @Dependency(\.adUnitID)
   private var adUnitID
+  @Dependency(\.database)
+  private var database
+  @Dependency(\.date)
+  private var date
   @Dependency(\.search)
   private var search
   @Dependency(\.keyValueStore)
   private var keyValueStore
   @Dependency(\.rewardedInterstitialAd)
   private var rewardedInterstitialAd
+  @Dependency(\.uuid)
+  private var uuid
 
   // MARK: - Body
   public var body: some ReducerOf<Self> {
@@ -177,6 +184,15 @@ public struct SearchReducer: Sendable {
         return .run(
           operation: { send in
             let x509 = try await search.fetchCertificates(url)
+            if let host = url.host() {
+              let searchHistory = SearchHistory(
+                id: uuid.callAsFunction(),
+                domain: host,
+                x509: x509,
+                createdAt: date.callAsFunction(),
+              )
+              try await database.addSearchHistory(searchHistory)
+            }
             await send(.searchResponse(.success(x509)))
           },
           catch: { error, send in
