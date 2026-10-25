@@ -9,7 +9,7 @@ import Foundation
 import MemberwiseInit
 
 @MemberwiseInit(.public)
-public struct X509: Hashable, Sendable, Identifiable {
+public struct X509: Codable, Hashable, Sendable, Identifiable {
   // MARK: - Properties
   public var id: String { serialNumber }
 
@@ -25,7 +25,7 @@ public struct X509: Hashable, Sendable, Identifiable {
 
 // MARK: - DistinguishedNames
 public extension X509 {
-  struct DistinguishedNames: Hashable, Sendable {
+  struct DistinguishedNames: Codable, Hashable, Sendable {
     // MARK: - Properties
     public let commonName: String?
     public let organization: String?
@@ -42,7 +42,7 @@ public extension X509 {
 // MARK: - SHA256Fingerprint
 public extension X509 {
   @MemberwiseInit(.public)
-  struct SHA256Fingerprint: Hashable, Sendable {
+  struct SHA256Fingerprint: Codable, Hashable, Sendable {
     // MARK: - Properties
     public let certificate: String
     public let publicKey: String

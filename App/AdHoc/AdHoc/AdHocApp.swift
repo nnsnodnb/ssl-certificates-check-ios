@@ -14,10 +14,15 @@ import class GoogleMobileAds.MobileAds
 import class RevenueCat.Purchases
 import SSLCertificateCheckKit
 import SVProgressHUD
+import SwiftData
 import SwiftUI
 
 @main
 struct AdHocApp: App {
+  // MARK: - Dependency
+  @Dependency(\.modelContext.make)
+  private var modelContext
+
   // MARK: - Body
   var body: some Scene {
     WindowGroup {
@@ -25,6 +30,7 @@ struct AdHocApp: App {
         $0.adClient = .google
         $0.adUnitID = .develop
         $0.consentInformation = .google
+        $0.database = .swiftData
         $0.rewardedInterstitialAd = .google
         $0.revenueCat = .revenueCat
 
@@ -36,6 +42,7 @@ struct AdHocApp: App {
             },
           ),
         )
+        .modelContext(modelContext())
       }
     }
   }

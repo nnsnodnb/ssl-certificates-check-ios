@@ -75,8 +75,17 @@ let package = Package(
     ),
     // Misc
     .target(
+      name: "Database",
+      dependencies: [
+        .memberwiseInit,
+        .x509Parser,
+      ],
+      path: "Sources/Database",
+    ),
+    .target(
       name: "DependenciesInterfaces",
       dependencies: [
+        .database,
         .dependencies,
         .dependenciesMacros,
         .x509Parser,
@@ -89,6 +98,7 @@ let package = Package(
     .target(
       name: "DependenciesLive",
       dependencies: [
+        .database,
         .dependencies,
         .dependenciesInterfaces,
         .firebaseAnalytics,
@@ -141,6 +151,7 @@ let package = Package(
 extension PackageDescription.Target.Dependency {
   // MARK: - Aliases
   static let sslCertificateCheckKit: Self = .target(name: "SSLCertificateCheckKit")
+  static let database: Self = .target(name: "Database")
   static let clientDependencies: Self = .target(name: "ClientDependencies")
   static let logger: Self = .target(name: "Logger")
   static let share: Self = .target(name: "Share")
