@@ -78,6 +78,7 @@ public struct RootReducer: Sendable {
         return .none
       }
     }
+    // FIXME: Destinationにする
     .ifLet(\.checkSubscription, action: \.checkSubscription) {
       CheckSubscriptionReducer()
     }

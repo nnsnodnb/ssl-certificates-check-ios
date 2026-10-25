@@ -12,20 +12,53 @@ import SwiftUI
 
 @Reducer
 public struct HistoryListReducer: Sendable {
+  // MARK: - Destination
+  @Reducer
+  public enum Destination {
+    case searchResult(SearchResultReducer)
+    case paywall(PaywallReducer)
+  }
+
   // MARK: - State
   @ObservableState
   public struct State: Equatable {
+    // MARK: - ContentState
+    public enum ContentState {
+      case needSubscription
+      case empty
+      case list
+    }
+
+    // MARK: - Properties
+    public var contentState: ContentState
     public var searchHistories: IdentifiedArrayOf<SearchHistory> = .init(uniqueElements: [])
     public var selectedSearchHistoy: SearchHistory?
-    @Presents public var searchResult: SearchResultReducer.State?
+    @Presents public var destination: Destination.State?
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
+    public var isPremiumActive = false
+
+    // MARK: - Initialize
+    public init(
+      searchHistories: IdentifiedArrayOf<SearchHistory> = .init(uniqueElements: []),
+      selectedSearchHistoy: SearchHistory? = nil,
+      destination: Destination.State? = nil,
+      isPremiumActive: Bool = false,
+    ) {
+      self.contentState = isPremiumActive ? .empty : .needSubscription
+      self.searchHistories = searchHistories
+      self.selectedSearchHistoy = selectedSearchHistoy
+      self.destination = destination
+      self.$isPremiumActive.withLock { $0 = isPremiumActive }
+    }
   }
 
   // MARK: - Action
   public enum Action {
-    case fetchSearchHistory
+    case fetchSearchHistories
     case selectSearchHistory(SearchHistory?)
     case deleteSearchHistory(IndexSet)
-    case searchResult(PresentationAction<SearchResultReducer.Action>)
+    case showPaywall
+    case destination(PresentationAction<Destination.Action>)
     case internalAction(InternalAction)
 
     // MARK: - InternalAction
@@ -43,7 +76,8 @@ public struct HistoryListReducer: Sendable {
   public var body: some ReducerOf<Self> {
     Reduce { state, action in
       switch action {
-      case .fetchSearchHistory:
+      case .fetchSearchHistories:
+        guard state.isPremiumActive else { return .none }
         return .run(
           operation: { send in
             let searchHistories = try await database.fetchSearchHistroies()
@@ -51,14 +85,17 @@ public struct HistoryListReducer: Sendable {
           },
         )
       case let .selectSearchHistory(searchHistory):
+        guard state.isPremiumActive else { return .none }
         state.selectedSearchHistoy = searchHistory
         if let searchHistory {
-          state.searchResult = .init(
-            domain: searchHistory.domain,
-            certificates: .init(uniqueElements: searchHistory.x509),
+          state.destination = .searchResult(
+            .init(
+              domain: searchHistory.domain,
+              certificates: .init(uniqueElements: searchHistory.x509),
+            )
           )
         } else {
-          state.searchResult = nil
+          state.destination = nil
         }
         return .none
       case let .deleteSearchHistory(indexSet):
@@ -70,24 +107,28 @@ public struct HistoryListReducer: Sendable {
               }
               try await database.deleteSearchHistory(searchHistory)
             }
-            await send(.fetchSearchHistory)
+            await send(.fetchSearchHistories)
           },
         )
-      case .searchResult(.dismiss):
+      case .showPaywall:
+        state.destination = .paywall(.init())
+        return .none
+      case .destination(.dismiss):
         state.selectedSearchHistoy = nil
         return .none
-      case .searchResult:
+      case .destination:
         return .none
       case let .internalAction(.fetchedSearchHistories(searchHistories)):
         state.searchHistories = .init(uniqueElements: searchHistories)
         return .none
       }
     }
-    .ifLet(\.$searchResult, action: \.searchResult) {
-      SearchResultReducer()
-    }
+    .ifLet(\.$destination, action: \.destination)
   }
 }
+
+// MARK: - HistoryListReducer.Destination.State Equatable
+extension HistoryListReducer.Destination.State: Equatable {}
 
 public struct HistoryListPage: View {
   // MARK: - Properties
@@ -116,24 +157,65 @@ public struct HistoryListPage: View {
           .toolbarTitleDisplayMode(.inlineLarge)
       },
     )
-    .fullScreenCover(item: $store.scope(\.searchResult, action: \.searchResult)) { store in
+    .fullScreenCover(item: $store.scope(\.destination, action: \.destination).searchResult) { store in
       SearchResultPage(store: store)
     }
+    .sheet(item: $store.scope(\.destination, action: \.destination).paywall) { store in
+      PaywallPage(store: store)
+    }
     .task {
-      store.send(.fetchSearchHistory)
+      store.send(.fetchSearchHistories)
     }
   }
 
   @ViewBuilder private var content: some View {
-    if store.searchHistories.isEmpty {
+    switch store.contentState {
+    case .needSubscription:
+      needSubscriptionView
+    case .empty:
       emptyView
-    } else {
+    case .list:
       list
     }
   }
 
+  private var needSubscriptionView: some View {
+    ContentUnavailableView(
+      label: {
+        VStack(alignment: .center, spacing: 24) {
+          VStack(alignment: .center, spacing: 16) {
+            Image(systemSymbol: .crownFill)
+              .resizable()
+              .scaledToFit()
+              .frame(width: 48, height: 48)
+              .foregroundStyle(Color.yellow)
+            Text("Need subscribe Premium plan")
+              .font(.system(size: 18, weight: .bold))
+          }
+          Button(
+            action: {
+              store.send(.showPaywall)
+            },
+            label: {
+              Text("Subscribe Premium")
+            },
+          )
+          .modifier {
+            if #available(iOS 26.0, *) {
+              $0.buttonStyle(.glassProminent)
+            } else {
+              $0.buttonStyle(.borderedProminent)
+            }
+          }
+        }
+      },
+    )
+    .background(Color(UIColor.systemGroupedBackground))
+  }
+
   private var emptyView: some View {
     ContentUnavailableView("No search histories", systemSymbol: .trayFullFill)
+      .background(Color(UIColor.systemGroupedBackground))
   }
 
   private var list: some View {

@@ -16,7 +16,7 @@ public struct PaywallReducer: Sendable {
   @ObservableState
   public struct State: Equatable {
     @Presents public var alert: AlertState<Action.Alert>?
-    @Shared(.inMemory("key_premium_subscription_is_active"))
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
 
     // MARK: - Initialize

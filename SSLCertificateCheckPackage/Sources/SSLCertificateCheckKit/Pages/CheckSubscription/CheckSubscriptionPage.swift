@@ -15,7 +15,7 @@ public struct CheckSubscriptionReducer: Sendable {
   // MARK: - State
   @ObservableState
   public struct State: Equatable, Sendable {
-    @Shared(.inMemory("key_premium_subscription_is_active"))
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
     public var wasSendCompleted = false
 

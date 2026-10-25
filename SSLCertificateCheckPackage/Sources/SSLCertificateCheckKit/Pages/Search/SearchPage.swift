@@ -43,7 +43,7 @@ public struct SearchReducer: Sendable {
     public var isRequestReview = false
     public var isLoading = false
     @Presents public var destination: Destination.State?
-    @Shared(.inMemory("key_premium_subscription_is_active"))
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
   }
 
@@ -182,9 +182,10 @@ public struct SearchReducer: Sendable {
         state.isLoading = true
         Logger.info("Start searching")
         return .run(
-          operation: { send in
+          operation: { [isPremiumActive = state.isPremiumActive] send in
             let x509 = try await search.fetchCertificates(url)
-            if let host = url.host() {
+            if isPremiumActive, let host = url.host() {
+              // プレミアムアカウントであれば履歴に保存する
               let searchHistory = SearchHistory(
                 id: uuid.callAsFunction(),
                 domain: host,

@@ -18,7 +18,7 @@ public struct SearchResultDetailReducer {
     // MARK: - Properties
     public let x509: X509
     @Presents public var paywall: PaywallReducer.State?
-    @Shared(.inMemory("key_premium_subscription_is_active"))
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
   }
 

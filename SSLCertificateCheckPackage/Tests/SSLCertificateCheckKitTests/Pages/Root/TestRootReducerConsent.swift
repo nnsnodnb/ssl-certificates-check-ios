@@ -29,6 +29,7 @@ struct TestRootReducerConsent {
       await store.send(.consent(.delegate(.completedConsent))) {
         $0.consent = nil
         $0.search = .init()
+        $0.historyList = .init()
         $0.info = .init(version: "v1.0.0-test")
       }
     }
