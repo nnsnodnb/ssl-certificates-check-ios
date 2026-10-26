@@ -12,6 +12,9 @@ import DependenciesTestSupport
 import Testing
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestInfoReducerBuyMeACoffee {
   @Test(
     .dependencies {

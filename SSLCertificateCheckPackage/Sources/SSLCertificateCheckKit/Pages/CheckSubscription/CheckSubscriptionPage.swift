@@ -17,24 +17,21 @@ public struct CheckSubscriptionReducer: Sendable {
   public struct State: Equatable, Sendable {
     @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
-    public var wasSendCompleted = false
-
-    // MARK: - Initialize
-    public init(
-      isPremiumActive: Bool = false,
-      wasSendCompleted: Bool = false,
-    ) {
-      self.$isPremiumActive.withLock { $0 = isPremiumActive }
-      self.wasSendCompleted = wasSendCompleted
-    }
   }
 
   // MARK: - Action
   public enum Action {
     case onAppear
-    case gotIsPremiumActive(Bool)
+    case internalAction(InternalAction)
     case delegate(Delegate)
 
+    // MARK: - InternalAction
+    @CasePathable
+    public enum InternalAction {
+      case setIsPremiumActive(Bool)
+    }
+
+    // MARK: - Delegate
     @CasePathable
     public enum Delegate {
       case completed
@@ -52,19 +49,18 @@ public struct CheckSubscriptionReducer: Sendable {
       case .onAppear:
         return .run(
           operation: { send in
-            for await isActive in try await revenueCat.isPremiumActiveStream() {
-              await send(.gotIsPremiumActive(isActive))
-            }
+            let isActive = try await revenueCat.isPremiumActive()
+            await send(.internalAction(.setIsPremiumActive(isActive)))
           },
           catch: { _, send in
-            await send(.gotIsPremiumActive(false))
+            await send(.internalAction(.setIsPremiumActive(false)))
           }
         )
-      case let .gotIsPremiumActive(isActive):
+      case let .internalAction(.setIsPremiumActive(isActive)):
         state.$isPremiumActive.withLock { $0 = isActive }
-        if state.wasSendCompleted { return .none }
-        state.wasSendCompleted = true
         return .send(.delegate(.completed))
+      case .internalAction:
+        return .none
       case .delegate:
         return .none
       }
@@ -77,16 +73,10 @@ public struct CheckSubscriptionPage: View {
   let store: StoreOf<CheckSubscriptionReducer>
 
   public var body: some View {
-    Color(UIColor.systemBackground.withAlphaComponent(0.000001))
-      .ignoresSafeArea(.all)
-      .overlay {
-        if !store.wasSendCompleted {
-          ProgressView()
-            .progressViewStyle(.circular)
-            .scaleEffect(2)
-        }
-      }
-      .onAppear {
+    ProgressView()
+      .progressViewStyle(.circular)
+      .scaleEffect(2)
+      .task {
         store.send(.onAppear)
       }
   }

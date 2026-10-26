@@ -14,6 +14,7 @@ import Testing
 @MainActor
 @Suite(
   .dependencies {
+    $0.defaultAppStorage = .inMemory
     $0.openURL = OpenURLEffect { _ in true }
   }
 )

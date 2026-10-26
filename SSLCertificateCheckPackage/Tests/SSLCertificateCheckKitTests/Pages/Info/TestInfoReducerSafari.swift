@@ -11,6 +11,9 @@ import Foundation
 import Testing
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestInfoReducerSafari {
   @Test
   func testGitHubURL() async throws {

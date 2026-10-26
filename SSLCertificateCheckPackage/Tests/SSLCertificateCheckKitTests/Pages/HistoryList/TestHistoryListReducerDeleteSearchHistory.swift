@@ -11,6 +11,9 @@ import Database
 import Testing
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestHistoryListReducerDeleteSearchHistory {
   @Test
   func testIsEmptySearchHistories() async throws {

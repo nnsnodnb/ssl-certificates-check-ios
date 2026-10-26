@@ -13,6 +13,9 @@ import Testing
 import X509Parser
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestSearchReducerShowBeforeAdsAlertIfNeeded {
   @Test
   func testEmptyText() async throws {
