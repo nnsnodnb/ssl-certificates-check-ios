@@ -12,6 +12,9 @@ import Testing
 import X509Parser
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestSearchReducerDestination {
   @Test
   func testDismissAlert() async throws {

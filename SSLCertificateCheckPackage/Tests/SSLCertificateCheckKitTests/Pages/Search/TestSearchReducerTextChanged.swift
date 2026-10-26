@@ -11,6 +11,9 @@ import Foundation
 import Testing
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestSearchReducerTextChanged {
   @Test
   func testValid() async throws {

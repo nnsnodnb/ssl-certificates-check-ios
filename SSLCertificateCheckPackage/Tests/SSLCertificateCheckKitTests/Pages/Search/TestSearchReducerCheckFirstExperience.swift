@@ -12,6 +12,9 @@ import Testing
 import X509Parser
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestSearchReducerCheckFirstExperience {
   @Test
   func testIsCheckFirstExperienceIsFalse() async throws {

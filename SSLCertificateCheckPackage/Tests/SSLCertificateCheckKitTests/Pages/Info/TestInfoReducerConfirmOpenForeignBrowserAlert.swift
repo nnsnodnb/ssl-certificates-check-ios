@@ -11,6 +11,9 @@ import Foundation
 import Testing
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestInfoReducerConfirmOpenForeignBrowserAlert { // swiftlint:disable:this type_name
   @Test
   func testChangedAlert() async throws {

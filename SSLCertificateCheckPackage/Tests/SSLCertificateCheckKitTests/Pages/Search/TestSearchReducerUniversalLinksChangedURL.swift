@@ -12,6 +12,9 @@ import Testing
 import X509Parser
 
 @MainActor
+@Suite(
+  .dependency(\.defaultAppStorage, .inMemory)
+)
 struct TestSearchReducerUniversalLinksChangedURL { // swiftlint:disable:this type_name
   @Test
   func testValidURL() async throws {

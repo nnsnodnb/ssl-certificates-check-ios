@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import DependenciesInterfaces
 import SwiftUI
 
 @Reducer
@@ -17,6 +18,8 @@ public struct MainReducer: Sendable {
     public var search: SearchReducer.State = .init()
     public var historyList: HistoryListReducer.State = .init()
     public var info: InfoReducer.State?
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
+    public var isPremiumActive = false
   }
 
   // MARK: - Action
@@ -25,7 +28,18 @@ public struct MainReducer: Sendable {
     case search(SearchReducer.Action)
     case historyList(HistoryListReducer.Action)
     case info(InfoReducer.Action)
+    case internalAction(InternalAction)
+
+    // MARK: - InternalAction
+    @CasePathable
+    public enum InternalAction {
+      case setIsPremiumActive(Bool)
+    }
   }
+
+  // MARK: - Dependency
+  @Dependency(\.revenueCat)
+  private var revenueCat
 
   // MARK: - Body
   public var body: some ReducerOf<Self> {
@@ -39,12 +53,21 @@ public struct MainReducer: Sendable {
       switch action {
       case .onAppear:
         state.info = .init(version: state.version)
-        return .none
+        return .run(
+          operation: { send in
+            for try await isActive in try await revenueCat.isPremiumActiveStream() {
+              await send(.internalAction(.setIsPremiumActive(isActive)))
+            }
+          },
+        )
       case .search:
         return .none
       case .historyList:
         return .none
       case .info:
+        return .none
+      case let .internalAction(.setIsPremiumActive(isActive)):
+        state.$isPremiumActive.withLock { $0 = isActive }
         return .none
       }
     }
