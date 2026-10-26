@@ -30,26 +30,12 @@ public struct HistoryListReducer: Sendable {
     }
 
     // MARK: - Properties
-    public var contentState: ContentState
+    public var contentState: ContentState = .empty
     public var searchHistories: IdentifiedArrayOf<SearchHistory> = .init(uniqueElements: [])
     public var selectedSearchHistoy: SearchHistory?
     @Presents public var destination: Destination.State?
     @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
-
-    // MARK: - Initialize
-    public init(
-      searchHistories: IdentifiedArrayOf<SearchHistory> = .init(uniqueElements: []),
-      selectedSearchHistoy: SearchHistory? = nil,
-      destination: Destination.State? = nil,
-      isPremiumActive: Bool = false,
-    ) {
-      self.contentState = isPremiumActive ? .empty : .needSubscription
-      self.searchHistories = searchHistories
-      self.selectedSearchHistoy = selectedSearchHistoy
-      self.destination = destination
-      self.$isPremiumActive.withLock { $0 = isPremiumActive }
-    }
   }
 
   // MARK: - Action
@@ -77,7 +63,11 @@ public struct HistoryListReducer: Sendable {
     Reduce { state, action in
       switch action {
       case .fetchSearchHistories:
-        guard state.isPremiumActive else { return .none }
+        guard state.isPremiumActive else {
+          state.contentState = .needSubscription
+          return .none
+        }
+        state.contentState = state.searchHistories.isEmpty ? .empty : .list
         return .run(
           operation: { send in
             let searchHistories = try await database.fetchSearchHistroies()
@@ -101,13 +91,17 @@ public struct HistoryListReducer: Sendable {
       case let .deleteSearchHistory(indexSet):
         return .run(
           operation: { [searchHistories = state.searchHistories] send in
+            var changed = false
             for index in indexSet {
               guard let searchHistory = searchHistories[safe: index] else {
                 continue
               }
               try await database.deleteSearchHistory(searchHistory)
+              changed = true
             }
-            await send(.fetchSearchHistories)
+            if changed {
+              await send(.fetchSearchHistories)
+            }
           },
         )
       case .showPaywall:
@@ -119,6 +113,7 @@ public struct HistoryListReducer: Sendable {
       case .destination:
         return .none
       case let .internalAction(.fetchedSearchHistories(searchHistories)):
+        state.contentState = searchHistories.isEmpty ? .empty : .list
         state.searchHistories = .init(uniqueElements: searchHistories)
         return .none
       }
