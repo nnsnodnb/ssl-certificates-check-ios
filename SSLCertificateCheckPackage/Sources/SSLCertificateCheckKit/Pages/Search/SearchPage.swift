@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import Database
 import DependenciesInterfaces
 import Logger
 import SFSafeSymbols
@@ -42,7 +43,7 @@ public struct SearchReducer: Sendable {
     public var isRequestReview = false
     public var isLoading = false
     @Presents public var destination: Destination.State?
-    @Shared(.inMemory("key_premium_subscription_is_active"))
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
   }
 
@@ -74,12 +75,18 @@ public struct SearchReducer: Sendable {
   // MARK: - Properties
   @Dependency(\.adUnitID)
   private var adUnitID
+  @Dependency(\.database)
+  private var database
+  @Dependency(\.date)
+  private var date
   @Dependency(\.search)
   private var search
   @Dependency(\.keyValueStore)
   private var keyValueStore
   @Dependency(\.rewardedInterstitialAd)
   private var rewardedInterstitialAd
+  @Dependency(\.uuid)
+  private var uuid
 
   // MARK: - Body
   public var body: some ReducerOf<Self> {
@@ -175,8 +182,18 @@ public struct SearchReducer: Sendable {
         state.isLoading = true
         Logger.info("Start searching")
         return .run(
-          operation: { send in
+          operation: { [isPremiumActive = state.isPremiumActive] send in
             let x509 = try await search.fetchCertificates(url)
+            if isPremiumActive, let host = url.host() {
+              // プレミアムアカウントであれば履歴に保存する
+              let searchHistory = SearchHistory(
+                id: uuid.callAsFunction(),
+                domain: host,
+                x509: x509,
+                createdAt: date.callAsFunction(),
+              )
+              try await database.addSearchHistory(searchHistory)
+            }
             await send(.searchResponse(.success(x509)))
           },
           catch: { error, send in

@@ -15,28 +15,27 @@ import SwiftUI
 @Reducer
 @MemberwiseInit(.public)
 public struct RootReducer: Sendable {
+  // MARK: - Destination
+  @Reducer
+  public enum Destination {
+    case checkSubscription(CheckSubscriptionReducer)
+    case consent(ConsentReducer)
+    case main(MainReducer)
+  }
+
   // MARK: - State
   @ObservableState
   @MemberwiseInit(.public)
   public struct State: Equatable {
     @Init(.public, default: nil)
-    public var checkSubscription: CheckSubscriptionReducer.State?
-    @Init(.public, default: nil)
-    public var consent: ConsentReducer.State?
-    @Init(.public, default: nil)
-    public var search: SearchReducer.State?
-    @Init(.public, default: nil)
-    public var info: InfoReducer.State?
+    @Presents public var destination: Destination.State?
   }
 
   // MARK: - Action
   public enum Action {
     case showCheckSubscription
     case showConsent
-    case checkSubscription(CheckSubscriptionReducer.Action)
-    case consent(ConsentReducer.Action)
-    case search(SearchReducer.Action)
-    case info(InfoReducer.Action)
+    case destination(PresentationAction<Destination.Action>)
   }
 
   // MARK: - Dependency
@@ -48,42 +47,22 @@ public struct RootReducer: Sendable {
     Reduce { state, action in
       switch action {
       case .showCheckSubscription:
-        state.checkSubscription = .init()
+        state.destination = .checkSubscription(.init())
         return .none
       case .showConsent:
-        state.checkSubscription = nil
-        state.consent = .init()
+        state.destination = .consent(.init())
         return .none
-      case .checkSubscription(.delegate(.completed)):
+      case .destination(.presented(.checkSubscription(.delegate(.completed)))):
         return .send(.showConsent)
-      case .checkSubscription:
-        return .none
-      case .consent(.delegate(.completedConsent)):
-        state.consent = nil
-        state.search = .init()
+      case .destination(.presented(.consent(.delegate(.completedConsent)))):
         let version = bundle.shortVersionString()
-        state.info = .init(version: "v\(version)")
+        state.destination = .main(.init(version: "v\(version)"))
         return .none
-      case .consent:
-        return .none
-      case .search:
-        return .none
-      case .info:
+      case .destination:
         return .none
       }
     }
-    .ifLet(\.checkSubscription, action: \.checkSubscription) {
-      CheckSubscriptionReducer()
-    }
-    .ifLet(\.consent, action: \.consent) {
-      ConsentReducer()
-    }
-    .ifLet(\.search, action: \.search) {
-      SearchReducer()
-    }
-    .ifLet(\.info, action: \.info) {
-      InfoReducer()
-    }
+    .ifLet(\.$destination, action: \.destination)
   }
 }
 
@@ -101,19 +80,14 @@ public struct RootPage: View {
   public var body: some View {
     if isTesting {
       Text("Run Testing")
-    } else if let store = store.scope(\.checkSubscription, action: \.checkSubscription) {
-      CheckSubscriptionPage(store: store)
-    } else if let store = store.scope(\.consent, action: \.consent) {
-      ConsentPage(store: store)
-    } else if let searchStore = store.scope(\.search, action: \.search),
-              let infoStore = store.scope(\.info, action: \.info) {
-      TabView {
-        Tab("Search", systemSymbol: .magnifyingglass) {
-          SearchPage(store: searchStore)
-        }
-        Tab("Info", systemSymbol: .info) {
-          InfoPage(store: infoStore)
-        }
+    } else if let store = store.scope(\.destination, action: \.destination.presented) {
+      switch store.case {
+      case let .checkSubscription(store):
+        CheckSubscriptionPage(store: store)
+      case let .consent(store):
+        ConsentPage(store: store)
+      case let .main(store):
+        MainPage(store: store)
       }
     } else {
       initializeView
@@ -130,13 +104,10 @@ public struct RootPage: View {
         store.send(.showCheckSubscription)
       }
   }
-
-  @ViewBuilder private var consentPage: some View {
-    if let store = store.scope(\.consent, action: \.consent) {
-      ConsentPage(store: store)
-    }
-  }
 }
+
+// MARK: - RootReducer.Destination.State Equatable
+extension RootReducer.Destination.State: Equatable {}
 
 struct RootPage_Previews: PreviewProvider {
   static var previews: some View {

@@ -94,9 +94,12 @@ struct TestSearchReducerShowBeforeAdsAlertIfNeeded {
   func testValidTextSuccessResponseIsPremiumActive() async throws {
     let x509 = X509.stub
     await withDependencies {
+      $0.database.addSearchHistory = { _ in }
+      $0.date = .constant(.now)
       $0.search.fetchCertificates = { _ in [x509] }
+      $0.uuid = .incrementing
     } operation: {
-      @Shared(.inMemory("key_premium_subscription_is_active"))
+      @Shared(.inMemory(.isPremiumSubscriptionIsActive))
       var isPremiumActive = true
 
       let store = TestStore(

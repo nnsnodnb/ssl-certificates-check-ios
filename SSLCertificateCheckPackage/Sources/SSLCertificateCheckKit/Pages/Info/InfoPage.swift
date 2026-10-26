@@ -52,7 +52,7 @@ public struct InfoReducer: Sendable {
     public var url: URL?
     @Presents public var detailDestination: DetailDestination.State?
     @Presents public var presentDestination: PresentDestination.State?
-    @Shared(.inMemory("key_premium_subscription_is_active"))
+    @Shared(.inMemory(.isPremiumSubscriptionIsActive))
     public var isPremiumActive = false
 
     // MARK: - Link
