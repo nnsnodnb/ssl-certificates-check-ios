@@ -21,7 +21,7 @@ struct TestRootReducerShowConsent {
     )
 
     await store.send(.showConsent) {
-      $0.consent = .init()
+      $0.destination = .consent(.init())
     }
   }
 }

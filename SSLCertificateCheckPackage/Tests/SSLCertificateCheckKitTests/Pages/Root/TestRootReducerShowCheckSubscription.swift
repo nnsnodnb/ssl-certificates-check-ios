@@ -21,7 +21,7 @@ struct TestRootReducerShowCheckSubscription {
     )
 
     await store.send(.showCheckSubscription) {
-      $0.checkSubscription = .init()
+      $0.destination = .checkSubscription(.init())
     }
   }
 }
