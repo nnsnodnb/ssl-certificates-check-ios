@@ -38,7 +38,7 @@ let package = Package(
     .package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", .upToNextMajor(from: "7.0.0")),
     .package(url: "https://github.com/SVProgressHUD/SVProgressHUD.git", .upToNextMajor(from: "2.3.1")),
     .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", .upToNextMajor(from: "0.65.1")),
-    .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.21.0")),
+    .package(url: "https://github.com/apple/swift-certificates.git", .upToNextMajor(from: "1.21.1")),
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture.git",
       .upToNextMajor(from: "1.26.2"),
