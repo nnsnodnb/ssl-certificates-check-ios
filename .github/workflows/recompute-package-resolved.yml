@@ -83,4 +83,4 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: recompute Package.resolved originHash"
-          git push origin "HEAD:refs/heads/${GITHUB_HEAD_REF}"
+          git push origin "HEAD:${HEAD_REF}"
