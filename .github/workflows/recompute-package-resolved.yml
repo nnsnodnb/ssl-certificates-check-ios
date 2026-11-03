@@ -74,6 +74,8 @@ jobs:
 
       - name: Git commit & push if needed
         if: ${{ steps.commit.outputs.skip != 'true' }}
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           if [ -z "$(git status --porcelain "${PACKAGE_RESOLVED}")" ]; then
             echo "no change in ${PACKAGE_RESOLVED}; skipping commit/push"
