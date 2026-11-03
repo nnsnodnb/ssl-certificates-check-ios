@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-ios-spm.git",
       "state" : {
-        "revision" : "338022faafce4675788e405fbcaa4246aae2c93b",
-        "version" : "5.99.0"
+        "revision" : "6c4b9a2b9609f594c2c54f6a18bac26281ffd5ae",
+        "version" : "5.101.0"
       }
     },
     {
