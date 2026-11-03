@@ -1,5 +1,5 @@
 {
-  "originHash" : "0b660db2cf9f8fc6cd092e16d1ee99305b372cf72c47f18132addbb30f0fcce4",
+  "originHash" : "82002461787a5f779e95ebc7c4bc53d3c23fed61d33e80b38b42039e6ccbcaf8",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -195,8 +195,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-certificates.git",
       "state" : {
-        "revision" : "ff86b924ead66f853b8baf91f3c41926a8f36177",
-        "version" : "1.21.0"
+        "revision" : "84f03fafeca28c19f5fc4b528df3d22ce8896bd7",
+        "version" : "1.21.1"
       }
     },
     {
