@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import DependenciesInterfaces
 import SwiftUI
 import X509Parser
 
@@ -32,6 +33,7 @@ public struct SearchResultReducer: Sendable {
   // MARK: - Action
   public enum Action {
     case close
+    case copyDomain
     case changedColumnVisibility(NavigationSplitViewVisibility)
     case changedIsPortrait(Bool)
     case showDestination(Destination?)
@@ -47,6 +49,8 @@ public struct SearchResultReducer: Sendable {
 
   @Dependency(\.dismiss)
   private var dismiss
+  @Dependency(\.pasteboard)
+  private var pasteboard
 
   // MARK: - Body
   public var body: some ReducerOf<Self> {
@@ -56,6 +60,12 @@ public struct SearchResultReducer: Sendable {
         return .run(
           operation: { _ in
             await dismiss()
+          },
+        )
+      case .copyDomain:
+        return .run(
+          operation: { [domain = state.domain] _ in
+            try await pasteboard.setString(domain)
           },
         )
       case let .changedColumnVisibility(columnVisibility):
@@ -191,6 +201,16 @@ public struct SearchResultPage: View {
               Text("This certificate is \(store.isValidCertificate ? "" : "in")valid.")
                 .font(.system(size: 14))
             }
+          }
+          .contextMenu {
+            Button(
+              action: {
+                store.send(.copyDomain)
+              },
+              label: {
+                Label("Copy domain", systemSymbol: .documentOnDocumentFill)
+              },
+            )
           }
         }
       }
