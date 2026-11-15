@@ -31,6 +31,7 @@ struct DevelopApp: App {
         $0.adUnitID = .develop
         $0.consentInformation = .google
         $0.database = .swiftData
+        $0.pasteboard = .uiKit
         $0.rewardedInterstitialAd = .google
         $0.revenueCat = .revenueCat
 
