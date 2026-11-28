@@ -8,7 +8,7 @@ on:
 
 jobs:
   recompute:
-    uses: nnsnodnb/.github/.github/workflows/recompute-package-resolved.yml@main
+    uses: nnsnodnb/.github/.github/workflows/recompute-package-resolved.yml@02e00e0430cbf7b7303ecef17debfbbe49e358ac
     with:
       runs-on: xcode-27
       developer-dir: /Applications/Xcode_27.2.0.app/Contents/Developer
