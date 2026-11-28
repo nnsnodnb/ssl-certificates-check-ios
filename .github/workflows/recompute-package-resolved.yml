@@ -13,7 +13,7 @@ jobs:
       runs-on: xcode-27
       developer-dir: /Applications/Xcode_27.2.0.app/Contents/Developer
       workspace: SSLCertificateCheck.xcworkspace
-      scheme: SSLCertificateCheck
+      scheme: SSLCertificateCheckPackage
       package-resolved: SSLCertificateCheck.xcworkspace/xcshareddata/swiftpm/Package.resolved
     secrets:
       client-id: ${{ secrets.AOI_CHAN_BOT_CLIENT_ID }}
