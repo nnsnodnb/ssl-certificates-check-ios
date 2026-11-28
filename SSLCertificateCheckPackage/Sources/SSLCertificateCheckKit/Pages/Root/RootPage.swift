@@ -39,6 +39,7 @@ public struct RootReducer: Sendable {
   }
 
   // MARK: - Dependency
+  @Init(.ignore)
   @Dependency(\.bundle)
   private var bundle
 
@@ -73,6 +74,7 @@ public struct RootPage: View {
   public let store: StoreOf<RootReducer>
 
   // MARK: - Dependencies
+  @Init(.ignore)
   @Dependency(\.consentInformation)
   private var consentInformation
 
